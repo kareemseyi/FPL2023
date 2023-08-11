@@ -1,0 +1,7 @@
+Requirements Documents for FPL with Data Science
+- Graph Data Model to model premier league Data and identify star players
+- Python FPL library to do some analysis and create a new algorithm
+
+
+Links:
+- https://towardsdatascience.com/beating-the-fantasy-premier-league-game-with-python-and-data-science-cf62961281be - MONEY BALL FORMULA $$

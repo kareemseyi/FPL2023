@@ -1,0 +1,4 @@
+
+        [console_scripts]
+        fpl=fpl.cli:cli
+    
