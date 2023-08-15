@@ -1,6 +1,5 @@
 import csv
-from fpl import FPL
-import aiohttp
+
 import sys
 import asyncio
 import requests
@@ -28,10 +27,12 @@ with open('cleaned_players_2022_23.csv') as f:
         position = row[-1]
         players_table_2021.add_row([player_name, f"£{price}", goals, assists, goal_contributions,
                            points, float(roi), position, None])
-        if goal_contributions > 17:
+        if goal_contributions >= 17 or (
+            position == 'DEF' and goal_contributions > 5
+        ):
             star_players.append(player_name)
     players_table_2021.reversesort = True
-    print(players_table_2021.get_string(sortby='ROI'))
+    print(players_table_2021.get_string(sortby='Total Points'))
     print(star_players)
 
 
