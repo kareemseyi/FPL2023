@@ -52,63 +52,44 @@ def get_team(team_id):
     return team_dict.get(team_id)
 
 
-# sorted_players = json_general["elements"]
-# players_table = PrettyTable()
-# players_table.field_names = ["Player_Name", "Price (Pounds)", "Games Played", "Goals", "Assists",
-#                              "Direct Goal Contributions",
-#                              "Total Points", "Points Per Game", "ROI", "Position", "Team", "Minutes"]
-# players_table.align = "c"
-# for baller in sorted_players:
-#     goals = baller['goals_scored']
-#     assists = baller['assists']
-#     goal_contributions = baller['goals_scored'] + baller['assists']
-#     games_played = baller['starts']
-#     minutes = baller['minutes']
+sorted_players = json_general["elements"]
+players_table = PrettyTable()
+players_table.field_names = ["Player_Name", "Price (Pounds)", "Games Played", "Goals", "Assists",
+                             "Direct Goal Contributions",
+                             "Total Points", "Points Per Game", "ROI", "Position", "Team", "Minutes"]
+players_table.align = "c"
+for baller in sorted_players:
+    goals = baller['goals_scored']
+    assists = baller['assists']
+    goal_contributions = baller['goals_scored'] + baller['assists']
+    games_played = baller['starts']
+    minutes = baller['minutes']
+
+    teamname = get_team(baller['team'])
+    roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):0000000.4}")
+    roi_list.append(roi)  # add all ROIs for all players
+    teamid_list_g.append(baller['team'])
+
+    if baller['element_type'] == 1:
+        pos = 'GK'
+    elif baller['element_type'] == 2:
+        pos = 'DEF'
+    elif baller['element_type'] == 3:
+        pos = 'MID'
+    else:
+        pos = 'FWD'
+    pos_list_g.append(pos)
+
+    players_table.add_row([baller['web_name'], f"£{baller['now_cost'] / 10}", games_played,
+                           goals, assists, goal_contributions, baller['points_per_game'],
+                           baller['total_points'], float(roi), pos, teamname, minutes])
+
 #
-#     teamname = get_team(baller['team'])
-#     roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):0000000.4}")
-#     roi_list.append(roi)  # add all ROIs for all players
-#     teamid_list_g.append(baller['team'])
-#
-#     if baller['element_type'] == 1:
-#         pos = 'GK'
-#     elif baller['element_type'] == 2:
-#         pos = 'DEF'
-#     elif baller['element_type'] == 3:
-#         pos = 'MID'
-#     else:
-#         pos = 'FWD'
-#     pos_list_g.append(pos)
-#
-#     # if 15 < roi < 25:
-#     #     roi_list_over_15.append(roi)
-#     #     teamlist_over_15.append(baller.team)
-#     # if roi > 25:
-#     #     roi_list_over_25.append(roi)
-#     #     teamlist_over_25.append(baller.team)
-#     # if roi > 12.66:  # Calculated ROI average where ROI > 0
-#     #     roi_list_over_avg.append(roi)
-#     #     teamlist_over_avg.append(baller.team)
-#     # if roi < 12.66:
-#     #     roi_list_under_avg.append(roi)
-#     #     teamlist_under_avg.append(baller.team)
-#
-#     players_table.add_row([baller['web_name'], f"£{baller['now_cost'] / 10}", games_played,
-#                            goals, assists, goal_contributions, baller['points_per_game'],
-#                            baller['total_points'], float(roi), pos, teamname, minutes])
-#
-# # roi_list_over_zero = list(filter(lambda x: x > 0, roi_list))
-# # roi_avg_over_zero = sum(roi_list_over_zero) / len(roi_list_over_zero)
-# # print(roi_avg_over_zero)
-#
-# # roi_avg = sum(roi_list) / len(roi_list)
-# # print(roi_avg)
-#
-# players_table.reversesort = True
-# # print(players_table.get_string(sortby='ROI'))
+players_table.reversesort = True
 # print(players_table.get_string(sortby='ROI'))
-# figure(num=1, figsize=(8, 6), dpi=80)
-#
+print(players_table.get_string(sortby='ROI'))
+figure(num=1, figsize=(8, 6), dpi=80)
+
 # plt.xticks(teamid_list, teamname_list, rotation=90)
 # plt.yticks(range(0, 35, 5))
 # plt.ylabel('Player Return on Investment')
@@ -160,5 +141,21 @@ For each Gameweek, I want to pick the best 11 players that a guaranteed to give 
     -- What determines the highest points per player? 
         A: It varies by position, for defenders/Goalkeepers - Clean sheets are important, goals too but unlikely 
             for midfielders and attackers.. its goals and assists
-    -- LikelyToScore, LikelyToAssist ?
+Modelling 
+-- Player Model
+    --Goals/week
+    --Assits/week
+    --Total points 
+    --ROI?
+-- Team Model 
+    - LeaguePosition (integer)
+    - current_Rank
+-- Fixture Model
+    - HomeTeam (team)
+    - AwayTeam (team) 
+    
+Pick_best_team_current_GW() -- returns List of PLayers
+    - List [Players]
+    - List [Fixtures]
+    -
 """
