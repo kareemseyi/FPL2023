@@ -1,0 +1,37 @@
+FPL Constraints
+
+Picking Team Constraints
+Budget = 100m
+2 Keepers
+5 Defenders
+5 Forwards
+3 Midfielders
+Max 3 players from one team
+
+Picking Starting 11 for GW
+1 Keeper
+Minimum 3 Defenders
+Minimum 1 Forward
+
+For each Gameweek, I want to pick the best 11 players that a guaranteed to give me the highest points?
+    -- What determines the highest points per player?
+        A: It varies by position, for defenders/Goalkeepers - Clean sheets are important, goals too but unlikely
+            for midfielders and attackers.. its goals and assists
+Modelling
+-- Player Model
+    --Goals/week
+    --Assits/week
+    --Total points
+    --ROI?
+-- Team Model
+    - LeaguePosition (integer)
+    - current_Rank
+-- Fixture Model
+    - HomeTeam (team)
+    - AwayTeam (team)
+
+Pick_best_team_current_GW() -- returns List of PLayers
+    - List [Players]
+    - List [Fixtures]
+    -
+

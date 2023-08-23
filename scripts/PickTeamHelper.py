@@ -25,10 +25,6 @@ player_id_list = [player["id"] for player in json_general["elements"]]
 teamname_list = [team["name"] for team in json_general["teams"]]
 teamid_list = [team["id"] for team in json_general["teams"]]
 roi_list = []
-# roi_list_over_15, teamlist_over_15 = [], []
-# roi_list_over_avg, teamlist_over_avg = [], []
-# roi_list_under_avg, teamlist_under_avg = [], []
-# roi_list_over_25, teamlist_over_25 = [], []
 teamid_list_g = []
 pos_list_g = []
 
@@ -88,7 +84,7 @@ for baller in sorted_players:
 players_table.reversesort = True
 # print(players_table.get_string(sortby='ROI'))
 print(players_table.get_string(sortby='ROI'))
-figure(num=1, figsize=(8, 6), dpi=80)
+figure(num=1, figsize=(10, 6), dpi=80)
 
 # plt.xticks(teamid_list, teamname_list, rotation=90)
 # plt.yticks(range(0, 35, 5))
@@ -115,47 +111,8 @@ figure(num=1, figsize=(8, 6), dpi=80)
 # plt.plot(teamlist_over_25, roi_list_over_25, 'o', color='purple')  # Plot some data on the axes.
 # plt.show()
 #
-plt.xticks(range(1, 5, 1), ["GK", "FWD", "MID", "DEF"], rotation=90)
-plt.yticks(range(0, 35, 1))
-plt.ylabel('Player Return on Investment vs Position ')
-plt.plot(pos_list_g, roi_list, 'o', color='orange')  # Plot some data on the axes.
-plt.show()
-
-"""
-FPL Constraints
-
-Picking Team Constraints
-Budget = 100m
-2 Keepers
-5 Defenders
-5 Forwards
-3 Midfielders
-Max 3 players from one team
-
-Picking Starting 11 for GW
-1 Keeper
-Minimum 3 Defenders
-Minimum 1 Forward
-
-For each Gameweek, I want to pick the best 11 players that a guaranteed to give me the highest points?
-    -- What determines the highest points per player? 
-        A: It varies by position, for defenders/Goalkeepers - Clean sheets are important, goals too but unlikely 
-            for midfielders and attackers.. its goals and assists
-Modelling 
--- Player Model
-    --Goals/week
-    --Assits/week
-    --Total points 
-    --ROI?
--- Team Model 
-    - LeaguePosition (integer)
-    - current_Rank
--- Fixture Model
-    - HomeTeam (team)
-    - AwayTeam (team) 
-    
-Pick_best_team_current_GW() -- returns List of PLayers
-    - List [Players]
-    - List [Fixtures]
-    -
-"""
+# plt.xticks(range(1, 5, 1), ["GK", "FWD", "MID", "DEF"], rotation=90)
+# plt.yticks(range(0, 35, 1))
+# plt.ylabel('Player Return on Investment vs Position ')
+# plt.plot(pos_list_g, roi_list, 'o', color='orange')  # Plot some data on the axes.
+# plt.show()
