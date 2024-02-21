@@ -1,6 +1,6 @@
 # FPL
 import matplotlib.pyplot as plt
-plt.style.use('seaborn-whitegrid')
+# plt.style.use('seaborn-whitegrid')
 from matplotlib.pyplot import figure
 
 
@@ -77,8 +77,8 @@ for baller in sorted_players:
     pos_list_g.append(pos)
 
     players_table.add_row([baller['web_name'], f"£{baller['now_cost'] / 10}", games_played,
-                           goals, assists, goal_contributions, baller['points_per_game'],
-                           baller['total_points'], float(roi), pos, teamname, minutes])
+                           goals, assists, goal_contributions, baller['total_points'], baller['points_per_game']
+                           , float(roi), pos, teamname, minutes])
 
 #
 players_table.reversesort = True

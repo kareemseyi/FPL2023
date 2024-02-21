@@ -9,7 +9,7 @@ players_table_2021.field_names = ["Player_Name", "Price (Pounds)", "Goals", "Ass
                                   "Total Points", "ROI", "Position", "Team"]
 star_players = []
 
-with open('../raw_player_data/cleaned_players_2022_2023.csv') as f:
+with open('raw_player_data/cleaned_players_2022_2023.csv') as f:
     print(f.name)
     reader = csv.reader(f)
     headers = next(reader)
@@ -31,7 +31,7 @@ with open('../raw_player_data/cleaned_players_2022_2023.csv') as f:
         ):
             star_players.append(player_name)
     players_table_2021.reversesort = True
-    print(players_table_2021.get_string(sortby='Total Points'))
+    print(players_table_2021.get_string(sortby='ROI'))
     # print(star_players)
 
 
@@ -94,7 +94,7 @@ try:
     player_dict = generate_historical()
     keys = player_dict[0].keys()
 
-    with open('Ballers.csv', 'w', newline='') as output_file:
+    with open('../Ballers.csv', 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(player_dict)
