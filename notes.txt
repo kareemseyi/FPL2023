@@ -1,3 +1,8 @@
+Useful Links:
+    https://peakd.com/fpl/@amosbastian/making-transfers-and-substitutions-using-fpl
+
+
+
 FPL Constraints
 
 Picking Team Constraints
@@ -20,7 +25,7 @@ For each Gameweek, I want to pick the best 11 players that a guaranteed to give 
 Modelling
 -- Player Model
     --Goals/week
-    --Assits/week
+    --Assists/week
     --Total points
     --ROI?
 -- Team Model
@@ -30,8 +35,25 @@ Modelling
     - HomeTeam (team)
     - AwayTeam (team)
 
+
+
 Pick_best_team_current_GW() -- returns List of PLayers
     - List [Players]
     - List [Fixtures]
-    -
+
+------------------------------------------------
+
+--First thing I am struggling with is the overall architechture of the file..
+    -- I know the basics of what I w
+
+-- FPL Authentication
+    - succesfully login into FPL
+
+        -dynamic_API
+    - pick a new team *****
+        -created new team for testing this out
+
+
+    - Make a transfer
+        -static API and dynamic API
 
