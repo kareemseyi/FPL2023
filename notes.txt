@@ -57,3 +57,10 @@ Pick_best_team_current_GW() -- returns List of PLayers
     - Make a transfer
         -static API and dynamic API
 
+
+------------------Started Coding----------
+Can Successfuly Login and get a Users Team
+In order to Get a Users Team:
+    - ****Need to provide the Gameweek (Currently Defaults to 10)
+    - Can currently login
+
