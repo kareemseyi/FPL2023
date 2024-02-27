@@ -18,7 +18,7 @@ print(json_general.keys())
 
 print(json_general["element_types"])
 
-# name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in json_general["elements"]]
+name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in json_general["elements"]]
 # print(name_list)
 # print((name_list))
 player_id_list = [player["id"] for player in json_general["elements"]]
@@ -34,7 +34,9 @@ pos_list_g = []
 id_dict = {}
 # Dictionary of team_ids and Team
 team_dict = {json_general["teams"][i]["id"]: json_general["teams"][i]["name"] for i in range(len(teamname_list))}
-print(team_dict)
+player_dict = {player_id_list[i]: name_list[i] for i in range(len(name_list))}
+print(name_list)
+print(player_dict)
 
 
 # async def get_element(session, element_id):
@@ -80,11 +82,11 @@ for baller in sorted_players:
                            goals, assists, goal_contributions, baller['total_points'], baller['points_per_game']
                            , float(roi), pos, teamname, minutes])
 
-#
-players_table.reversesort = True
+# #
+# players_table.reversesort = True
+# # print(players_table.get_string(sortby='ROI'))
 # print(players_table.get_string(sortby='ROI'))
-print(players_table.get_string(sortby='ROI'))
-figure(num=1, figsize=(10, 6), dpi=80)
+# figure(num=1, figsize=(10, 6), dpi=80)
 
 # plt.xticks(teamid_list, teamname_list, rotation=90)
 # plt.yticks(range(0, 35, 5))
