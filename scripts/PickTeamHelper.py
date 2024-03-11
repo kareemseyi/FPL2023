@@ -82,11 +82,11 @@ for baller in sorted_players:
                            goals, assists, goal_contributions, baller['total_points'], baller['points_per_game']
                            , float(roi), pos, teamname, minutes])
 
-# #
-# players_table.reversesort = True
-# # print(players_table.get_string(sortby='ROI'))
+#
+players_table.reversesort = True
 # print(players_table.get_string(sortby='ROI'))
-# figure(num=1, figsize=(10, 6), dpi=80)
+print(players_table.get_string(sortby='ROI'))
+figure(num=1, figsize=(10, 6), dpi=80)
 
 # plt.xticks(teamid_list, teamname_list, rotation=90)
 # plt.yticks(range(0, 35, 5))
