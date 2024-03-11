@@ -38,7 +38,7 @@ async def get_teams():
         # print(user_obj.id)
 
         my_team = await handler.get_users_team(session, user_obj, 24)
-        print(handler.get_player(players,my_team[0]['element']))
+        # print(handler.get_player(players,my_team[0]['element']))
 
         print(my_team)
 

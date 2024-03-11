@@ -1,9 +1,9 @@
 import asyncio
 import aiohttp
-import pytest
 from endpoints import endpoints
 from dataModel.user import User
 from dataModel.fixture import Fixture
+from dataModel.player import Player
 
 API_BASE_URL = endpoints['STATIC']['BASE_URL']
 API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
@@ -145,7 +145,7 @@ async def  get_player(self, player_id, players=None, include_summary=False,
     :raises ValueError: Player with ``player_id`` not found
     """
     if not players:
-        players = await fetch(self.session, API_URLS["players"])
+        players = await fetch(self.session, API_BASE_URL)
 
     try:
         player = next(player for player in players
