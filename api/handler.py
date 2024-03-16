@@ -1,6 +1,5 @@
 import asyncio
 import aiohttp
-import pytest
 from endpoints import endpoints
 from dataModel.user import User
 from dataModel.fixture import Fixture
