@@ -11,12 +11,10 @@ API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
 
 API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
+
 API_ME = endpoints['API']['ME']
 API_GET_PLAYER = endpoints['API']['GET_PLAYER']
-
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
-
-
 
 
 def logged_in(session):
@@ -78,7 +76,6 @@ async def get_user(session, user_id=None, return_json=False):
     return User(user, session)
 
 
-
 async def get_teams(session):
     dynamic = await fetch(session, API_BASE_URL)
     teamname_list = [team["name"] for team in dynamic["teams"]]
@@ -104,18 +101,8 @@ async def get_players(session):
 async def get_player(session, player_id, players=None, return_json=False):
     """Returns the player with the given ``player_id``.
 
-    Information is taken from e.g.:
-        https://fantasy.premierleague.com/drf/elements
-        https://fantasy.premierleague.com/drf/element-summary/1 (optional)
-
     :param player_id: A player's ID.
     :type player_id: string or int
-    :param list players: (optional) A list of players.
-    :param bool include_summary: (optional) Includes a player's summary
-        if ``True``.
-    :param return_json: (optional) Boolean. If ``True`` returns a ``dict``,
-        if ``False`` returns a :class:`Player` object. Defaults to
-        ``False``.
     :rtype: :class:`Player` or ``dict``
     :raises ValueError: Player with ``player_id`` not found
     """
@@ -131,15 +118,12 @@ async def get_player(session, player_id, players=None, return_json=False):
 
     if return_json:
         return player
-    return Player(player, session)
+    return Player(player)
 
 
 async def get_users_team(session, User, gw):
     """Returns a logged-in user's current team. Requires the user to have
     logged in using ``fpl.login()``.
-
-    Information is taken from e.g.:
-        https://fantasy.premierleague.com/api/my-team/91928/
 
     :rtype: list
     """
@@ -157,6 +141,7 @@ async def get_users_team(session, User, gw):
 
     return response['picks']
 
+
 async def get_upcoming_gameweek(session):
     if not logged_in(session):
         raise Exception("User must be logged in.")
@@ -173,7 +158,8 @@ async def get_upcoming_gameweek(session):
 
     return int(gw) + 1  # Adds one to previous gameweek
 
-async def get_fixtures_for_gameweek(session, gameweek:int):
+
+async def get_fixtures_for_gameweek(session, gameweek: int):
     """Returns the fixtures for the current gameweek.
 
     :param aiohttp.ClientSession session: A logged-in user's session.
@@ -190,9 +176,6 @@ async def get_fixtures_for_gameweek(session, gameweek:int):
     team_dict = await get_teams(session)
     fixtures = [x for x in response if x['event'] == gameweek]
     return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
-
-
-
 
 # async def transfer(self, players_out, players_in, max_hit=60,wildcard=False, free_hit=False):
 #     # Get team players + IDs, and FPL players + IDs.
