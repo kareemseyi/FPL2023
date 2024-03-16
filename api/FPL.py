@@ -1,15 +1,16 @@
 import http
+import os
 
 from api.handler import fetch, logged_in
 from endpoints import endpoints
 import aiohttp
 from http import cookies
 
-
 API_BASE_URL = endpoints["API"]["BASE_URL"]
 LOGIN_URL = endpoints["API"]["LOGIN"]
-import os
-class FPL():
+
+
+class FPL:
     """The FPL class."""
 
     def __init__(self, session):
@@ -55,4 +56,3 @@ class FPL():
     def get_Fixtures(self, gameweek: int, password=None):
         if logged_in(self.session):
             print(True)
-
