@@ -4,6 +4,8 @@ import pytest
 from endpoints import endpoints
 from dataModel.user import User
 from dataModel.fixture import Fixture
+from dataModel.player import Player
+from utils import fetch
 
 API_BASE_URL = endpoints['STATIC']['BASE_URL']
 API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
@@ -11,23 +13,11 @@ API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
 API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
 API_ME = endpoints['API']['ME']
+API_GET_PLAYER = endpoints['API']['GET_PLAYER']
 
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 
 
-async def fetch(session, url):
-    while True:
-        try:
-            async with session.get(url) as response:
-                assert response.status == 200
-                return await response.json(content_type=None)
-        except Exception as e:
-            pass
-
-
-async def post(session, url, payload, headers):
-    async with session.post(url, data=payload, headers=headers) as response:
-        return await response.json()
 
 
 def logged_in(session):
@@ -89,16 +79,6 @@ async def get_user(session, user_id=None, return_json=False):
     return User(user, session)
 
 
-def position_converter(position):
-    """Converts a player's `element_type` to their actual position."""
-    position_map = {
-        1: "Goalkeeper",
-        2: "Defender",
-        3: "Midfielder",
-        4: "Forward"
-    }
-    return position_map[position]
-
 
 async def get_teams(session):
     dynamic = await fetch(session, API_BASE_URL)
@@ -122,11 +102,7 @@ async def get_players(session):
     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
 
 
-def get_player(player_dict, player_id):
-    return player_dict.get(player_id)
-
-async def  get_player(self, player_id, players=None, include_summary=False,
-                     return_json=False):
+async def get_player(session, player_id, players=None, return_json=False):
     """Returns the player with the given ``player_id``.
 
     Information is taken from e.g.:
@@ -145,23 +121,18 @@ async def  get_player(self, player_id, players=None, include_summary=False,
     :raises ValueError: Player with ``player_id`` not found
     """
     if not players:
-        players = await fetch(self.session, API_URLS["players"])
+        data = await fetch(session, API_BASE_URL)
+        players = data['elements']
 
     try:
-        player = next(player for player in players
-                      if player["id"] == player_id)
+        player = next(player for player in players if player["id"] == player_id)
+        # print(player)
     except StopIteration:
         raise ValueError(f"Player with ID {player_id} not found")
 
-    if include_summary:
-        player_summary = await self.get_player_summary(
-            player["id"], return_json=True)
-        player.update(player_summary)
-
     if return_json:
         return player
-
-    return Player(player)
+    return Player(player, session)
 
 
 async def get_users_team(session, User, gw):
