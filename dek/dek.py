@@ -37,16 +37,18 @@ async def get_teams():
         user_obj = await handler.get_user(session)
         # print(user_obj.id)
 
-        my_team = await handler.get_users_team(session, user_obj, 24)
-        print(handler.get_player(players,my_team[0]['element']))
-
-        print(my_team)
-
         # my_team_cleaned = [handler.get_player(players, x['element'])for x in my_team]
         # print(my_team_cleaned)
 
         gw = await handler.get_upcoming_gameweek(session)
         print(gw)
+
+
+        my_team = await handler.get_users_team(session, user_obj, 27)
+        player = await handler.get_player(session,my_team[5]['element'])
+
+        print(my_team)
+        print(player.roi())
 
         fixtures_for_gameweek = await handler.get_fixtures_for_gameweek(session, gw)
         # print(fixtures_for_gameweek[0].stats["goals_scored"])
