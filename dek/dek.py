@@ -36,15 +36,11 @@ async def get_teams():
 
         user_obj = await handler.get_user(session)
         # print(user_obj.id)
-
-<<<<<<< HEAD
         my_team = await handler.get_users_team(session, user_obj, 24)
         # print(handler.get_player(players,my_team[0]['element']))
 
         print(my_team)
 
-=======
->>>>>>> c7eceeac8b29c8efbaaaa8ae0e4e801885a3e241
         # my_team_cleaned = [handler.get_player(players, x['element'])for x in my_team]
         # print(my_team_cleaned)
 
