@@ -1,6 +1,6 @@
 from asyncio import exceptions
 
-from api import  handler
+from api import handler
 from endpoints import endpoints
 import requests
 API_BASE_URL = endpoints['STATIC']['BASE_URL']
