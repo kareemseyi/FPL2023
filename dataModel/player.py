@@ -3,8 +3,7 @@ class Player():
     """A class representing a player in the Fantasy Premier League.
 
     """
-    def __init__(self, player_information,session):
-        self.session = session
+    def __init__(self, player_information):
         for k, v in player_information.items():
             if k == "now_cost":  # Fix for cost of player
                 v = float(v/10)
@@ -30,9 +29,6 @@ class Player():
 
     def roi(self):
         return float(getattr(self, "total_points", 0) / getattr(self, "now_cost", 0))
-
-
-
 
     def __str__(self):
         return (f"{(self.web_name)} - "
