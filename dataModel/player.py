@@ -1,12 +1,14 @@
-from utils import  position_converter, team_converter
-class Player():
+from utils import position_converter, team_converter
+
+
+class Player:
     """A class representing a player in the Fantasy Premier League.
 
     """
     def __init__(self, player_information):
         for k, v in player_information.items():
             if k == "now_cost":  # Fix for cost of player
-                v = float(v/10)
+                v = float(v / 10)
 
             setattr(self, k, v)
 

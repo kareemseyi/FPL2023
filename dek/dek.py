@@ -21,6 +21,7 @@ async def get_current_fixtures():
     await session.close()
     return len(current_fixtures)
 
+
 async def get_teams():
     session = aiohttp.ClientSession(trust_env=True)
     fpl = FPL(session)
@@ -36,6 +37,10 @@ async def get_teams():
 
         user_obj = await handler.get_user(session)
         # print(user_obj.id)
+        my_team = await handler.get_users_team(session, user_obj, 24)
+        # print(handler.get_player(players,my_team[0]['element']))
+
+        print(my_team)
 
         # my_team_cleaned = [handler.get_player(players, x['element'])for x in my_team]
         # print(my_team_cleaned)
@@ -57,7 +62,6 @@ async def get_teams():
 
         for i in fixtures_for_gameweek:
             print(str(i))
-
 
     await session.close()
     return len(teams)
