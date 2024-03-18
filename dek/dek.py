@@ -21,6 +21,7 @@ async def get_current_fixtures():
     await session.close()
     return len(current_fixtures)
 
+
 async def get_teams():
     session = aiohttp.ClientSession(trust_env=True)
     fpl = FPL(session)
@@ -61,7 +62,6 @@ async def get_teams():
 
         for i in fixtures_for_gameweek:
             print(str(i))
-
 
     await session.close()
     return len(teams)
