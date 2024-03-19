@@ -9,9 +9,7 @@ async def fetch(session, url):
     while True:
         try:
             async with session.get(url) as response:
-                assert response.status in (200, 404)  # 404 Error returned when Team is empty
-                if response.status == 404:
-                    return response
+                assert response.status == 200
                 return await response.json(content_type=None)
         except Exception as e:
             raise e
