@@ -1,3 +1,5 @@
+import sys
+
 from api.FPL import FPL
 import aiohttp
 import asyncio
@@ -22,7 +24,7 @@ async def get_current_fixtures():
     return len(current_fixtures)
 
 
-async def get_teams():
+async def test():
     session = aiohttp.ClientSession(trust_env=True)
     fpl = FPL(session)
     await fpl.login()
@@ -30,15 +32,18 @@ async def get_teams():
         print("Logged in for GW")
         teams = await handler.get_teams(fpl)
         print(teams)
-        # user = await fpl.get_user(fpl)
-        # print(user)
+        user = await fpl.get_user()
+        print(user)
         # players = await handler.get_players(session)
         # print(players)
+        try:
+            my_team = await fpl.get_users_team(user, 1)
+            print(my_team)
+        except Exception as err:
+            print(err)
+            sys.exit()
+            pass
 
-        # user_obj = await handler.get_user(session)
-        # print(user_obj.id)
-        # my_team = await handler.get_users_team(session, user_obj, 24)
-        # print(handler.get_player(players,my_team[0]['element']))
 
         # print(my_team)
 
@@ -67,5 +72,5 @@ async def get_teams():
     return len(teams)
 
 
-asyncio.run(get_teams())
+asyncio.run(test())
 
