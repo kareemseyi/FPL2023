@@ -116,10 +116,7 @@ class FPL:
         try:
             response = await fetch(
                 self.session, API_MY_TEAM_GW_URL.format(f=user.entry, gw=gw))
-        except aiohttp.client_exceptions.ClientResponseError:
-            raise Exception("User ID does not match provided email address!")
-        if response.status == 404:
+        except Exception as e:
             raise Exception("Client has not set a team for gameweek " + str(gw))
-        assert response.status == 200
         return response['picks']
 
