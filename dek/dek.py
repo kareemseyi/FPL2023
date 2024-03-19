@@ -33,7 +33,7 @@ async def test():
         teams = await handler.get_teams(fpl)
         print(teams)
         user = await fpl.get_user()
-        print(user)
+        # print(user)
         # players = await handler.get_players(session)
         # print(players)
         try:
