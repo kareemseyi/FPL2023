@@ -64,3 +64,11 @@ In order to Get a Users Team:
     - ****Need to provide the Gameweek (Currently Defaults to 10)
     - Can currently login
 
+
+
+-------- Picking A Team -------
+FIRST TIME
+    -- use Historical and gameweek 1 Fixtures
+        -- assert gameweek 1 or team is not picked??
+
+    --

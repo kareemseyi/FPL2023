@@ -1,32 +1,17 @@
-import asyncio
 import aiohttp
 from endpoints import endpoints
-from dataModel.user import User
 from dataModel.fixture import Fixture
 from dataModel.player import Player
 from utils import fetch
+from api.FPL import FPL
 
 API_BASE_URL = endpoints['STATIC']['BASE_URL']
 API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
 
 API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
-API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
 
-API_ME = endpoints['API']['ME']
 API_GET_PLAYER = endpoints['API']['GET_PLAYER']
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
-
-
-def logged_in(session):
-    """Checks that the user is logged in within the session.
-
-    :param session: http session
-    :type session: aiohttp.ClientSession
-    :return: True if user is logged in else False
-    :rtype: bool
-    """
-    return "csrftoken" in session.cookie_jar.filter_cookies(
-        "https://users.premierleague.com/")
 
 
 async def get_remaining_fixtures(session):
@@ -43,41 +28,41 @@ async def get_remaining_fixtures(session):
     return matches_not_played
 
 
-async def get_user(session, user_id=None, return_json=False):
-    """Returns the user with the given ``user_id``.
+# async def get_user(session, user_id=None, return_json=False):
+#     """Returns the user with the given ``user_id``.
+#
+#     Information is taken from e.g.:
+#         https://fantasy.premierleague.com/api/entry/91928/
+#
+#     :param session:
+#     :param user_id: A user's ID.
+#     :type user_id: string or int
+#     :param return_json: (optional) Boolean. If ``True`` returns a ``dict``,
+#         if ``False`` returns a :class:`User` object. Defaults to ``False``.
+#     :type return_json: bool
+#     :rtype: :class:`User` or `dict`
+#     """
+#     if user_id:
+#         assert int(user_id) > 0, "User ID must be a positive number."
+#     else:
+#         # If no user ID provided get it from current session
+#         try:
+#             user = await get_current_user(session)
+#             user_id = user["player"]["entry"]
+#         except TypeError:
+#             raise Exception("You must log in before using `get_user` if "
+#                             "you do not provide a user ID.")
+#
+#     url = API_ME.format(user_id)
+#     user = await fetch(session, url)
+#
+#     if return_json:
+#         return user
+#     return User(user, session)
 
-    Information is taken from e.g.:
-        https://fantasy.premierleague.com/api/entry/91928/
 
-    :param session:
-    :param user_id: A user's ID.
-    :type user_id: string or int
-    :param return_json: (optional) Boolean. If ``True`` returns a ``dict``,
-        if ``False`` returns a :class:`User` object. Defaults to ``False``.
-    :type return_json: bool
-    :rtype: :class:`User` or `dict`
-    """
-    if user_id:
-        assert int(user_id) > 0, "User ID must be a positive number."
-    else:
-        # If no user ID provided get it from current session
-        try:
-            user = await get_current_user(session)
-            user_id = user["player"]["entry"]
-        except TypeError:
-            raise Exception("You must log in before using `get_user` if "
-                            "you do not provide a user ID.")
-
-    url = API_ME.format(user_id)
-    user = await fetch(session, url)
-
-    if return_json:
-        return user
-    return User(user, session)
-
-
-async def get_teams(session):
-    dynamic = await fetch(session, API_BASE_URL)
+async def get_teams(fpl):
+    dynamic = await fetch(fpl.session, API_BASE_URL)
     teamname_list = [team["name"] for team in dynamic["teams"]]
     return {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
 
@@ -86,9 +71,9 @@ def get_team(team_dict, team_id):
     return team_dict.get(team_id)
 
 
-async def get_current_user(session):
-    user = await fetch(session, API_ME)
-    return user
+# async def get_current_user(session):
+#     user = await fetch(session, API_ME)
+#     return user
 
 
 async def get_players(session):
@@ -121,61 +106,61 @@ async def get_player(session, player_id, players=None, return_json=False):
     return Player(player)
 
 
-async def get_users_team(session, User, gw):
-    """Returns a logged-in user's current team. Requires the user to have
-    logged in using ``fpl.login()``.
-
-    :rtype: list
-    """
-    if not logged_in(session):
-        raise Exception("User must be logged in.")
-
-    try:
-        response = await fetch(
-            session, API_MY_TEAM_GW_URL.format(f=User.entry, gw=gw))
-    except aiohttp.client_exceptions.ClientResponseError:
-        raise Exception("User ID does not match provided email address!")
-
-    if response.get("detail") == "Not found.":
-        raise Exception("Data not found. Please ensure user ID matches provided email address.")
-
-    return response['picks']
-
-
-async def get_upcoming_gameweek(session):
-    if not logged_in(session):
-        raise Exception("User must be logged in.")
-    try:
-        response = await fetch(
-            session, API_FIXTURE_URL)
-        gw = max([x['event'] for x in response if x['finished'] is True])
-        # This is the previous gameweek
-    except Exception:
-        raise Exception("no Gameweeks have started")
-
-    if len(response) == 0:
-        raise Exception("No Active Events yet.... TODO")
-
-    return int(gw) + 1  # Adds one to previous gameweek
+# async def get_users_team(session, User, gw):
+#     """Returns a logged-in user's current team. Requires the user to have
+#     logged in using ``fpl.login()``.
+#
+#     :rtype: list
+#     """
+#     if not FPL.logged_in():
+#         raise Exception("User must be logged in.")
+#
+#     try:
+#         response = await fetch(
+#             session, API_MY_TEAM_GW_URL.format(f=User.entry, gw=gw))
+#     except aiohttp.client_exceptions.ClientResponseError:
+#         raise Exception("User ID does not match provided email address!")
+#
+#     if response.get("detail") == "Not found.":
+#         raise Exception("Data not found. Please ensure user ID matches provided email address.")
+#
+#     return response['picks']
 
 
-async def get_fixtures_for_gameweek(session, gameweek: int):
-    """Returns the fixtures for the current gameweek.
+# async def get_upcoming_gameweek(session):
+#     if not FPL.logged_in():
+#         raise Exception("User must be logged in.")
+#     try:
+#         response = await fetch(
+#             session, API_FIXTURE_URL)
+#         gw = max([x['event'] for x in response if x['finished'] is True])
+#         # This is the previous gameweek
+#     except Exception:
+#         raise Exception("no Gameweeks have started")
+#
+#     if len(response) == 0:
+#         raise Exception("No Active Events yet.... TODO")
+#
+#     return int(gw) + 1  # Adds one to previous gameweek
 
-    :param aiohttp.ClientSession session: A logged-in user's session.
-    :rtype: int
-    """
-    if not logged_in(session):
-        raise Exception("User must be logged in.")
-    try:
-        response = await fetch(
-            session, API_GW_FIXTURES.format(f=gameweek))
-    except aiohttp.client_exceptions.ClientResponseError:
-        raise Exception("User ID does not match provided email address!")
 
-    team_dict = await get_teams(session)
-    fixtures = [x for x in response if x['event'] == gameweek]
-    return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
+# async def get_fixtures_for_gameweek(session, gameweek: int):
+#     """Returns the fixtures for the current gameweek.
+#
+#     :param aiohttp.ClientSession session: A logged-in user's session.
+#     :rtype: int
+#     """
+#     if not FPL.logged_in():
+#         raise Exception("User must be logged in.")
+#     try:
+#         response = await fetch(
+#             session, API_GW_FIXTURES.format(f=gameweek))
+#     except aiohttp.client_exceptions.ClientResponseError:
+#         raise Exception("User ID does not match provided email address!")
+#
+#     team_dict = await get_teams(session)
+#     fixtures = [x for x in response if x['event'] == gameweek]
+#     return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
 # async def transfer(self, players_out, players_in, max_hit=60,wildcard=False, free_hit=False):
 #     # Get team players + IDs, and FPL players + IDs.
