@@ -70,5 +70,9 @@ In order to Get a Users Team:
 FIRST TIME
     -- use Historical and gameweek 1 Fixtures
         -- assert gameweek 1 or team is not picked??
+        -- Finding historical number of games played seems to be a challenge.
 
-    --
+    -- Only add players who played over 90 mins
+    -- Changed that to 500 minutes
+    -- ROI_per_MIN prioritizes LOW Minutes, players that perform well do not have high ROI's
+    -- Might use ROI_per_MIN for specific scenarios?
