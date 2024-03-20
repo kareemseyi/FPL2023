@@ -4,6 +4,7 @@ from api.FPL import FPL
 import aiohttp
 import asyncio
 from api import handler
+from historical import FullHistorical
 
 
 async def fpl_login():
@@ -41,9 +42,19 @@ async def test():
             print(my_team)
         except Exception as err:
             print(err)
-            sys.exit()
-            pass
+            a = FullHistorical.getHistoricalPlayers()
+            a.sort(key=lambda x: x.roi_per_Min(), reverse=True)
+            # top_players = [x for x in a if x.roi_per_Min() > 0.2]
 
+            # roi = max_roi_per_min.roi_per_Min()
+
+
+            # print(len(a))
+            # for i in a[0:4]:
+            #     print(vars(i))
+            #     print(i.roi_per_Min())
+
+            pass
 
         # print(my_team)
 
