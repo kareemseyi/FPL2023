@@ -1,20 +1,23 @@
 import http
 import aiohttp
+import asyncio
 import os
 from endpoints import endpoints
 from http import cookies
 from utils import fetch
 from dataModel.user import User
+from dataModel.player import Player
+
+MAX_DEF = 5
 
 
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
-API_BASE_URL = endpoints["API"]["BASE_URL"]
+STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 API_ME = endpoints['API']['ME']
 LOGIN_URL = endpoints["API"]["LOGIN"]
 
 
 async def get_current_user(session):
-    print('getting current')
     user = await fetch(session, API_ME)
     return user
 
@@ -119,4 +122,90 @@ class FPL:
         except Exception as e:
             raise Exception("Client has not set a team for gameweek " + str(gw))
         return response['picks']
+
+    async def get_all_current_players(self, player_ids=None, return_json=False):
+        """Returns either a list of *all* players, or a list of players whose
+        IDs are in the given ``player_ids`` list.
+
+        Information is taken from e.g.:
+            https://fantasy.premierleague.com/api/bootstrap-static/
+            https://fantasy.premierleague.com/api/element-summary/1/ (optional)
+
+        :param list player_ids: (optional) A list of player IDs
+        :param boolean include_summary: (optional) Includes a player's summary
+            if ``True``.
+        :param return_json: (optional) Boolean. If ``True`` returns a list of
+            ``dict``s, if ``False`` returns a list of  :class:`Player`
+            objects. Defaults to ``False``.
+        :type return_json: bool
+        :rtype: list
+        """
+        try:
+            data = await fetch(self.session, STATIC_BASE_URL)
+            players = data['elements']
+        except Exception as e:
+            print(e)
+            raise Exception
+        if player_ids:
+            players = [player for player in players if player["id"] in player_ids]
+
+            if not return_json:
+                return players
+            else:
+                return [Player(player) for player in players]
+
+        if not player_ids:
+            player_ids = [player["id"] for player in players]
+
+        tasks = [asyncio.ensure_future(
+            self.get_current_player(
+                player_id, players, return_json))
+            for player_id in player_ids]
+        players = await asyncio.gather(*tasks)
+
+        return players
+
+    # async def get_all_current_players(self):
+    #     dynamic = await fetch(self.session, STATIC_BASE_URL)
+    #     player_id_list = [player["id"] for player in dynamic["elements"]]
+    #     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
+    #     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
+
+    async def get_current_player(self, player_id, players=None, return_json=False):
+        """Returns the player with the given ``player_id``.
+
+        :param player_id: A player's ID.
+        :type player_id: string or int
+        :rtype: :class:`Player` or ``dict``
+        :raises ValueError: Player with ``player_id`` not found
+        """
+        if not players:
+            data = await fetch(self.session, STATIC_BASE_URL)
+            players = data['elements']
+
+        try:
+            player = next(player for player in players if player["id"] == player_id)
+            # print(player)
+        except StopIteration:
+            raise ValueError(f"Player with ID {player_id} not found")
+
+        if return_json:
+            return player
+        return Player(player)
+
+    # def pickTeam(self, user, gw, initial=False,):
+    #     """Returns a logged-in user's current team. Requires the user to have
+    #     logged in using ``fpl.login()``.
+    #
+    #     :rtype: list
+    #     """
+    #     if not FPL.logged_in(self):
+    #         raise Exception("User must be logged in.")
+    #
+    #     try:
+    #         response = await fetch(
+    #             self.session, API_MY_TEAM_GW_URL.format(f=user.entry, gw=gw))
+    #     except Exception as e:
+    #         raise Exception("Client has not set a team for gameweek " + str(gw))
+    #     return response['picks']
 
