@@ -1,31 +1,14 @@
 import aiohttp
 from endpoints import endpoints
-from dataModel.fixture import Fixture
 from dataModel.player import Player
 from utils import fetch
-from api.FPL import FPL
-
-API_BASE_URL = endpoints['STATIC']['BASE_URL']
-API_FIXTURE_URL = endpoints['STATIC']['FIXTURES']
+STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
 
 API_GET_PLAYER = endpoints['API']['GET_PLAYER']
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 
-
-async def get_remaining_fixtures(session):
-    """Returns the list of fixtures.
-    :param aiohttp.ClientSession session: A logged-in user's session.
-    :rtype: int
-    """
-    dynamic = await fetch(
-        session, API_FIXTURE_URL)
-
-    matches_not_played = [x for x in dynamic if x['finished'] is False]
-    matches_played = [x for x in dynamic if x['finished'] is True]
-
-    return matches_not_played
 
 
 # async def get_user(session, user_id=None, return_json=False):
@@ -60,13 +43,6 @@ async def get_remaining_fixtures(session):
 #         return user
 #     return User(user, session)
 
-
-async def get_teams(fpl):
-    dynamic = await fetch(fpl.session, API_BASE_URL)
-    teamname_list = [team["name"] for team in dynamic["teams"]]
-    return {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
-
-
 def get_team(team_dict, team_id):
     return team_dict.get(team_id)
 
@@ -77,7 +53,7 @@ def get_team(team_dict, team_id):
 
 
 async def get_players(session):
-    dynamic = await fetch(session, API_BASE_URL)
+    dynamic = await fetch(session, STATIC_BASE_URL)
     player_id_list = [player["id"] for player in dynamic["elements"]]
     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
@@ -92,7 +68,7 @@ async def get_player(session, player_id, players=None, return_json=False):
     :raises ValueError: Player with ``player_id`` not found
     """
     if not players:
-        data = await fetch(session, API_BASE_URL)
+        data = await fetch(session, STATIC_BASE_URL)
         players = data['elements']
 
     try:
