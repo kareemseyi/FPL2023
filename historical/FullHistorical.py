@@ -41,7 +41,7 @@ def getHistoricalPlayers():
                 player = dict(zip(_keys, data[j]))
                 player['season'] = str(i)
 
-                if int(player['minutes']) > 900:  # Only add players who played over 900 mins
+                if int(player['minutes']) > 1000:  # Only add players who played over 1000 mins
                     final.append(player)
 
                 # final.append(Player(player))

@@ -34,26 +34,25 @@ async def test():
         teams = await handler.get_teams(fpl)
         print(teams)
         user = await fpl.get_user()
-        # print(user)
-        # players = await handler.get_players(session)
-        # print(players)
+        print(user)
+        players = await fpl.get_all_current_players()
+        print(players[0])
+        print(players[1])
+        print(players[2])
+
         try:
             my_team = await fpl.get_users_team(user, 1)
             print(my_team)
         except Exception as err:
             print(err)
             a = FullHistorical.getHistoricalPlayers()
-            a.sort(key=lambda x: x.roi_per_Min(), reverse=True)
-            # top_players = [x for x in a if x.roi_per_Min() > 0.2]
+            a.sort(key=lambda x: x.points_per_Min(), reverse=True)
+            top_players = [x for x in a if x.roi_per_Min() > 0.2]
 
-            # roi = max_roi_per_min.roi_per_Min()
-
-
-            # print(len(a))
-            # for i in a[0:4]:
-            #     print(vars(i))
-            #     print(i.roi_per_Min())
-
+            print(len(a))
+            for i in a[0:4]:
+                print(i)
+                print(i.roi_per_Min(), i.points_per_Min())
             pass
 
         # print(my_team)
