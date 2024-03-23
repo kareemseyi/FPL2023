@@ -2,19 +2,29 @@ import http
 import aiohttp
 import asyncio
 import os
+
+import utils
+import itertools
 from endpoints import endpoints
 from http import cookies
 from utils import fetch
 from dataModel.user import User
 from dataModel.player import Player
+from dataModel.fixture import Fixture
 
 MAX_DEF = 5
 
+# Login Url
+LOGIN_URL = endpoints["API"]["LOGIN"]
+
+# Base Url
+STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
-STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 API_ME = endpoints['API']['ME']
-LOGIN_URL = endpoints["API"]["LOGIN"]
+
+API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
+API_ALL_FIXTURES = endpoints['API']['ALL_FIXTURES']
 
 
 async def get_current_user(session):
@@ -192,6 +202,32 @@ class FPL:
         if return_json:
             return player
         return Player(player)
+
+    async def get_fixtures_for_next_GW(self, gameweek):
+        assert gameweek > 0
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+        try:
+            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
+        except aiohttp.client_exceptions.ClientResponseError:
+            raise Exception("User ID does not match provided email address!")
+
+        team_dict = utils.get_teams()
+        fixtures = [x for x in response if x['event'] in gameweek]
+        return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
+
+
+    async def get_all_fixtures(self, *gameweek):
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        task = asyncio.ensure_future(fetch(self.session, API_ALL_FIXTURES))
+
+        gameweek_fixtures = await asyncio.gather(task)
+        fixtures = list(itertools.chain(*gameweek_fixtures))
+
+        team_dict = utils.get_teams()
+        return [Fixture(fixture, team_dict) for fixture in fixtures if fixture['event'] in gameweek]
 
     # def pickTeam(self, user, gw, initial=False,):
     #     """Returns a logged-in user's current team. Requires the user to have

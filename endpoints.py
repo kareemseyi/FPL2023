@@ -1,7 +1,6 @@
 endpoints = {
     "STATIC": {
-        "BASE_URL": "https://fantasy.premierleague.com/api/bootstrap-static/",
-        "FIXTURES": "https://fantasy.premierleague.com/api/fixtures/"
+        "BASE_URL": "https://fantasy.premierleague.com/api/bootstrap-static/"
     },
     "API": {
         "BASE_URL": "https://fantasy.premierleague.com/",
@@ -10,6 +9,7 @@ endpoints = {
         "GET_PLAYER": "https://fantasy.premierleague.com/api/element-summary/{f}/",
         "MY_TEAM_GW": "https://fantasy.premierleague.com/api/entry/{f}/event/{gw}/picks",
         "GW_FIXTURES": "https://fantasy.premierleague.com/api/fixtures/?events={{f}}",
+        "ALL_FIXTURES": "https://fantasy.premierleague.com/api/fixtures/",
         "ME": "https://fantasy.premierleague.com/api/me"
     }
 }
