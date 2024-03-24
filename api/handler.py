@@ -10,7 +10,6 @@ API_GET_PLAYER = endpoints['API']['GET_PLAYER']
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 
 
-
 # async def get_user(session, user_id=None, return_json=False):
 #     """Returns the user with the given ``user_id``.
 #

@@ -1,8 +1,7 @@
 import requests
-resp = requests.get('https://fantasy.premierleague.com/api/fixtures')
-resp2 = resp.json()
+import json
 
-
-
-game_weeks = [x['event'] for x in resp2 if x['finished'] is True]
-print(game_weeks)
+headers = {'Accept': 'application/json'}
+resp = requests.get('https://github.com/vaastav/Fantasy-Premier-League/raw/master/data', headers=headers)
+if resp.status_code == 200:
+    print(resp.json())
