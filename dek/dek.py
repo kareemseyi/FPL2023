@@ -20,20 +20,19 @@ async def test():
         print(players[1])
         print(players[2])
 
-        try:
-            pass
-            # my_team = await fpl.get_users_team(user, 1)
-            # print(my_team)
-        except Exception as err:
-            print(err)
-            a = FullHistorical.getHistoricalPlayers()
-            a.sort(key=lambda x: x.points_per_Min(), reverse=True)
-            top_players = [x for x in a if x.roi_per_Min() > 0.2]
-            print(len(a))
-            for i in a[0:4]:
-                print(i)
-                print(i.roi_per_Min(), i.points_per_Min())
-            pass
+        # try:
+        #     my_team = await fpl.get_users_team(user, 1)
+        # except Exception as err:
+        #     pass
+
+        a = FullHistorical.getHistoricalPlayers()
+        a.sort(key=lambda x: x.points_per_Min(), reverse=True)
+        top_players = [x for x in a if x.roi_per_Min() > 0.2 and x.season == '']
+        print(len(a))
+        for i in a[0:10]:
+            print(vars(i))
+            print(i.roi_per_Min(), i.points_per_Min())
+
 
         # print(my_team)
 
@@ -50,13 +49,9 @@ async def test():
         # print(my_team)
         # print(player.roi())
         #
-        fixtures_for_gameweek = await fpl.get_all_fixtures(1,2,3,4,5)
-        print(fixtures_for_gameweek[0])
-        print(fixtures_for_gameweek[0].team_a)
-        print(fixtures_for_gameweek[0].team_h)
-
-        for i in fixtures_for_gameweek:
-            print(str(i))
+        # fixtures_for_gameweek = await fpl.get_all_fixtures(1,2,3,4,5)
+        # for i in fixtures_for_gameweek:
+        #     print(vars(i))
 
     await session.close()
     return 'Mum is here'

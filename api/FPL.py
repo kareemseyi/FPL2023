@@ -47,8 +47,8 @@ class FPL:
             account.
         """
         if not email and not password:
-            email = os.getenv("FPL_EMAIL", 'okareem@stellaralgo.com')
-            password = os.getenv("FPL_PASSWORD", '@Testing123')
+            email = os.getenv("FPL_EMAIL", '')
+            password = os.getenv("FPL_PASSWORD", '')
         if not email or not password:
             raise ValueError("Email and password must be set")
         print(f"Logging in: {LOGIN_URL}")
@@ -175,7 +175,7 @@ class FPL:
 
         return players
 
-    # async def get_all_current_players(self):
+    # async def get_current_players(self):
     #     dynamic = await fetch(self.session, STATIC_BASE_URL)
     #     player_id_list = [player["id"] for player in dynamic["elements"]]
     #     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
@@ -216,7 +216,6 @@ class FPL:
         fixtures = [x for x in response if x['event'] in gameweek]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
-
     async def get_all_fixtures(self, *gameweek):
         if not FPL.logged_in(self):
             raise Exception("User must be logged in.")
@@ -229,19 +228,15 @@ class FPL:
         team_dict = utils.get_teams()
         return [Fixture(fixture, team_dict) for fixture in fixtures if fixture['event'] in gameweek]
 
-    # def pickTeam(self, user, gw, initial=False,):
-    #     """Returns a logged-in user's current team. Requires the user to have
-    #     logged in using ``fpl.login()``.
-    #
-    #     :rtype: list
-    #     """
-    #     if not FPL.logged_in(self):
-    #         raise Exception("User must be logged in.")
-    #
-    #     try:
-    #         response = await fetch(
-    #             self.session, API_MY_TEAM_GW_URL.format(f=user.entry, gw=gw))
-    #     except Exception as e:
-    #         raise Exception("Client has not set a team for gameweek " + str(gw))
-    #     return response['picks']
+    def pickTeam(self, user, gw, initial=False):
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+        if initial:
+            gw = 1
+        try:
+            fixtures = self.get_all_fixtures(list(range(gw,gw+5)))
+        except Exception as e:
+            raise(e)
+
+
 
