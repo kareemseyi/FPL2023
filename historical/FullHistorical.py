@@ -12,14 +12,15 @@ from dataModel.player import Player
 # print(res.json()['payload']['blob']['csv'][2])
 # ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'creativity', 'influence', 'threat', 'bonus', 'bps', 'ict_index', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent', 'now_cost', 'element_type']
 
-
 def getHistoricalPlayers():
     """
 
     :return: list(<Player>) A list of Historical player objects
     """
+    headers = {'Accept': 'application/json'}
     FolderURL = 'https://github.com/vaastav/Fantasy-Premier-League/tree/master/data'
-    res2 = requests.get(FolderURL)
+    res2 = requests.get(FolderURL, headers=headers)
+    print(res2.json())
     lis = res2.json()['payload']['tree']['items']
     print(lis)
     final = []
@@ -32,7 +33,7 @@ def getHistoricalPlayers():
     for i in folders:
         dataURL = baseURL + i + '/cleaned_players.csv'
         try:
-            res = requests.get(dataURL)
+            res = requests.get(dataURL, headers=headers)
             assert res.status_code == 200
             data = res.json()['payload']['blob']['csv']
             _keys = data[0]

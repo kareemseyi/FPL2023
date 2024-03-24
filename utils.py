@@ -1,8 +1,7 @@
 from asyncio import exceptions
 from endpoints import endpoints
 import requests
-
-API_BASE_URL = endpoints['STATIC']['BASE_URL']
+STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 
 async def fetch(session, url):
@@ -33,9 +32,15 @@ def position_converter(position):
 
 def team_converter(team_id):
     try:
-        dynamic = requests.get(API_BASE_URL).json()
+        dynamic = requests.get(STATIC_BASE_URL).json()
     except exceptions.RequestException as e:
         raise e
     teamname_list = [team["name"] for team in dynamic["teams"]]
     teamdict = {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
     return teamdict[team_id]
+
+
+def get_teams():
+    dynamic = requests.get(STATIC_BASE_URL).json()
+    teamname_list = [team["name"] for team in dynamic["teams"]]
+    return {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
