@@ -47,8 +47,8 @@ class FPL:
             account.
         """
         if not email and not password:
-            email = os.getenv("FPL_EMAIL", '')
-            password = os.getenv("FPL_PASSWORD", '')
+            email = os.getenv("FPL_EMAIL", 'okareem@stellaralgo.com')
+            password = os.getenv("FPL_PASSWORD", '@Testing123')
         if not email or not password:
             raise ValueError("Email and password must be set")
         print(f"Logging in: {LOGIN_URL}")

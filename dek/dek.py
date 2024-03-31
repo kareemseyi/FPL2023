@@ -6,7 +6,6 @@ import asyncio
 from api import handler
 from historical import FullHistorical
 
-
 async def test():
     session = aiohttp.ClientSession(trust_env=True)
     fpl = FPL(session)
@@ -32,6 +31,8 @@ async def test():
         for i in a[0:10]:
             print(vars(i))
             print(i.roi_per_Min(), i.points_per_Min())
+
+        a_team = FPL.get
 
 
         # print(my_team)
