@@ -14,6 +14,12 @@ class Fixture:
                 v = {w["identifier"]: {"a": w["a"], "h": w["h"]} for w in v}
             setattr(self, k, v)
 
+    def get_home_team(self):
+        return getattr(self, "team_h")
+
+    def get_away_team(self):
+        return getattr(self, "team_a")
+
     def __str__(self):
         return (f"{self.team_h} vs. "
                 f"{self.team_a} - "
