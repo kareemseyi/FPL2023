@@ -1,4 +1,5 @@
 import http
+
 import aiohttp
 import asyncio
 import os
@@ -11,8 +12,14 @@ from utils import fetch
 from dataModel.user import User
 from dataModel.player import Player
 from dataModel.fixture import Fixture
+from dataModel.team import Team
 
 MAX_DEF = 5
+MAX_GK = 2
+MAX_MID = 5
+MAX_FWD = 3
+MAX_BUDGET = 100
+MAX_PLAYER_FROM_TEAM = 3
 
 # Login Url
 LOGIN_URL = endpoints["API"]["LOGIN"]
@@ -228,15 +235,71 @@ class FPL:
         team_dict = utils.get_teams()
         return [Fixture(fixture, team_dict) for fixture in fixtures if fixture['event'] in gameweek]
 
-    def pickTeam(self, user, gw, initial=False):
+    async def get_upcoming_gameweek(self):
         if not FPL.logged_in(self):
             raise Exception("User must be logged in.")
-        if initial:
-            gw = 1
         try:
-            fixtures = self.get_all_fixtures(list(range(gw,gw+5)))
-        except Exception as e:
-            raise(e)
+            response = await fetch(self.session, API_GW_FIXTURES)
+            gw = max([x['event'] for x in response if x['finished'] is True])
+            # This is the previous gameweek
+        except Exception:
+            raise Exception("no Gameweeks have started")
 
+        if len(response) == 0:
+            raise Exception("No Active Events yet.... TODO")
+
+        return int(gw) + 1  # Adds one to previous gameweek
+
+    async def get_fixtures_for_gameweek(self, gameweek: int):
+        """Returns the fixtures for the current gameweek.
+
+        :param aiohttp.ClientSession session: A logged-in user's session.
+        :rtype: int
+        """
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+        try:
+            response = await fetch(
+                self.session, API_GW_FIXTURES.format(f=gameweek))
+        except aiohttp.client_exceptions.ClientResponseError:
+            raise Exception("User ID does not match provided email address!")
+
+        team_dict = utils.get_teams()
+        fixtures = [x for x in response if x['event'] == gameweek]
+        return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
+
+    async def get_team(self, *team_ids, team_names=None):
+        try:
+            response = await fetch(self.session, STATIC_BASE_URL)
+        except aiohttp.client_exceptions.ClientResponseError:
+            raise Exception("User ID does not match provided email address!")
+        teams = response['teams']
+        if team_ids:
+            team = (team for team in teams if team['id'] in team_ids)
+        else:
+            team = (team for team in teams if team['name'] in team_names)
+        return [Team(team, self.session) for team in team]
+
+    async def pickTeam(self, gw, initial=False):
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+        try:
+            fixtures = await self.get_all_fixtures(*range(gw, gw + 5))
+        except Exception as e:
+            raise (e)
+        home_teams, away_teams = {x.get_home_team() for x in fixtures}, {x.get_away_team() for x in fixtures}
+        teams = await self.get_team(team_names=away_teams.union(home_teams))
+
+        # this is where historical might come in? Current Player pool vs historical player pool when picking teams
+        # Also which players are we going to filter out from the player pool,
+        # players that have played over certain minutes?
+        # This could also be a rolling target across the season
+
+        player_pool = [x for sub in teams for x in await sub.get_players_for_team() if x.minutes > 180]
+        # 180 minutes currently
+        player_pool.sort(key=lambda x: x.points_per_Min(), reverse=True)
+
+        for i in player_pool:
+            print(str(i), i.points_per_Min())
 
 
