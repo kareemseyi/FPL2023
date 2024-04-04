@@ -50,36 +50,12 @@ def get_team(team_dict, team_id):
 #     user = await fetch(session, API_ME)
 #     return user
 
-
+#TODO Move to utils
 async def get_players(session):
     dynamic = await fetch(session, STATIC_BASE_URL)
     player_id_list = [player["id"] for player in dynamic["elements"]]
     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
-
-
-async def get_player(session, player_id, players=None, return_json=False):
-    """Returns the player with the given ``player_id``.
-
-    :param player_id: A player's ID.
-    :type player_id: string or int
-    :rtype: :class:`Player` or ``dict``
-    :raises ValueError: Player with ``player_id`` not found
-    """
-    if not players:
-        data = await fetch(session, STATIC_BASE_URL)
-        players = data['elements']
-
-    try:
-        player = next(player for player in players if player["id"] == player_id)
-        # print(player)
-    except StopIteration:
-        raise ValueError(f"Player with ID {player_id} not found")
-
-    if return_json:
-        return player
-    return Player(player)
-
 
 # async def get_users_team(session, User, gw):
 #     """Returns a logged-in user's current team. Requires the user to have
@@ -100,42 +76,6 @@ async def get_player(session, player_id, players=None, return_json=False):
 #         raise Exception("Data not found. Please ensure user ID matches provided email address.")
 #
 #     return response['picks']
-
-
-# async def get_upcoming_gameweek(session):
-#     if not FPL.logged_in():
-#         raise Exception("User must be logged in.")
-#     try:
-#         response = await fetch(
-#             session, API_FIXTURE_URL)
-#         gw = max([x['event'] for x in response if x['finished'] is True])
-#         # This is the previous gameweek
-#     except Exception:
-#         raise Exception("no Gameweeks have started")
-#
-#     if len(response) == 0:
-#         raise Exception("No Active Events yet.... TODO")
-#
-#     return int(gw) + 1  # Adds one to previous gameweek
-
-
-# async def get_fixtures_for_gameweek(session, gameweek: int):
-#     """Returns the fixtures for the current gameweek.
-#
-#     :param aiohttp.ClientSession session: A logged-in user's session.
-#     :rtype: int
-#     """
-#     if not FPL.logged_in():
-#         raise Exception("User must be logged in.")
-#     try:
-#         response = await fetch(
-#             session, API_GW_FIXTURES.format(f=gameweek))
-#     except aiohttp.client_exceptions.ClientResponseError:
-#         raise Exception("User ID does not match provided email address!")
-#
-#     team_dict = await get_teams(session)
-#     fixtures = [x for x in response if x['event'] == gameweek]
-#     return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
 # async def transfer(self, players_out, players_in, max_hit=60,wildcard=False, free_hit=False):
 #     # Get team players + IDs, and FPL players + IDs.
