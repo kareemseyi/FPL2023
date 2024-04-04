@@ -24,18 +24,25 @@ async def test():
         # except Exception as err:
         #     pass
 
-        a = FullHistorical.getHistoricalPlayers()
-        a.sort(key=lambda x: x.points_per_Min(), reverse=True)
-        top_players = [x for x in a if x.roi_per_Min() > 0.2 and x.season == '']
-        print(len(a))
-        for i in a[0:10]:
+        # a = FullHistorical.getHistoricalPlayers()
+        # a.sort(key=lambda x: x.points_per_Min(), reverse=True)
+        # top_players = [x for x in a if x.roi_per_Min() > 0.2 and x.season == '']
+        # print(len(a))
+        # for i in a[0:10]:
+        #     print(vars(i))
+        #     print(i.roi_per_Min(), i.points_per_Min())
+
+        next_gw = await fpl.get_upcoming_gameweek()
+        print(next_gw)
+        # fixt_ = await fpl.get_all_fixtures(*range(next_gw, next_gw+3))
+        #
+        # for i in fixt_:
+        #     print(vars(i))
+
+        teams = await fpl.get_team(team_names=['Arsenal', 'Liverpool', 'Chelsea'])
+        for i in teams:
             print(vars(i))
-            print(i.roi_per_Min(), i.points_per_Min())
-
-        a_team = FPL.get
-
-
-        # print(my_team)
+        await fpl.pickTeam(next_gw, initial=False)
 
         # my_team_cleaned = [handler.get_player(players, x['element'])for x in my_team]
         # print(my_team_cleaned)
