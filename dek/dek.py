@@ -15,8 +15,7 @@ async def test():
         print("Logged in for GW")
         user = await fpl.get_user()
         print(user)
-        print('waiting')
-        players = await fpl.get_all_current_players()
+        # players = await fpl.get_all_current_players()
         current_top_players = []
 
 
@@ -28,20 +27,19 @@ async def test():
         # transfer_status = await fpl.transfer([235, 495, 360], [91, 339, 186]) # Order Matters here
         # print(transfer_status)
 
-        # a = FullHistorical.getHistoricalPlayers()
-        # a.sort(key=lambda x: x.points_per_Min(), reverse=True)
-        # mean_roi = statistics.mean([x.roi_per_Min() for x in a if x.season == '2023-24'])
-        # print(mean_roi)
-        # top_players = [x for x in a if x.roi_per_Min() > mean_roi and x.season == '2023-24']
-        # for i in top_players:
-        #     top_current_player = await fpl.get_current_player(player=i, convert_hist=True)
-        #     current_top_players.append(top_current_player)
+        a = FullHistorical.getHistoricalPlayers(n=2)
+        a.sort(key=lambda x: x.points_per_Min(), reverse=True)
+        mean_roi = statistics.mean([x.roi_per_Min() for x in a if x.season == '2023-24'])
+        print(mean_roi)
+        top_players = [x for x in a if x.roi_per_Min() > mean_roi and x.season == '2023-24']
+        for i in top_players:
+            top_current_player = await fpl.get_current_player(player=i, convert_hist=True)
+            current_top_players.append(top_current_player)
         #
         # print(len(current_top_players))
         #
         # for i in current_top_players[0:10]:
         #     print(i)
-
 
         winners = set()
         next_gw = await fpl.get_upcoming_gameweek()
