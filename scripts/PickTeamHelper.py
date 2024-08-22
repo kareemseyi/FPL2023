@@ -2,6 +2,7 @@
 import matplotlib.pyplot as plt
 # plt.style.use('seaborn-whitegrid')
 from matplotlib.pyplot import figure
+import csv
 
 
 import aiohttp
@@ -9,6 +10,7 @@ import sys
 import asyncio
 import requests
 from prettytable import PrettyTable
+import datetime
 
 url = "https://fantasy.premierleague.com/api/bootstrap-static/"
 json_general = requests.get(url).json()
@@ -27,6 +29,7 @@ teamid_list = [team["id"] for team in json_general["teams"]]
 roi_list = []
 teamid_list_g = []
 pos_list_g = []
+data_dict = []
 
 # star_players = ['Grealish', 'Watkins', 'Werner', 'Calvert-Lewin', 'Vardy', 'Bamford', 'Harrison', 'Mané', 'Salah',
 #                 'De Bruyne', 'Sterling', 'Borges Fernandes', 'Rashford', 'Wilson', 'Kane', 'Son', 'Pereira']
@@ -63,8 +66,10 @@ for baller in sorted_players:
     games_played = baller['starts']
     minutes = baller['minutes']
 
+
     teamname = get_team(baller['team'])
     roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):0000000.4}")
+    roi_per_gw = roi/games_played if games_played > 0 else 0
     roi_list.append(roi)  # add all ROIs for all players
     teamid_list_g.append(baller['team'])
 
@@ -78,11 +83,37 @@ for baller in sorted_players:
         pos = 'FWD'
     pos_list_g.append(pos)
 
+    diction = {
+        'name': baller['web_name'],
+        'price': f"£{baller['now_cost'] / 10}",
+        'team': teamname,
+        'goals': int(goals),
+        'assists': int(assists),
+        'goal_contributions': int(goal_contributions),
+        'games_played': int(games_played),
+        'minutes': int(minutes),
+        'total_points': int(baller['total_points']),
+        'points_per_game': float(baller['points_per_game']),
+        'roi': float(roi),
+        'roi_per_gw': float(roi_per_gw),
+        'position': pos
+    }
+
+    data_dict.append(diction)
+
+    keys = data_dict[0].keys()
+    with open('FPL_data.csv', 'w', newline='') as output_file:
+        dict_writer = csv.DictWriter(output_file, keys)
+        dict_writer.writeheader()
+        dict_writer.writerows(data_dict)
+
     players_table.add_row([baller['web_name'], f"£{baller['now_cost'] / 10}", games_played,
                            goals, assists, goal_contributions, baller['total_points'], baller['points_per_game']
                            , float(roi), pos, teamname, minutes])
 
-#
+
+
+
 players_table.reversesort = True
 # print(players_table.get_string(sortby='ROI'))
 print(players_table.get_string(sortby='ROI'))

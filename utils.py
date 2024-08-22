@@ -1,13 +1,26 @@
 from asyncio import exceptions
 from endpoints import endpoints
+from json import JSONDecodeError
 import requests
+import certifi
+import ssl
+import http
+from http import cookies
+
+headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
+           'accept-language': 'en'
+           }
+cookies = http.cookies.SimpleCookie()
+ssl_context = ssl.create_default_context(cafile=certifi.where())
+
+
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 
 async def fetch(session, url):
     while True:
         try:
-            async with session.get(url) as response:
+            async with session.get(url, headers=headers, ssl=ssl_context, cookies=cookies) as response:
                 assert response.status == 200
                 return await response.json(content_type=None)
         except Exception as e:
@@ -44,3 +57,35 @@ def get_teams():
     dynamic = requests.get(STATIC_BASE_URL).json()
     teamname_list = [team["name"] for team in dynamic["teams"]]
     return {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
+
+
+def get_headers(referer):
+    """Returns the headers needed for the transfer request."""
+    return {
+        "Content-Type": "application/json;charset=UTF-8",
+        "X-Requested-With": "XMLHttpRequest",
+        "Referer": referer
+    }
+
+
+async def post(session, url, payload, headers):
+    async with session.post(url, data=payload, headers=headers) as response:
+        return await response.json()
+
+
+async def post_transfer(session, url, payload, headers):
+    async with session.post(url, data=payload, headers=headers) as response:
+        if response.status == 200:
+            return
+        try:
+            result = await response.json(content_type=None)
+        except JSONDecodeError:
+            result = await response.text()
+            raise Exception(
+                f"Unknown error while requesting {response.url}. {response.status} - {result}"
+            )
+
+        if result.get("errorCode"):
+            message = result.get("error")
+
+            raise Exception(message if message else result)
