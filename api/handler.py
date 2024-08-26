@@ -5,7 +5,6 @@ from utils import fetch
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
-
 API_GET_PLAYER = endpoints['API']['GET_PLAYER']
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 

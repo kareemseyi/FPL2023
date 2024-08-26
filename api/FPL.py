@@ -3,12 +3,14 @@ import http
 import aiohttp
 import asyncio
 import os
+import warnings
 
 import utils
 import itertools
 from endpoints import endpoints
 from http import cookies
-from utils import fetch
+import json
+from utils import fetch, get_headers, post_transfer, post
 from dataModel.user import User
 from dataModel.player import Player
 from dataModel.fixture import Fixture
@@ -28,10 +30,17 @@ LOGIN_URL = endpoints["API"]["LOGIN"]
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
+API_MY_TEAM = endpoints['API']['MY_TEAM']
+API_USER_TEAM = endpoints['API']['USER_TEAM']
 API_ME = endpoints['API']['ME']
+API_TRANSFERS = endpoints['API']['TRANSFERS']
 
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 API_ALL_FIXTURES = endpoints['API']['ALL_FIXTURES']
+
+
+is_c = "is_captain"
+is_vc = "is_vice_captain"
 
 
 async def get_current_user(session):
@@ -54,17 +63,14 @@ class FPL:
             account.
         """
         if not email and not password:
-            email = os.getenv("FPL_EMAIL", '')
-            password = os.getenv("FPL_PASSWORD", '')
+            email = os.getenv("FPL_EMAIL", 'okareem@stellaralgo.com')
+            password = os.getenv("FPL_PASSWORD", '@Testing123')
         if not email or not password:
             raise ValueError("Email and password must be set")
         print(f"Logging in: {LOGIN_URL}")
         print(f"Logging in: {email}, {password}")
 
-        headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
-                   'accept-language': 'en'
-                   }
-        cookies = http.cookies.SimpleCookie()
+
         payload = {
             "login": email,
             "password": password,
@@ -72,7 +78,7 @@ class FPL:
             "redirect_uri": "https://fantasy.premierleague.com/a/login",
             "Set-Cookie": cookies
         }
-        async with self.session.post(LOGIN_URL, data=payload, headers=headers, cookies=cookies) as response:
+        async with self.session.post(LOGIN_URL, data=payload, headers=utils.headers, cookies=utils.cookies) as response:
             print(response)
             assert response.status == 200
             if "state=success" in str(response.url):
@@ -124,7 +130,7 @@ class FPL:
             return user
         return User(user, self.session)
 
-    async def get_users_team(self, user, gw):
+    async def get_users_team_for_gw(self, user, gw):
         """Returns a logged-in user's current team. Requires the user to have
         logged in using ``fpl.login()``.
 
@@ -139,6 +145,38 @@ class FPL:
         except Exception as e:
             raise Exception("Client has not set a team for gameweek " + str(gw))
         return response['picks']
+
+    async def get_users_players(self, user):
+        """Returns a logged-in user's current team. Requires the user to have
+        logged in using ``fpl.login()``.
+
+        :rtype: list
+        """
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        try:
+            response = await fetch(
+                self.session, API_USER_TEAM.format(f=user.entry))
+        except Exception as e:
+            raise Exception("Client has not set a team for gameweek ")
+        return response['picks']
+
+    async def get_users_team(self, user):
+        """Returns a logged-in user's current team. Requires the user to have
+        logged in using ``fpl.login()``.
+
+        :rtype: list
+        """
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        try:
+            response = await fetch(
+                self.session, API_MY_TEAM.format(f=user.entry))
+        except Exception as e:
+            raise Exception("Client has not set a team for gameweek ")
+        return response
 
     async def get_all_current_players(self, player_ids=None, return_json=False):
         """Returns either a list of *all* players, or a list of players whose
@@ -165,22 +203,17 @@ class FPL:
             raise Exception
         if player_ids:
             players = [player for player in players if player["id"] in player_ids]
-
             if not return_json:
                 return players
             else:
                 return [Player(player) for player in players]
-
         if not player_ids:
-            player_ids = [player["id"] for player in players]
+            tasks = [asyncio.ensure_future(
+                self.get_current_player(player=player))
+                for player in players]
+            players = await asyncio.gather(*tasks)
 
-        tasks = [asyncio.ensure_future(
-            self.get_current_player(
-                player_id, players, return_json))
-            for player_id in player_ids]
-        players = await asyncio.gather(*tasks)
-
-        return players
+            return players
 
     # async def get_current_players(self):
     #     dynamic = await fetch(self.session, STATIC_BASE_URL)
@@ -188,27 +221,37 @@ class FPL:
     #     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
     #     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
 
-    async def get_current_player(self, player_id, players=None, return_json=False):
+    async def get_current_player(self, player_id=None, player=None, return_json=False, convert_hist=False):
         """Returns the player with the given ``player_id``.
 
+        :param player:
+        :param return_json:
+        :param convert_hist:
         :param player_id: A player's ID.
         :type player_id: string or int
         :rtype: :class:`Player` or ``dict``
         :raises ValueError: Player with ``player_id`` not found
         """
-        if not players:
-            data = await fetch(self.session, STATIC_BASE_URL)
-            players = data['elements']
-
-        try:
-            player = next(player for player in players if player["id"] == player_id)
-            # print(player)
-        except StopIteration:
-            raise ValueError(f"Player with ID {player_id} not found")
-
-        if return_json:
+        data = await fetch(self.session, STATIC_BASE_URL)
+        players = data['elements']
+        if not player and player_id:
+            try:
+                player = next(player for player in players if player["id"] == player_id)
+                # print(player)
+            except StopIteration:
+                raise ValueError(f"Player with ID {player_id} not found")
+            if return_json:
+                return player
+        if player and convert_hist:
+            try:
+                player = next(x for x in players if
+                              (x["first_name"] == player.first_name and x["second_name"] == player.second_name)
+                              or x["web_name"] == player.first_name+' '+player.second_name)
+            except StopIteration:
+                warnings.warn(f"Player name {player.first_name} {player.second_name} not found, Might not be in the EPL"
+                              f"anymore Dawg")
+                pass
             return player
-        return Player(player)
 
     async def get_fixtures_for_next_GW(self, gameweek):
         assert gameweek > 0
@@ -243,8 +286,8 @@ class FPL:
             gw = max([x['event'] for x in response if x['finished'] is True])
             # This is the previous gameweek
         except Exception:
-            raise Exception("no Gameweeks have started")
-
+            Warning("Start of the season, gameweek 1")
+            return 1
         if len(response) == 0:
             raise Exception("No Active Events yet.... TODO")
 
@@ -302,4 +345,242 @@ class FPL:
         for i in player_pool:
             print(str(i), i.points_per_Min())
 
+    def _set_captain(lineup, captain, captain_type, player_ids):
+        """Sets the given captain's captain_type to True.
+
+        :param lineup: List of players.
+        :type lineup: list
+        :param captain: ID of the captain.
+        :type captain: int or str
+        :param captain_type: The captain type: 'is_captain' or 'is_vice_captain'.
+        :type captain_type: string
+        :param player_ids: List of the team's players' IDs.
+        :type player_ids: list
+        """
+        if captain and captain not in player_ids:
+            raise ValueError(
+                "Cannot (vice) captain player who isn't in user's team.")
+
+        current_captain = next(player for player in lineup if player[captain_type])
+        chosen_captain = next(player for player in lineup
+                              if player["element"] == captain)
+
+        # If the chosen captain is already a (vice) captain, then give his previous
+        # role to the current (vice) captain.
+        if chosen_captain[is_c] or chosen_captain[is_vc]:
+            current_captain[is_c], chosen_captain[is_c] = (
+                chosen_captain[is_c], current_captain[is_c])
+            current_captain[is_vc], chosen_captain[is_vc] = (
+                chosen_captain[is_vc], current_captain[is_vc])
+
+        for player in lineup:
+            player[captain_type] = False
+
+            if player["element"] == captain:
+                player[captain_type] = True
+
+    # async def get_transfers_status(self):
+    #     """Returns a logged in user's transfer status, which is a dictionary
+    #     containing their bank value, how many free transfers they have left
+    #     and so on. Requires the user to have logged in using ``fpl.login()``.
+    #
+    #     Information is taken from e.g.:
+    #         https://fantasy.premierleague.com/api/my-team/81629336/
+    #
+    #     :rtype: dict
+    #     """
+    #     if not FPL.logged_in(self):
+    #         raise Exception("User must be logged in.")
+    #
+    #     try:
+    #         user = await FPL.get_user(self)
+    #         print(user.id)
+    #         response = await fetch(self.session, API_MY_TEAM.format(f=user.id))
+    #     except aiohttp.client_exceptions.ClientResponseError:
+    #         raise Exception("User ID does not match provided email address!")
+    #
+    #     return response["transfers"]
+
+    async def _get_transfer_payload(
+            self, players_out, players_in, user_team, players, wildcard,
+            free_hit):
+
+        """Returns the payload needed to make the desired transfers."""
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        try:
+            user = await FPL.get_user(self)
+            print(vars(user))
+            users_team = await FPL.get_users_team(self, user)
+            event = 0
+            print(users_team)
+
+            event = users_team['current_event'] if users_team['current_event'] else 0
+            payload = {
+                "confirmed": False,
+                "entry": users_team['id'],
+                "event": event + 1,
+                "transfers": [],
+                "wildcard": wildcard,
+                "freehit": free_hit
+            }
+            print('payload: ', payload)
+
+            for player_out_id, player_in_id in zip(players_out, players_in):
+                player_out = next(player for player in user_team
+                                  if player["element"] == player_out_id)
+                player_in = next(player for player in players
+                                 if player["id"] == player_in_id)
+                payload["transfers"].append({
+                    "element_in": player_in["id"],
+                    "element_out": player_out["element"],
+                    "purchase_price": player_in["now_cost"],
+                    "selling_price": player_out["selling_price"]
+                })
+                print('payload: ', payload)
+            return payload
+        except aiohttp.client_exceptions.ClientResponseError:
+            raise Exception("User ID does not match provided email address!")
+
+    async def transfer(self, players_out, players_in, max_hit=60,
+                       wildcard=False, free_hit=False):
+        """Transfers given players out and transfers given players in.
+
+        :param players_out: List of IDs of players who will be transferred out.
+        :type players_out: list
+        :param players_in: List of IDs of players who will be transferred in.
+        :type players_in: list
+        :param max_hit: Maximum hit that should be taken by making the
+            transfer(s), defaults to 60
+        :param max_hit: int, optional
+        :param wildcard: Boolean for playing wildcard, defaults to False
+        :param wildcard: bool, optional
+        :param free_hit: Boolean for playing free hit, defaults to False
+        :param free_hit: bool, optional
+        :return: Returns the response given by a succesful transfer.
+        :rtype: dict
+        """
+
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        user = await FPL.get_user(self)
+
+        if wildcard and free_hit:
+            raise Exception("Can only use 1 of wildcard and free hit.")
+
+        if not FPL.logged_in(self):
+            raise Exception("User must be logged in.")
+
+        if not players_in:
+            raise Exception(
+                "Must at Least Transfer players In")
+
+        if len(players_out) != len(players_in):
+            raise Exception("Number of players transferred in must be same as "
+                            "number transferred out.")
+
+        if not set(players_in).isdisjoint(players_out):
+            raise Exception("Player ID can't be in both lists.")
+
+        user_players = await FPL.get_users_players(self, user)
+        print(user_players)
+        team_ids = [player["element"] for player in user_players]
+
+        if not set(team_ids).isdisjoint(players_in):
+            raise Exception(
+                "Cannot transfer a player in who is already in the user's team.")
+
+        if set(team_ids).isdisjoint(players_out):
+            raise Exception(
+                "Cannot transfer a player out who is not in the user's team.")
+
+        players = await FPL.get_all_current_players(self, return_json=True)
+
+        # fl = [player.web_name for player in players if player.id == 91]
+
+        player_ids = [player['id'] for player in players]
+
+        if set(player_ids).isdisjoint(players_in):
+            raise Exception("Player ID in `players_in` does not exist.")
+
+        # Send POST requests with `confirmed` set to False; this basically
+        # checks if there are any errors from FPL's side for this transfer,
+        # e.g. too many players from the same team, or not enough money.
+        print(players_out)
+        print(players_in)
+        print(user_players)
+        print(players)
+        payload = await self._get_transfer_payload(
+            players_out, players_in, user_players, players, wildcard, free_hit)
+        headers = utils.get_headers(
+            "https://fantasy.premierleague.com/a/squad/transfers")
+        post_response = await post_transfer(
+            self.session, endpoints['API']['TRANSFERS'].format(), json.dumps(payload), headers)
+
+        if post_response is None:
+            print("EUREKA BABY")
+            payload["confirmed"] = True
+            post_response = await post(
+                self.session, endpoints['API']['TRANSFERS'], json.dumps(payload), headers)
+            return post_response
+
+        if "non_form_errors" in post_response:
+            raise Exception(post_response["non_form_errors"])
+
+        if post_response["spent_points"] > max_hit:
+            raise Exception(
+                f"Point hit for transfer(s) [-{post_response['spent_points']}]"
+                f" exceeds max_hit [{max_hit}].")
+
+
+
+    # async def substitute(self, players_in, players_out, captain=None,
+    #                      vice_captain=None):
+    #     """Substitute players on the bench for players in the starting eleven.
+    #     Also allows the user to simultaneously set the new (vice) captain(s).
+    #     A maximum of 4 substitutes is set to force proper usage.
+    #
+    #     :param players_in: List of IDs of players who will be substituted in.
+    #     :type players_in: list
+    #     :param players_out: List of IDS of players who will be substituted out.
+    #     :type players_out: list
+    #     :param captain: ID of the captain, defaults to None.
+    #     :param captain: int, optional
+    #     :param vice_captain: ID of the vice captain, defaults to None.
+    #     :param vice_captain: int, optional
+    #     """
+    #     if not logged_in(self._session):
+    #         raise Exception("User must be logged in.")
+    #
+    #     if len(players_out) > 4 or len(players_in) > 4:
+    #         raise Exception("Can only substitute a maximum of 4 players.")
+    #
+    #     if len(players_out) != len(players_in):
+    #         raise Exception("Number of players substituted in must be same as "
+    #                         "number substituted out.")
+    #
+    #     if not set(players_in).isdisjoint(players_out):
+    #         raise Exception("Player ID can't be in both lists.")
+    #
+    #     user_team = await self.get_team()
+    #     team_ids = [player["element"] for player in user_team]
+    #     substitution_ids = players_out + players_in
+    #
+    #     if not set(substitution_ids).issubset(team_ids):
+    #         raise Exception(
+    #             "Cannot substitute players who aren't in the user's team.")
+    #
+    #     # Set new captain or vice captain if applicable
+    #     if captain:
+    #         _set_captain(user_team, captain, is_c, team_ids)
+    #
+    #     if vice_captain:
+    #         _set_captain(user_team, vice_captain, is_vc, team_ids)
+    #
+    #     lineup = await self._create_new_lineup(
+    #         players_in, players_out, user_team)
+    #
+    #     await self._post_substitutions(lineup)
 

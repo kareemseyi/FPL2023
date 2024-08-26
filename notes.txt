@@ -76,3 +76,45 @@ FIRST TIME
     -- Changed that to 500 minutes
     -- ROI_per_MIN prioritizes LOW Minutes, players that perform well do not have high ROI's
     -- Might use ROI_per_MIN for specific scenarios?
+
+Machine Learning....
+
+A gameweek has a set of fixtures eg
+    -- Man Utd vs Chelsea
+    -- Arsenal vs Man City
+    --
+
+What am I trying to Predict????
+ - For a Given Gameweek, looking at the players and fixtures for that gameweek... I want pick the team will maximize
+ my ROI(points/player)
+
+ - I am unable to get historical fixture data...
+ - Should I get THIS Seasons Data and then
+
+ Form_Points_Differential(FPD)
+ When two teams are playing each other, the FPD for that fixture for a particular gameweek is:
+ - The difference between the points of the home team - points of the away team in the last x games
+    - The FPD is just my numerical interpretation of a fixture value for machine learning purposes
+    (x is typically 3 but tests will be done with x=4, x=5)
+        - Just like points in the English premier league, if a team has a strong form of WWW in its last three games
+        is are going up against a team whose form is WLW. The FPD is 9-6 = 3
+
+
+Function to pick players
+    -- Top performing players
+    -- ROI List
+    --
+
+
+get_teams Needs to be updated for historical teams too (historical = true) and seasonyear provided as args
+
+x-values = Direct Goal Contributions, Points Per Game, Total points, Team FDR, ROI
+
+TODO
+-- Identify underperforming players
+
+-- How often should this run
+    -- before every gameweek
+        -- every Thursday at 8pm
+
+- Get the

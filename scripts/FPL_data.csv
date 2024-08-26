@@ -1,0 +1,628 @@
+name,price,team,goals,assists,goal_contributions,games_played,minutes,total_points,points_per_game,roi,roi_per_gw,position
+Fábio Vieira,£5.4,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,MID
+G.Jesus,£6.9,Arsenal,0,0,0,0,5,0,0.0,0.0,0.0,FWD
+Gabriel,£6.0,Arsenal,0,0,0,2,180,11,5.5,1.833,0.9165,DEF
+Havertz,£8.1,Arsenal,1,1,2,2,180,14,7.0,1.728,0.864,FWD
+Hein,£4.0,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,GK
+J.Timber,£5.5,Arsenal,0,0,0,1,100,7,3.5,1.273,1.273,DEF
+Jorginho,£5.0,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Kiwior,£4.9,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Martinelli,£7.0,Arsenal,0,0,0,2,154,6,3.0,0.8571,0.42855,MID
+Nelson,£5.0,Arsenal,0,0,0,0,2,1,1.0,0.2,0.0,MID
+Nketiah,£5.9,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Nwaneri,£4.5,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Ødegaard,£8.5,Arsenal,0,0,0,2,180,5,2.5,0.5882,0.2941,MID
+Ramsdale,£4.5,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Raya,£5.5,Arsenal,0,0,0,2,180,17,8.5,3.091,1.5455,GK
+Rice,£6.5,Arsenal,0,0,0,2,174,5,2.5,0.7692,0.3846,MID
+Saka,£10.0,Arsenal,1,2,3,2,166,18,9.0,1.8,0.9,MID
+Saliba,£6.0,Arsenal,0,0,0,2,180,12,6.0,2.0,1.0,DEF
+Thomas,£5.0,Arsenal,1,0,1,2,180,14,7.0,2.8,1.4,MID
+Tierney,£4.5,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Tomiyasu,£4.9,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Trossard,£6.9,Arsenal,1,0,1,0,35,8,4.0,1.159,0.0,MID
+White,£6.5,Arsenal,0,0,0,2,180,12,6.0,1.846,0.923,DEF
+Zinchenko,£5.0,Arsenal,0,0,0,1,68,6,6.0,1.2,1.2,DEF
+Calafiori,£5.9,Arsenal,0,0,0,0,11,1,1.0,0.1695,0.0,DEF
+Lewis-Skelly,£4.5,Arsenal,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Bailey,£6.5,Aston Villa,0,0,0,2,163,3,1.5,0.4615,0.23075,MID
+Barkley,£5.4,Aston Villa,0,0,0,0,14,1,1.0,0.1852,0.0,MID
+Barrenechea,£5.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Buendia,£5.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Cash,£4.5,Aston Villa,0,0,0,2,96,3,1.5,0.6667,0.33335,DEF
+Dendoncker,£4.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Diaby,£6.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Diego Carlos,£4.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Digne,£4.5,Aston Villa,0,0,0,2,148,4,2.0,0.8889,0.44445,DEF
+Dobbin,£5.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Duran,£6.0,Aston Villa,1,0,1,0,53,7,3.5,1.167,0.0,FWD
+Gauci,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Hause,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Iling Jr,£5.4,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Kamara,£5.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Kesler-Hayden,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Konsa,£4.5,Aston Villa,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Maatsen,£5.0,Aston Villa,0,0,0,0,30,2,1.0,0.4,0.0,DEF
+Marschall,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Martinez,£5.0,Aston Villa,0,0,0,2,180,4,2.0,0.8,0.4,GK
+McGinn,£5.5,Aston Villa,0,0,0,2,125,5,2.5,0.9091,0.45455,MID
+Mings,£4.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Nedeljkovic,£4.0,Aston Villa,0,0,0,0,82,2,1.0,0.5,0.0,DEF
+Olsen,£4.5,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Pau,£4.5,Aston Villa,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Ramsey,£5.5,Aston Villa,0,1,1,0,53,5,2.5,0.9091,0.0,MID
+Rogers,£5.0,Aston Villa,0,0,0,2,180,4,2.0,0.8,0.4,MID
+Sinisalo,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Sousa,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Tielemans,£5.5,Aston Villa,0,1,1,2,180,9,4.5,1.636,0.818,MID
+Watkins,£9.0,Aston Villa,0,0,0,2,125,4,2.0,0.4444,0.2222,FWD
+Onana,£5.0,Aston Villa,1,0,1,2,165,11,5.5,2.2,1.1,MID
+Jaden,£5.5,Aston Villa,0,0,0,0,16,0,0.0,0.0,0.0,MID
+Bogarde,£4.0,Aston Villa,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Aarons,£4.5,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Adams,£5.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Anthony,£4.5,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Brooks,£5.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Christie,£5.0,Bournemouth,0,0,0,1,90,3,1.5,0.6,0.6,MID
+Cook,£5.0,Bournemouth,0,0,0,2,173,3,1.5,0.6,0.3,MID
+Enes Ünal,£5.4,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Faivre,£5.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,MID
+H.Traorè,£4.5,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Hill,£4.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Jebbison,£4.5,Bournemouth,0,0,0,0,26,2,1.0,0.4444,0.0,FWD
+Kerkez,£4.5,Bournemouth,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Kluivert,£5.4,Bournemouth,0,0,0,1,97,3,1.5,0.5556,0.5556,MID
+Mepham,£4.5,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Neto,£4.5,Bournemouth,0,0,0,2,180,7,3.5,1.556,0.778,GK
+O.Dango,£5.0,Bournemouth,0,0,0,1,86,3,1.5,0.6,0.6,MID
+Paulsen,£4.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Philip,£5.0,Bournemouth,0,0,0,0,6,1,1.0,0.2,0.0,MID
+Scott,£5.0,Bournemouth,0,0,0,1,88,3,1.5,0.6,0.6,MID
+Semenyo,£5.5,Bournemouth,1,1,2,2,180,13,6.5,2.364,1.182,MID
+Senesi,£4.9,Bournemouth,0,0,0,1,90,1,1.0,0.2041,0.2041,DEF
+Sinisterra,£5.0,Bournemouth,0,0,0,1,81,3,1.5,0.6,0.6,MID
+Smith,£4.5,Bournemouth,0,0,0,1,66,3,1.5,0.6667,0.6667,DEF
+Tavernier,£5.5,Bournemouth,1,0,1,2,174,9,4.5,1.636,0.818,MID
+Travers,£4.5,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Zabarnyi,£4.5,Bournemouth,0,0,0,2,180,4,2.0,0.8889,0.44445,DEF
+Huijsen,£4.5,Bournemouth,0,0,0,1,90,2,2.0,0.4444,0.4444,DEF
+J.Araujo,£4.5,Bournemouth,0,0,0,1,112,3,1.5,0.6667,0.6667,DEF
+Dennis,£4.0,Bournemouth,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Evanilson,£6.0,Bournemouth,0,0,0,1,71,2,2.0,0.3333,0.3333,FWD
+Ajer,£4.5,Brentford,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Brierley,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Collins,£4.5,Brentford,0,1,1,2,180,7,3.5,1.556,0.778,DEF
+Damsgaard,£5.0,Brentford,0,0,0,0,40,2,1.0,0.4,0.0,MID
+Dasilva,£5.0,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Flekken,£4.5,Brentford,0,0,0,2,180,7,3.5,1.556,0.778,GK
+Henry,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Hickey,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Janelt,£5.0,Brentford,0,0,0,2,145,4,2.0,0.8,0.4,MID
+Jensen,£5.5,Brentford,0,0,0,2,148,3,1.5,0.5455,0.27275,MID
+Ji-soo,£4.0,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Konak,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Lewis-Potter,£5.0,Brentford,0,0,0,1,81,3,1.5,0.6,0.6,MID
+Mbeumo,£7.0,Brentford,1,0,1,2,179,10,5.0,1.429,0.7145,MID
+Mee,£4.5,Brentford,0,0,0,0,1,1,1.0,0.2222,0.0,DEF
+Nørgaard,£5.0,Brentford,0,0,0,2,180,3,1.5,0.6,0.3,MID
+Onyeka,£5.0,Brentford,0,0,0,0,23,2,1.0,0.4,0.0,MID
+Peart-Harris,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Pinnock,£4.5,Brentford,0,0,0,2,180,1,0.5,0.2222,0.1111,DEF
+Roerslev,£4.5,Brentford,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Schade,£5.5,Brentford,0,0,0,1,90,3,1.5,0.5455,0.5455,MID
+Thiago,£6.0,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Toney,£7.4,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Valdimarsson,£4.0,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Wissa,£6.0,Brentford,1,1,2,2,155,13,6.5,2.167,1.0835,FWD
+Yarmoliuk,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Zanka,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Carvalho,£5.0,Brentford,0,0,0,0,30,2,1.0,0.4,0.0,MID
+Van den Berg,£4.0,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Trevitt,£4.5,Brentford,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Adingra,£5.5,Brighton,1,1,2,0,46,10,5.0,1.818,0.0,MID
+Baker-Boaitey,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Baleba,£5.0,Brighton,0,0,0,0,17,1,1.0,0.2,0.0,MID
+Barco,£4.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Cozier-Duberry,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Dahoud,£5.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Dunk,£4.5,Brighton,0,0,0,2,165,8,4.0,1.778,0.889,DEF
+Enciso,£5.4,Brighton,0,0,0,0,11,1,1.0,0.1852,0.0,MID
+Estupiñan,£5.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Ferguson,£5.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Gilmour,£5.0,Brighton,0,0,0,1,97,3,1.5,0.6,0.6,MID
+Gross,£6.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Hinshelwood,£5.0,Brighton,0,0,0,2,180,5,2.5,1.0,0.5,MID
+I.Osman,£5.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Igor,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+João Pedro,£5.5,Brighton,1,0,1,2,171,10,5.0,1.818,0.909,FWD
+Kozlowski,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Lamptey,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+March,£6.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Mazilu,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Milner,£5.0,Brighton,0,0,0,2,153,4,2.0,0.8,0.4,MID
+Minteh,£5.5,Brighton,0,1,1,2,134,6,3.0,1.091,0.5455,MID
+Mitoma,£6.6,Brighton,1,1,2,2,177,13,6.5,1.97,0.985,MID
+Moder,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+O’Mahony,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Offiah,£4.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Peupion,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Sarmiento,£5.0,Brighton,0,0,0,0,8,1,1.0,0.2,0.0,MID
+Steele,£4.5,Brighton,0,0,0,2,180,9,4.5,2.0,1.0,GK
+Undav,£5.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Van Hecke,£4.5,Brighton,0,0,0,2,180,7,3.5,1.556,0.778,DEF
+Veltman,£4.5,Brighton,0,0,0,2,180,10,5.0,2.222,1.111,DEF
+Verbruggen,£4.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Webster,£4.5,Brighton,0,0,0,0,14,1,1.0,0.2222,0.0,DEF
+Welbeck,£5.6,Brighton,2,1,3,2,168,21,10.5,3.75,1.875,FWD
+Wieffer,£5.0,Brighton,0,1,1,1,90,6,6.0,1.2,1.2,MID
+Gruda,£5.5,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Ayari,£5.0,Brighton,0,0,0,0,2,2,1.0,0.4,0.0,MID
+Moran,£5.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Rushworth,£4.0,Brighton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Georginio,£5.5,Brighton,0,0,0,0,1,1,1.0,0.1818,0.0,MID
+Andrey Santos,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Ângelo,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Arrizabalaga,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,GK
+B.Badiashile,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Bergström,£4.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Bettinelli,£4.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Broja,£5.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Caicedo,£5.0,Chelsea,0,0,0,2,165,3,1.5,0.6,0.3,MID
+Casadei,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Chalobah,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Chilwell,£4.9,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Chukwuemeka,£5.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Colwill,£4.5,Chelsea,0,0,0,2,180,2,1.0,0.4444,0.2222,DEF
+Cucurella,£5.0,Chelsea,0,0,0,2,161,2,1.0,0.4,0.2,DEF
+D.D.Fofana,£5.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Deivid,£5.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Dewsbury-Hall,£6.0,Chelsea,0,0,0,0,38,2,1.0,0.3333,0.0,MID
+Disasi,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Enzo,£5.0,Chelsea,0,0,0,2,180,4,2.0,0.8,0.4,MID
+Gallagher,£5.9,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Gilchrist,£4.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Gusto,£5.0,Chelsea,0,0,0,2,180,1,0.5,0.2,0.1,DEF
+James,£5.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Kellyman,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Lavia,£4.5,Chelsea,0,0,0,1,65,2,2.0,0.4444,0.4444,MID
+Lukaku,£6.4,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+M.Sarr,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Madueke,£6.4,Chelsea,3,0,3,1,90,17,17.0,2.656,2.656,MID
+Marc Guiu,£5.0,Chelsea,0,0,0,0,24,1,1.0,0.2,0.0,FWD
+Mudryk,£6.5,Chelsea,0,0,0,1,45,1,1.0,0.1538,0.1538,MID
+N.Jackson,£7.5,Chelsea,1,1,2,2,132,11,5.5,1.467,0.7335,FWD
+Nkunku,£6.5,Chelsea,0,0,0,1,64,2,1.0,0.3077,0.3077,MID
+Palmer,£10.5,Chelsea,1,3,4,2,172,17,8.5,1.619,0.8095,MID
+Petrović,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Renato Veiga,£4.5,Chelsea,0,0,0,0,17,2,1.0,0.4444,0.0,MID
+Sánchez,£4.5,Chelsea,0,0,0,2,180,3,1.5,0.6667,0.33335,GK
+Sterling,£6.9,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Tosin,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+W.Fofana,£4.5,Chelsea,0,0,0,2,180,2,1.0,0.4444,0.2222,DEF
+Neto,£6.5,Chelsea,0,1,1,0,77,5,2.5,0.7692,0.0,MID
+Wiley,£4.0,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Jørgensen,£4.5,Chelsea,0,0,0,0,0,0,0.0,0.0,0.0,GK
+João Félix,£6.5,Chelsea,1,0,1,0,22,6,6.0,0.9231,0.0,MID
+Ahamada,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,MID
+C.Doucouré,£5.0,Crystal Palace,0,0,0,0,6,1,1.0,0.2,0.0,MID
+C.Richards,£4.5,Crystal Palace,0,0,0,2,164,1,0.5,0.2222,0.1111,DEF
+Chadi Riad,£4.5,Crystal Palace,0,0,0,1,90,1,1.0,0.2222,0.2222,DEF
+Clyne,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Ebiowei,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Edouard,£5.5,Crystal Palace,0,0,0,1,115,3,1.5,0.5455,0.5455,FWD
+Eze,£7.0,Crystal Palace,0,0,0,2,180,4,2.0,0.5714,0.2857,MID
+Guéhi,£4.5,Crystal Palace,0,0,0,2,180,1,0.5,0.2222,0.1111,DEF
+Henderson,£4.5,Crystal Palace,0,0,0,2,180,3,1.5,0.6667,0.33335,GK
+Holding,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Hughes,£5.0,Crystal Palace,0,0,0,1,83,2,2.0,0.4,0.4,MID
+Johnstone,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Kamada,£5.5,Crystal Palace,0,0,0,1,96,2,1.0,0.3636,0.3636,MID
+Lerma,£5.0,Crystal Palace,0,0,0,1,78,3,1.5,0.6,0.6,MID
+Mateta,£7.5,Crystal Palace,0,0,0,2,135,3,1.5,0.4,0.2,FWD
+M.França,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Matthews,£4.0,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Mitchell,£5.0,Crystal Palace,0,0,0,2,180,2,1.0,0.4,0.2,DEF
+Muñoz,£5.0,Crystal Palace,0,1,1,2,180,5,2.5,1.0,0.5,DEF
+Ozoh,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Rak-Sakyi,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Schlupp,£4.9,Crystal Palace,0,0,0,0,8,1,1.0,0.2041,0.0,MID
+Ward,£4.5,Crystal Palace,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Wharton,£5.0,Crystal Palace,0,0,0,2,163,4,2.0,0.8,0.4,MID
+I.Sarr,£6.0,Crystal Palace,0,0,0,0,25,2,1.0,0.3333,0.0,MID
+A.Doucoure,£5.5,Everton,0,0,0,2,118,3,1.5,0.5455,0.27275,MID
+Beto,£5.0,Everton,0,0,0,0,32,2,1.0,0.4,0.0,FWD
+Branthwaite,£4.9,Everton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Calvert-Lewin,£5.9,Everton,0,0,0,2,146,4,2.0,0.678,0.339,FWD
+Coleman,£4.5,Everton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Gana,£5.0,Everton,0,0,0,2,180,4,2.0,0.8,0.4,MID
+Garner,£5.0,Everton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Harrison,£5.5,Everton,0,0,0,2,140,3,1.5,0.5455,0.27275,MID
+Holgate,£4.0,Everton,0,0,0,0,5,1,1.0,0.25,0.0,DEF
+Iroegbunam,£4.5,Everton,0,0,0,2,180,4,2.0,0.8889,0.44445,MID
+J.Virginia,£4.0,Everton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Keane,£4.0,Everton,0,0,0,2,180,1,0.5,0.25,0.125,DEF
+Maupay,£5.0,Everton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+McNeil,£5.5,Everton,0,0,0,2,180,4,2.0,0.7273,0.36365,MID
+Mykolenko,£4.5,Everton,0,0,0,2,180,1,0.5,0.2222,0.1111,DEF
+Ndiaye,£5.5,Everton,0,0,0,0,60,2,1.0,0.3636,0.0,FWD
+Patterson,£4.5,Everton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Pickford,£5.0,Everton,0,0,0,2,180,2,1.0,0.4,0.2,GK
+Tarkowski,£4.9,Everton,0,0,0,2,180,0,0.0,0.0,0.0,DEF
+Y. Chermiti,£5.0,Everton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Young,£4.5,Everton,0,0,0,1,65,-2,-2.0,-0.4444,-0.4444,DEF
+Lindstrøm,£5.4,Everton,0,0,0,0,33,1,1.0,0.1852,0.0,MID
+O'Brien,£4.9,Everton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Armstrong,£4.5,Everton,0,0,0,0,1,1,1.0,0.2222,0.0,MID
+Metcalfe,£4.5,Everton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Begovic,£4.0,Everton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Dixon,£4.0,Everton,0,0,0,1,90,0,0.0,0.0,0.0,DEF
+Smith Rowe,£5.5,Fulham,1,0,1,2,131,13,6.5,2.364,1.182,MID
+Andersen,£4.5,Fulham,0,0,0,1,90,0,0.0,0.0,0.0,DEF
+Adama,£5.0,Fulham,0,1,1,2,145,8,4.0,1.6,0.8,MID
+Andreas,£5.5,Fulham,0,0,0,2,175,3,1.5,0.5455,0.27275,MID
+Bassey,£4.5,Fulham,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Benda,£4.0,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Cairney,£5.0,Fulham,0,0,0,0,47,0,0.0,0.0,0.0,MID
+Castagne,£4.4,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Diop,£4.5,Fulham,0,0,0,2,180,4,2.0,0.8889,0.44445,DEF
+Harris,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Iwobi,£5.5,Fulham,1,0,1,2,180,11,5.5,2.0,1.0,MID
+Leno,£5.0,Fulham,0,0,0,2,180,6,3.0,1.2,0.6,GK
+Lukić,£5.0,Fulham,0,0,0,2,180,4,2.0,0.8,0.4,MID
+Mbabu,£4.0,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Muniz,£6.1,Fulham,0,0,0,2,156,4,2.0,0.6557,0.32785,FWD
+Raúl,£5.5,Fulham,0,0,0,0,22,2,1.0,0.3636,0.0,FWD
+Ream,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Reed,£5.0,Fulham,0,0,0,0,5,2,1.0,0.4,0.0,MID
+Robinson,£4.5,Fulham,0,1,1,2,180,8,4.0,1.778,0.889,DEF
+Stansfield,£5.0,Fulham,0,0,0,0,1,1,1.0,0.2,0.0,FWD
+Tete,£4.5,Fulham,0,0,0,2,180,4,2.0,0.8889,0.44445,DEF
+Vinicius,£5.0,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Wilson,£5.5,Fulham,0,0,0,0,33,1,0.5,0.1818,0.0,MID
+Sessegnon,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+J.Cuenca,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+King,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Godo,£4.5,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Berge,£5.0,Fulham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Al-Hamadi,£5.0,Ipswich,0,0,0,0,23,1,0.5,0.2,0.0,FWD
+Baggott,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Broadhead,£5.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Burgess,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Burns,£5.0,Ipswich,0,0,0,1,56,0,0.0,0.0,0.0,MID
+Chaplin,£5.5,Ipswich,0,0,0,1,65,3,1.5,0.5455,0.5455,MID
+Clarke,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Davis,£4.5,Ipswich,0,0,0,2,180,1,0.5,0.2222,0.1111,DEF
+Delap,£5.5,Ipswich,0,0,0,2,155,4,2.0,0.7273,0.36365,FWD
+Edmundson,£4.0,Ipswich,0,0,0,0,1,1,1.0,0.25,0.0,DEF
+Greaves,£4.0,Ipswich,0,0,0,2,180,1,0.5,0.25,0.125,DEF
+Harness,£5.0,Ipswich,0,0,0,0,43,2,1.0,0.4,0.0,MID
+Hirst,£5.5,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Humphreys,£4.5,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Hutchinson,£5.5,Ipswich,0,0,0,2,178,3,1.5,0.5455,0.27275,MID
+Johnson,£4.0,Ipswich,0,1,1,1,123,3,1.5,0.75,0.75,DEF
+Ladapo,£4.5,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Luongo,£4.5,Ipswich,0,0,0,2,135,4,2.0,0.8889,0.44445,MID
+Morsy,£5.0,Ipswich,0,0,0,2,180,3,1.5,0.6,0.3,MID
+Ndaba,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Slicker,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Taylor,£5.0,Ipswich,0,0,0,0,43,2,1.0,0.4,0.0,MID
+Tuanzebe,£4.0,Ipswich,0,0,0,2,161,1,0.5,0.25,0.125,DEF
+Walton,£4.5,Ipswich,0,0,0,1,90,2,2.0,0.4444,0.4444,GK
+Woolfenden,£4.0,Ipswich,0,0,0,2,180,0,0.0,0.0,0.0,DEF
+Phillips,£5.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Muric,£4.5,Ipswich,0,0,0,1,90,0,0.0,0.0,0.0,GK
+Townsend,£4.0,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Szmodics,£6.0,Ipswich,1,0,1,1,87,7,3.5,1.167,1.167,MID
+Cajuste,£4.5,Ipswich,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Buonanotte,£5.0,Leicester,0,1,1,2,148,7,3.5,1.4,0.7,MID
+J.Ayew,£5.4,Leicester,0,0,0,0,47,1,0.5,0.1852,0.0,MID
+B.Soumaré,£4.5,Leicester,0,0,0,0,11,1,1.0,0.2222,0.0,MID
+Cannon,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Choudhury,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Coady,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Daka,£5.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+De Cordova-Reid,£5.5,Leicester,0,0,0,2,147,4,2.0,0.7273,0.36365,MID
+Faes,£4.0,Leicester,1,0,1,2,180,8,4.0,2.0,1.0,DEF
+Golding,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Hermansen,£4.5,Leicester,0,0,0,2,180,5,2.5,1.111,0.5555,GK
+Iversen,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Justin,£4.5,Leicester,0,0,0,2,180,3,1.5,0.6667,0.33335,DEF
+Kristiansen,£4.5,Leicester,0,0,0,2,174,2,1.0,0.4444,0.2222,DEF
+Marcal,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Mavididi,£5.4,Leicester,0,0,0,0,30,2,1.0,0.3704,0.0,MID
+McAteer,£5.0,Leicester,0,0,0,0,9,2,1.0,0.4,0.0,MID
+Ndidi,£5.0,Leicester,0,0,0,2,180,4,2.0,0.8,0.4,MID
+Okoli,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Ricardo,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Souttar,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Stolarczyk,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Thomas,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Vardy,£5.6,Leicester,1,0,1,2,148,10,5.0,1.786,0.893,FWD
+Vestergaard,£4.0,Leicester,0,0,0,2,180,2,1.0,0.5,0.25,DEF
+Ward,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Winks,£4.5,Leicester,0,0,0,2,180,4,2.0,0.8889,0.44445,MID
+Skipp,£5.0,Leicester,0,0,0,0,19,1,1.0,0.2,0.0,MID
+A.Fatawu,£5.5,Leicester,0,1,1,2,180,10,5.0,1.818,0.909,MID
+Alves,£4.5,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Nelson,£4.0,Leicester,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+A.Becker,£5.5,Liverpool,0,0,0,2,180,13,6.5,2.364,1.182,GK
+Alexander-Arnold,£7.0,Liverpool,0,0,0,2,147,14,7.0,2.0,1.0,DEF
+Bajcetic,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Bradley,£5.0,Liverpool,0,0,0,0,31,2,1.0,0.4,0.0,DEF
+Clark,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Darwin,£7.4,Liverpool,0,0,0,0,18,1,1.0,0.1351,0.0,FWD
+Diogo J.,£7.6,Liverpool,1,1,2,2,149,14,7.0,1.842,0.921,MID
+Doak,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Elliott,£5.4,Liverpool,0,0,0,0,7,1,1.0,0.1852,0.0,MID
+Endo,£4.9,Liverpool,0,0,0,0,1,1,1.0,0.2041,0.0,MID
+Gakpo,£7.4,Liverpool,0,0,0,0,29,1,0.5,0.1351,0.0,FWD
+Gomez,£4.9,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Gravenberch,£5.0,Liverpool,0,0,0,2,180,5,2.5,1.0,0.5,MID
+Jones,£5.4,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Kelleher,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Konaté,£5.0,Liverpool,0,0,0,1,135,7,3.5,1.4,1.4,DEF
+Luis Díaz,£7.5,Liverpool,1,1,2,2,161,14,7.0,1.867,0.9335,MID
+M.Salah,£12.5,Liverpool,2,1,3,2,172,22,11.0,1.76,0.88,MID
+Mac Allister,£6.5,Liverpool,0,0,0,2,180,6,3.0,0.9231,0.46155,MID
+McConnell,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Morton,£4.5,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,MID
+N.Phillips,£4.0,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Quansah,£4.4,Liverpool,0,0,0,1,45,1,1.0,0.2273,0.2273,DEF
+R.Williams,£4.0,Liverpool,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Robertson,£6.0,Liverpool,0,0,0,2,168,12,6.0,2.0,1.0,DEF
+Szoboszlai,£6.5,Liverpool,0,1,1,2,180,9,4.5,1.385,0.6925,MID
+Tsimikas,£4.9,Liverpool,0,0,0,0,11,1,1.0,0.2041,0.0,DEF
+Virgil,£6.0,Liverpool,0,0,0,2,180,12,6.0,2.0,1.0,DEF
+Akanji,£5.5,Man City,0,0,0,2,180,8,4.0,1.455,0.7275,DEF
+Aké,£5.5,Man City,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Bernardo,£6.6,Man City,0,1,1,2,180,8,4.0,1.212,0.606,MID
+Bobb,£4.9,Man City,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Carson,£4.0,Man City,0,0,0,0,0,0,0.0,0.0,0.0,GK
+De Bruyne,£9.5,Man City,1,1,2,2,179,15,7.5,1.579,0.7895,MID
+Doku,£6.5,Man City,0,0,0,2,160,5,2.5,0.7692,0.3846,MID
+Ederson M.,£5.5,Man City,0,0,0,2,180,10,5.0,1.818,0.909,GK
+Foden,£9.5,Man City,0,0,0,0,45,1,1.0,0.1053,0.0,MID
+Grealish,£6.5,Man City,0,0,0,0,19,0,0.0,0.0,0.0,MID
+Gvardiol,£6.0,Man City,0,0,0,2,180,9,4.5,1.5,0.75,DEF
+Haaland,£15.1,Man City,4,0,4,2,179,24,12.0,1.589,0.7945,FWD
+J.Alvarez,£7.0,Man City,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+João Cancelo,£5.4,Man City,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Kovačić,£5.5,Man City,1,0,1,2,139,12,6.0,2.182,1.091,MID
+Lewis,£4.5,Man City,0,0,0,2,180,8,4.0,1.778,0.889,DEF
+Matheus N.,£5.0,Man City,0,0,0,0,1,1,1.0,0.2,0.0,MID
+McAtee,£4.9,Man City,0,0,0,0,1,1,1.0,0.2041,0.0,MID
+Ortega Moreno,£5.5,Man City,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Rodrigo,£6.4,Man City,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Rúben,£5.5,Man City,0,0,0,2,180,7,3.5,1.273,0.6365,DEF
+Stones,£5.5,Man City,0,0,0,0,40,1,1.0,0.1818,0.0,DEF
+Walker,£5.5,Man City,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Sávio,£6.5,Man City,0,2,2,2,115,10,5.0,1.538,0.769,MID
+O’Reilly,£5.0,Man City,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Gündogan,£6.5,Man City,0,0,0,0,19,1,1.0,0.1538,0.0,MID
+Kaboré,£4.5,Man City,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Amad,£5.0,Man Utd,1,0,1,2,149,9,4.5,1.8,0.9,MID
+Antony,£5.9,Man Utd,0,0,0,0,1,1,1.0,0.1695,0.0,MID
+B.Fernandes,£8.5,Man Utd,0,0,0,2,168,5,2.5,0.5882,0.2941,MID
+Bayindir,£4.5,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Casemiro,£5.0,Man Utd,0,0,0,2,180,5,2.5,1.0,0.5,MID
+Dalot,£5.0,Man Utd,0,0,0,2,180,9,4.5,1.8,0.9,DEF
+Eriksen,£5.4,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Evans,£4.5,Man Utd,0,0,0,0,9,1,1.0,0.2222,0.0,DEF
+Garnacho,£6.5,Man Utd,0,1,1,0,54,5,2.5,0.7692,0.0,MID
+Hannibal,£4.5,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Heaton,£4.0,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Højlund,£6.9,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Lindelof,£4.5,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Maguire,£5.0,Man Utd,0,0,0,2,158,7,3.5,1.4,0.7,DEF
+Mainoo,£5.5,Man Utd,0,0,0,2,173,4,2.0,0.7273,0.36365,MID
+Malacia,£4.5,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Martinez,£4.5,Man Utd,0,0,0,2,180,8,4.0,1.778,0.889,DEF
+McTominay,£5.0,Man Utd,0,0,0,0,17,2,1.0,0.4,0.0,MID
+Mount,£6.5,Man Utd,0,0,0,2,105,3,1.5,0.4615,0.23075,MID
+Onana,£5.0,Man Utd,0,0,0,2,180,7,3.5,1.4,0.7,GK
+Pellistri,£5.0,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Rashford,£7.0,Man Utd,0,0,0,2,154,5,2.5,0.7143,0.35715,MID
+Sancho,£6.4,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Shaw,£4.9,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Zirkzee,£7.1,Man Utd,1,0,1,0,74,9,4.5,1.268,0.0,FWD
+Yoro,£4.4,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+De Ligt,£5.0,Man Utd,0,0,0,0,20,2,1.0,0.4,0.0,DEF
+Mazraoui,£4.5,Man Utd,0,1,1,2,170,12,6.0,2.667,1.3335,DEF
+Collyer,£4.5,Man Utd,0,0,0,0,0,0,0.0,0.0,0.0,MID
+A.Murphy,£4.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Almirón,£5.9,Newcastle,0,0,0,0,1,1,1.0,0.1695,0.0,MID
+Barnes,£6.4,Newcastle,0,1,1,0,52,5,2.5,0.7812,0.0,MID
+Botman,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Bruno G.,£6.5,Newcastle,0,0,0,2,180,5,2.5,0.7692,0.3846,MID
+Burn,£4.5,Newcastle,0,0,0,2,180,6,3.0,1.333,0.6665,DEF
+Dúbravka,£4.4,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Fraser,£5.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Gordon,£7.5,Newcastle,1,0,1,2,157,10,5.0,1.333,0.6665,MID
+Hall,£4.5,Newcastle,0,0,0,1,90,6,3.0,1.333,1.333,DEF
+Hayden,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Isak,£8.5,Newcastle,0,1,1,2,180,7,3.5,0.8235,0.41175,FWD
+J.Murphy,£5.5,Newcastle,0,0,0,2,86,2,1.0,0.3636,0.1818,MID
+Joelinton,£6.0,Newcastle,1,0,1,2,180,12,6.0,2.0,1.0,MID
+Kelly,£4.5,Newcastle,0,0,0,1,88,3,1.5,0.6667,0.6667,DEF
+Krafth,£4.5,Newcastle,0,0,0,1,150,8,4.0,1.778,1.778,DEF
+Kuol,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Lascelles,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Lewis,£4.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Livramento,£4.5,Newcastle,0,0,0,2,147,8,4.0,1.778,0.889,DEF
+Longstaff,£5.0,Newcastle,0,0,0,2,159,5,2.5,1.0,0.5,MID
+Miley,£5.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Odysseas,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Pope,£5.0,Newcastle,0,0,0,2,180,12,6.0,2.4,1.2,GK
+Ruddy,£4.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Schär,£5.4,Newcastle,0,0,0,1,27,-2,-2.0,-0.3704,-0.3704,DEF
+Targett,£4.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Tonali,£5.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Trippier,£5.9,Newcastle,0,0,0,0,32,1,1.0,0.1695,0.0,DEF
+White,£4.5,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Willock,£5.0,Newcastle,0,0,0,0,20,1,1.0,0.2,0.0,MID
+Wilson,£6.9,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Pivas,£4.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Osula,£5.0,Newcastle,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Alex Moreno,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Aina,£4.4,Nott'm Forest,0,0,0,2,143,10,5.0,2.273,1.1365,DEF
+Anderson,£5.0,Nott'm Forest,0,0,0,1,92,4,2.0,0.8,0.8,MID
+Awoniyi,£5.9,Nott'm Forest,0,0,0,0,32,2,1.0,0.339,0.0,FWD
+Boly,£4.5,Nott'm Forest,0,0,0,1,91,3,1.5,0.6667,0.6667,DEF
+Bowler,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,MID
+C.Miguel,£4.4,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Da Silva Moreira,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Danilo,£4.9,Nott'm Forest,0,0,0,1,14,1,1.0,0.2041,0.2041,MID
+Dennis,£5.0,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Dominguez,£5.0,Nott'm Forest,0,0,0,0,51,1,0.5,0.2,0.0,MID
+Elanga,£5.4,Nott'm Forest,0,0,0,2,143,4,2.0,0.7407,0.37035,MID
+Gibbs-White,£6.5,Nott'm Forest,1,0,1,2,180,13,6.5,2.0,1.0,MID
+Hudson-Odoi,£5.5,Nott'm Forest,0,0,0,2,161,6,3.0,1.091,0.5455,MID
+Mighten,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Murillo,£4.5,Nott'm Forest,0,0,0,2,180,9,4.5,2.0,1.0,DEF
+N.Williams,£4.5,Nott'm Forest,0,0,0,2,180,8,4.0,1.778,0.889,DEF
+O.Richards,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+O'Brien,£5.0,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Omobamidele,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Panzo,£4.0,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Sangaré,£4.5,Nott'm Forest,0,0,0,2,155,4,2.0,0.8889,0.44445,MID
+Sels,£4.5,Nott'm Forest,0,0,0,2,180,9,4.5,2.0,1.0,GK
+Toffolo,£4.5,Nott'm Forest,0,0,0,0,36,1,1.0,0.2222,0.0,DEF
+Turner,£4.0,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Ui-jo,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Wood,£6.1,Nott'm Forest,1,0,1,2,146,10,5.0,1.639,0.8195,FWD
+Worrall,£4.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Yates,£5.0,Nott'm Forest,0,1,1,0,99,8,4.0,1.6,0.0,MID
+Milenković,£4.5,Nott'm Forest,0,0,0,1,90,6,6.0,1.333,1.333,DEF
+Jota Silva,£6.0,Nott'm Forest,0,0,0,0,1,1,1.0,0.1667,0.0,MID
+Sosa,£5.5,Nott'm Forest,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Archer,£5.0,Southampton,0,0,0,0,37,2,1.0,0.4,0.0,FWD
+Ugochukwu,£4.5,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Alcaraz,£5.0,Southampton,0,0,0,0,9,1,1.0,0.2,0.0,MID
+Amo-Ameyaw,£4.5,Southampton,0,0,0,0,9,1,1.0,0.2222,0.0,MID
+Aribo,£5.0,Southampton,0,0,0,2,144,4,2.0,0.8,0.4,MID
+Armstrong,£5.5,Southampton,0,0,0,2,161,3,1.5,0.5455,0.27275,FWD
+Bazunu,£4.5,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Bednarek,£4.0,Southampton,0,0,0,2,170,3,1.5,0.75,0.375,DEF
+Bella-Kotchap,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Bree,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Charles,£4.5,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Edozie,£5.0,Southampton,0,0,0,0,64,1,0.5,0.2,0.0,MID
+Edwards,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Harwood-Bellis,£4.0,Southampton,0,0,0,2,165,3,1.5,0.75,0.375,DEF
+Kamaldeen,£5.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Lallana,£5.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Larios,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Lis,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Lumley,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Manning,£4.5,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Mara,£5.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+McCarthy,£4.5,Southampton,0,0,0,2,180,6,3.0,1.333,0.6665,GK
+Onuachu,£5.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Smallbone,£5.0,Southampton,0,0,0,2,173,4,2.0,0.8,0.4,MID
+Stephens,£4.0,Southampton,0,0,0,2,180,3,1.5,0.75,0.375,DEF
+Stewart,£4.5,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Sugawara,£4.5,Southampton,0,0,0,2,116,3,1.5,0.6667,0.33335,DEF
+Taylor,£4.0,Southampton,0,0,0,0,14,1,1.0,0.25,0.0,DEF
+Walker-Peters,£4.5,Southampton,0,0,0,2,170,4,2.0,0.8889,0.44445,DEF
+Wood,£4.0,Southampton,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Downes,£5.0,Southampton,0,0,0,2,180,3,1.5,0.6,0.3,MID
+Brereton Díaz,£5.5,Southampton,0,0,0,2,160,3,1.5,0.5455,0.27275,MID
+Dibling,£4.5,Southampton,0,0,0,0,26,2,1.0,0.4444,0.0,MID
+M.Fernandes,£5.0,Southampton,0,0,0,0,14,1,1.0,0.2,0.0,MID
+Solanke,£7.5,Spurs,0,0,0,1,90,2,2.0,0.2667,0.2667,FWD
+A.Phillips,£4.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Austin,£4.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Bentancur,£5.0,Spurs,0,0,0,1,77,1,1.0,0.2,0.2,MID
+Bergvall,£4.5,Spurs,0,0,0,0,23,2,1.0,0.4444,0.0,MID
+Bissouma,£5.0,Spurs,1,0,1,1,72,9,9.0,1.8,1.8,MID
+Bryan,£5.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Davies,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Devine,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Dragusin,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+E.Royal,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Forster,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Gray,£5.0,Spurs,0,0,0,0,29,2,1.0,0.4,0.0,MID
+Højbjerg,£5.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Johnson,£6.5,Spurs,0,0,0,2,167,5,2.5,0.7692,0.3846,MID
+Kulusevski,£6.5,Spurs,0,1,1,1,77,7,3.5,1.077,1.077,MID
+Lo Celso,£5.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Maddison,£7.5,Spurs,0,2,2,2,156,11,5.5,1.467,0.7335,MID
+Pedro Porro,£5.5,Spurs,1,0,1,2,180,15,7.5,2.727,1.3635,DEF
+Reguilón,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Richarlison,£7.0,Spurs,0,0,0,0,25,2,1.0,0.2857,0.0,FWD
+Romero,£5.0,Spurs,1,0,1,2,180,16,8.0,3.2,1.6,DEF
+P.M.Sarr,£5.0,Spurs,0,0,0,1,100,3,1.5,0.6,0.6,MID
+Scarlett,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Solomon,£5.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Son,£10.0,Spurs,2,0,2,2,180,18,9.0,1.8,0.9,MID
+Spence,£4.5,Spurs,0,0,0,0,18,2,1.0,0.4444,0.0,DEF
+Udogie,£5.0,Spurs,0,0,0,2,162,8,4.0,1.6,0.8,DEF
+Van de Ven,£4.5,Spurs,0,1,1,2,180,11,5.5,2.444,1.222,DEF
+Veliz,£5.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Vicario,£5.0,Spurs,0,0,0,2,180,8,4.0,1.6,0.8,GK
+Werner,£6.4,Spurs,0,0,0,0,12,1,1.0,0.1562,0.0,MID
+Whiteman,£4.0,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Lankshear,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Moore,£4.5,Spurs,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Odobert,£5.5,Spurs,0,0,0,1,65,3,3.0,0.5455,0.5455,MID
+Wan-Bissaka,£4.5,West Ham,0,0,0,0,28,1,1.0,0.2222,0.0,DEF
+Álvarez,£5.0,West Ham,0,0,0,0,12,1,1.0,0.2,0.0,MID
+Antonio,£5.5,West Ham,0,0,0,2,133,4,2.0,0.7273,0.36365,FWD
+Areola,£4.5,West Ham,0,0,0,2,180,7,3.5,1.556,0.778,GK
+Bowen,£7.5,West Ham,1,0,1,2,162,10,5.0,1.333,0.6665,MID
+Cornet,£5.0,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Coufal,£4.5,West Ham,0,0,0,2,146,7,3.5,1.556,0.778,DEF
+Cresswell,£4.0,West Ham,0,0,0,0,1,1,1.0,0.25,0.0,DEF
+Earthy,£4.5,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Emerson,£4.5,West Ham,0,0,0,2,178,7,3.5,1.556,0.778,DEF
+Fabianski,£4.0,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Foderingham,£4.5,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Ings,£5.0,West Ham,0,0,0,0,5,1,1.0,0.2,0.0,FWD
+Kilman,£4.5,West Ham,0,1,1,2,180,13,6.5,2.889,1.4445,DEF
+Kudus,£6.5,West Ham,0,0,0,2,177,5,2.5,0.7692,0.3846,MID
+L.Guilherme,£4.9,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+L.Paquetá,£6.0,West Ham,1,0,1,2,163,9,4.5,1.5,0.75,MID
+Mavropanos,£4.5,West Ham,0,0,0,2,180,9,4.5,2.0,1.0,DEF
+N.Aguerd,£4.5,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Souček,£5.0,West Ham,1,1,2,2,167,13,6.5,2.6,1.3,MID
+Ward-Prowse,£6.4,West Ham,0,0,0,0,16,1,1.0,0.1562,0.0,MID
+Zouma,£4.5,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Irving,£5.0,West Ham,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Summerville,£6.0,West Ham,0,0,0,0,17,1,1.0,0.1667,0.0,MID
+G.Rodríguez,£5.0,West Ham,0,0,0,2,174,5,2.5,1.0,0.5,MID
+Füllkrug,£7.0,West Ham,0,0,0,0,44,2,1.0,0.2857,0.0,FWD
+Todibo,£4.5,West Ham,0,0,0,0,7,2,1.0,0.4444,0.0,DEF
+Aït-Nouri,£4.5,Wolves,0,1,1,2,150,3,1.5,0.6667,0.33335,DEF
+B.Traore,£5.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Bellegarde,£5.0,Wolves,0,0,0,2,123,3,1.5,0.6,0.3,MID
+Bentley,£4.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Chiquinho,£4.5,Wolves,0,0,0,0,6,1,1.0,0.2222,0.0,MID
+Chirewa,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Chiwome,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Cundle,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Cunha,£6.5,Wolves,1,0,1,1,100,7,3.5,1.077,1.077,FWD
+Dawson,£4.5,Wolves,0,0,0,0,29,2,1.0,0.4444,0.0,DEF
+Doherty,£4.5,Wolves,0,0,0,2,180,0,0.0,0.0,0.0,DEF
+Doyle,£5.0,Wolves,0,0,0,0,1,1,1.0,0.2,0.0,MID
+Fábio Silva,£5.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Fraser,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+Gonzalez,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Guedes,£5.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+H.Bueno,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Hee Chan,£6.5,Wolves,0,0,0,2,148,3,1.5,0.4615,0.23075,MID
+Hodge,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,MID
+Hoever,£4.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+J.Gomes,£5.0,Wolves,0,0,0,2,173,3,1.5,0.6,0.3,MID
+José Sá,£4.5,Wolves,0,0,0,2,180,1,0.5,0.2222,0.1111,GK
+Kalajdžić,£5.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,FWD
+King,£4.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,GK
+Mario Jr.,£5.0,Wolves,0,0,0,2,179,4,2.0,0.8,0.4,MID
+Mosquera,£4.0,Wolves,0,0,0,2,180,-1,-0.5,-0.25,-0.125,DEF
+N.Semedo,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Pedro Lima,£4.0,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Podence,£5.5,Wolves,0,0,0,0,46,2,1.0,0.3636,0.0,MID
+R.Gomes,£5.5,Wolves,0,0,0,1,96,3,1.5,0.5455,0.5455,MID
+S.Bueno,£4.5,Wolves,0,0,0,0,0,0,0.0,0.0,0.0,DEF
+Sarabia,£5.5,Wolves,0,0,0,0,28,2,1.0,0.3636,0.0,MID
+Strand Larsen,£5.5,Wolves,1,0,1,2,173,8,4.0,1.455,0.7275,FWD
+Toti,£4.5,Wolves,0,1,1,2,180,2,1.0,0.4444,0.2222,DEF
