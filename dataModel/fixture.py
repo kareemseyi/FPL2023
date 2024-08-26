@@ -10,7 +10,7 @@ class Fixture:
                 v = handler.get_team(team_dict=team_dict, team_id=v)
             if k == "team_h":
                 v = handler.get_team(team_dict=team_dict, team_id=v)
-            if k == "stats":
+            if k == "stats" and isinstance(v, list):  # Historical Does not Have Stats in list format
                 v = {w["identifier"]: {"a": w["a"], "h": w["h"]} for w in v}
 
             setattr(self, k, v)
