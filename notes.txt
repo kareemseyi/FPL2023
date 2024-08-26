@@ -112,3 +112,9 @@ x-values = Direct Goal Contributions, Points Per Game, Total points, Team FDR, R
 
 TODO
 -- Identify underperforming players
+
+-- How often should this run
+    -- before every gameweek
+        -- every Thursday at 8pm
+
+- Get the

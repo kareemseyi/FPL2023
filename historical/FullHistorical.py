@@ -18,7 +18,6 @@ FolderURL = 'https://github.com/vaastav/Fantasy-Premier-League/tree/master/data'
 #
 # print(lis)
 final = []
-hist_fixtures = []
 
 # folders.remove(max(folders))
 # print(folders)  # Ensure to remove max folder if doing historical
@@ -59,17 +58,86 @@ def getHistoricalPlayers(n=2, minutes=900):
     print(len(final))
     return list(Player(player) for player in final)
 
-
-def getHistoricalFixtures():
-    with open('_fixtures/fixtures21-22.csv', newline='') as csvfile:
+def getHistoricalTeamDict(season):
+    teamdict = {}
+    with open('_team_dict/teams_{}.csv'.format(season), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            fix = Fixture(row)
-            hist_fixtures.append(fix)
+            teamdict[row['id']] = row['name']
+    return teamdict
+
+def getHistoricalFixtures(season, team_dict):
+    hist_fixtures = []
+    with open('_fixtures/fixtures_{}.csv'.format(season), newline='') as csvfile:
+        reader = csv.DictReader(csvfile)
+        for row in reader:
+            hist_fixtures.append(row)
+        return [Fixture(fixture, team_dict=team_dict) for fixture in hist_fixtures]
+
+def getFormDict(season):
+    team_dict = getHistoricalTeamDict(season)
+    fixtures = getHistoricalFixtures(season, team_dict)
+
+    form_dict = {}
+
+    for i in team_dict:
+        form_dict[team_dict[i]] = ''
+        for j in fixtures:
+            if (team_dict[i] == j.get_away_team() or team_dict[i] == j.get_home_team()):
+                if j.get_winner() == team_dict[i]:
+                    form_dict[team_dict[i]] += 'W'
+                if j.is_draw():
+                    form_dict[team_dict[i]] += 'D'
+                if not j.is_draw() and j.get_winner() != team_dict[i]:
+                    form_dict[team_dict[i]] += 'L'
+    return form_dict
+def convertTeamForm(form: str):
+    res = 0
+    for i in form:
+        if i == 'W':
+            res+=3
+        if i == 'D':
+            res+=1
+        if i == 'L':
+            res+=0
+    return float(res/38)
+
+def get_FDR(form_dict, season):
+    team_dict = getHistoricalTeamDict(season)
+    print(team_dict)
+    _fixtures = getHistoricalFixtures(season, team_dict)
+
+    fdr_dict = {}
+
+    for i in form_dict:
+        fdr_dict[i] = 0
+        for j in _fixtures:
+            if i == j.get_away_team():
+                fdr_dict[i] += (convertTeamForm(form_dict[i]) - convertTeamForm(form_dict[j.get_home_team()]))
+            if i == j.get_home_team():
+                fdr_dict[i] += (convertTeamForm(form_dict[i]) - convertTeamForm(form_dict[j.get_away_team()]))
+
+    return fdr_dict
 
 
-getHistoricalFixtures()
 
-# def genHistFDR():
+
+
+
+season = '23_24'
+hist_team_dict = getHistoricalTeamDict(season)
+hist_fixtures = getHistoricalFixtures(season, hist_team_dict)
+print(len(hist_fixtures))
 #
-#
+for i in hist_fixtures[0:10]:
+    print(vars(i))
+
+form_dict = getFormDict(season)
+print(form_dict)
+
+for i in form_dict:
+    print(len(form_dict[i]))
+
+FDR = get_FDR(form_dict, season)
+print(FDR)
+
