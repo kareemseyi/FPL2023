@@ -13,5 +13,9 @@ endpoints = {
         "ALL_FIXTURES": "https://fantasy.premierleague.com/api/fixtures/",
         "ME": "https://fantasy.premierleague.com/api/me",
         "TRANSFERS": "https://fantasy.premierleague.com/api/transfers/"
+    },
+    "DATA_GITHUB": {
+        "BASE_URL": "https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/",
+        "FOLDER_URL": "https://github.com/vaastav/Fantasy-Premier-League/tree/master/data"
     }
 }
