@@ -4,16 +4,21 @@ import requests as requests
 from dataModel.player import Player
 from dataModel.fixture import Fixture
 import csv
-
+import pandas as pd
+import utils
+from endpoints import endpoints
 # URL = 'https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/2023-24/cleaned_players.csv'
 # res = requests.get(URL)
 # print(res.status_code)
 # print(res.json()['payload']['blob']['csv'][0])
 # print(res.json()['payload']['blob']['csv'][1])
 # print(res.json()['payload']['blob']['csv'][2])
-# ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'creativity', 'influence', 'threat', 'bonus', 'bps', 'ict_index', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent', 'now_cost', 'element_type']
-headers = {'Accept': 'application/json'}
-FolderURL = 'https://github.com/vaastav/Fantasy-Premier-League/tree/master/data'
+# ['first_name', 'second_name', 'goals_scored', 'assists', 'total_points', 'minutes', 'goals_conceded', 'creativity',
+# 'influence', 'threat', 'bonus', 'bps', 'ict_index', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent'
+# , 'now_cost', 'element_type']
+headers = utils.headers
+FolderURL = endpoints['DATA_GITHUB']['FOLDER_URL']
+baseURL = endpoints['DATA_GITHUB']['BASE_URL']
 # print(res2.json())
 #
 # print(lis)
@@ -21,8 +26,6 @@ final = []
 
 # folders.remove(max(folders))
 # print(folders)  # Ensure to remove max folder if doing historical
-baseURL = 'https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/'
-baseURL2 = 'https://raw.githubusercontent.com/vaastav/Fantasy-Premier-League/master/data/'
 
 
 def getHistoricalPlayers(n=2, minutes=900):
@@ -60,7 +63,7 @@ def getHistoricalPlayers(n=2, minutes=900):
 
 def getHistoricalTeamDict(season):
     teamdict = {}
-    with open('_team_dict/teams_{}.csv'.format(season), newline='') as csvfile:
+    with open('../historical/_team_dict/teams_{}.csv'.format(season), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             teamdict[row['id']] = row['name']
@@ -68,15 +71,21 @@ def getHistoricalTeamDict(season):
 
 def getHistoricalFixtures(season, team_dict):
     hist_fixtures = []
-    with open('_fixtures/fixtures_{}.csv'.format(season), newline='') as csvfile:
+    with open('../historical/_fixtures/fixtures_{}.csv'.format(season), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             hist_fixtures.append(row)
         return [Fixture(fixture, team_dict=team_dict) for fixture in hist_fixtures]
 
-def getFormDict(season):
-    team_dict = getHistoricalTeamDict(season)
-    fixtures = getHistoricalFixtures(season, team_dict)
+
+def getFormDict(season=None, fixtures=None):
+    if season:
+        team_dict = getHistoricalTeamDict(season)
+        fixtures = getHistoricalFixtures(season, team_dict)
+
+    else:
+        team_dict = utils.get_teams()
+        fixtures = fixtures
 
     form_dict = {}
 
@@ -95,23 +104,26 @@ def convertTeamForm(form: str):
     res = 0
     for i in form:
         if i == 'W':
-            res+=3
+            res += 3
         if i == 'D':
-            res+=1
+            res += 1
         if i == 'L':
-            res+=0
-    return float(res/38)
+            res += 0
+    return float(res/(38*3))  # Normalize for max scenario where team won all its games? lol
 
-def get_FDR(form_dict, season):
-    team_dict = getHistoricalTeamDict(season)
-    print(team_dict)
-    _fixtures = getHistoricalFixtures(season, team_dict)
+
+def get_FDR(form_dict, fixtures=None, season=None):
+    if season:
+        team_dict = getHistoricalTeamDict(season)
+        _fixtures = getHistoricalFixtures(season, team_dict)
+    else:
+        fixtures = fixtures
 
     fdr_dict = {}
 
     for i in form_dict:
         fdr_dict[i] = 0
-        for j in _fixtures:
+        for j in fixtures:
             if i == j.get_away_team():
                 fdr_dict[i] += (convertTeamForm(form_dict[i]) - convertTeamForm(form_dict[j.get_home_team()]))
             if i == j.get_home_team():
@@ -120,24 +132,30 @@ def get_FDR(form_dict, season):
     return fdr_dict
 
 
+_season = '23_24'
+csv_file_path = '_summary/FPL_data_23_24.csv'
+csv_file_path_dest = '_summary/FPL_data_23_24_fixtured_n_nameless.csv'
 
+form_dict = getFormDict(season=_season)
 
-
-
-season = '23_24'
-hist_team_dict = getHistoricalTeamDict(season)
-hist_fixtures = getHistoricalFixtures(season, hist_team_dict)
-print(len(hist_fixtures))
-#
-for i in hist_fixtures[0:10]:
-    print(vars(i))
-
-form_dict = getFormDict(season)
-print(form_dict)
-
-for i in form_dict:
-    print(len(form_dict[i]))
-
-FDR = get_FDR(form_dict, season)
+FDR = get_FDR(form_dict, season=_season)
 print(FDR)
 
+
+# Assumed Ipswich will relegate here lol
+
+FDR['Ipswich'] = FDR['Sheffield Utd']
+FDR['Leicester'] = 0
+FDR['Southampton'] = 0
+
+
+df = pd.read_csv(csv_file_path)
+df = df.drop('roi_per_gw', axis=1)
+df = df.drop('name', axis=1)
+
+df['FDR_Average'] = df.apply(lambda x: FDR[x['team']], axis=1)
+
+df['price'] = df['price'].str.replace('£', '')
+df['price'] = df['price'].astype(float)
+df.to_csv(csv_file_path_dest, index=False)
+print('done')
