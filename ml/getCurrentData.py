@@ -1,5 +1,3 @@
-import matplotlib.pyplot as plt
-# plt.style.use('seaborn-whitegrid')
 from matplotlib.pyplot import figure
 import utils
 import asyncio
@@ -9,7 +7,6 @@ from endpoints import endpoints
 import requests
 from prettytable import PrettyTable
 from api.FPL import FPL
-import datetime
 import aiohttp
 
 roi_list = []
@@ -19,8 +16,6 @@ id_dict = {}
 url = endpoints['STATIC']['BASE_URL']
 json_general = requests.get(url).json()
 team_dict = utils.get_teams()
-
-
 name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in json_general["elements"]]
 player_id_list = [player["id"] for player in json_general["elements"]]
 teamname_list = [team["name"] for team in json_general["teams"]]
