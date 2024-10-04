@@ -100,7 +100,7 @@ async def getData():
     for _ in dict:
         if _['team'] in g.keys():
             _['FDR_Ave'] = round(g[_['team']], 3)
-            _.pop('name')  # Removing Name from Training Data
+            # _.pop('name')  # Removing Name from Training Data
     keys = dict[0].keys()
     with open(f'../datastore/current/FPL_data_{next_gw}.csv', 'w', newline='') as output_file:
         dict_writer = csv.DictWriter(output_file, keys)

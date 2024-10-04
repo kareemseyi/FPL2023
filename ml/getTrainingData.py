@@ -31,7 +31,7 @@ FDR['Southampton'] = 0
 
 df = pd.read_csv(csv_file_path)
 df = df.drop('roi_per_gw', axis=1)
-df = df.drop('name', axis=1)
+# df = df.drop('name', axis=1)
 
 df['FDR_Average'] = df.apply(lambda x: FDR[x['team']], axis=1)
 
