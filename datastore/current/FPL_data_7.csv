@@ -7,7 +7,7 @@ Hein,4.0,0,0,0,0,0,0.0,0.0,GK,Arsenal,0,0.298
 J.Timber,5.5,5,0,1,1,19,3.2,3.455,DEF,Arsenal,448,0.298
 Jorginho,4.9,1,0,0,0,2,2.0,0.4082,MID,Arsenal,90,0.298
 Kiwior,4.8,0,0,0,0,1,1.0,0.2083,DEF,Arsenal,16,0.298
-Martinelli,6.9,5,1,2,3,28,4.7,4.058,MID,Arsenal,408,0.298
+Martinelli,7.0,5,1,2,3,28,4.7,4.0,MID,Arsenal,408,0.298
 Nwaneri,4.5,0,0,0,0,2,1.0,0.4444,MID,Arsenal,9,0.298
 Ødegaard,8.2,3,0,0,0,7,2.3,0.8537,MID,Arsenal,253,0.298
 Raya,5.6,6,0,0,0,34,5.7,6.071,GK,Arsenal,540,0.298
@@ -21,7 +21,7 @@ Trossard,6.9,4,2,1,3,22,3.7,3.188,MID,Arsenal,314,0.298
 White,6.4,4,0,0,0,21,4.2,3.281,DEF,Arsenal,405,0.298
 Zinchenko,4.8,1,0,0,0,7,3.5,1.458,DEF,Arsenal,78,0.298
 Neto,4.3,2,0,0,0,7,3.5,1.628,GK,Arsenal,180,0.298
-Sterling,6.8,0,0,0,0,2,1.0,0.2941,MID,Arsenal,26,0.298
+Sterling,6.7,0,0,0,0,2,1.0,0.2985,MID,Arsenal,26,0.298
 Calafiori,5.8,2,1,0,1,11,2.8,1.897,DEF,Arsenal,205,0.298
 Lewis-Skelly,4.5,0,0,0,0,0,0.0,0.0,MID,Arsenal,1,0.298
 Merino,6.0,0,0,0,0,0,0.0,0.0,MID,Arsenal,0,0.298
@@ -57,7 +57,7 @@ Nedeljkovic,4.0,0,0,0,0,3,1.0,0.75,DEF,Aston Villa,93,0.412
 Olsen,4.5,0,0,0,0,0,0.0,0.0,GK,Aston Villa,0,0.412
 Pau,4.5,6,0,0,0,8,1.3,1.778,DEF,Aston Villa,540,0.412
 Ramsey,5.5,3,0,1,1,13,2.2,2.364,MID,Aston Villa,335,0.412
-Rogers,5.2,6,1,2,3,25,4.2,4.808,MID,Aston Villa,513,0.412
+Rogers,5.3,6,1,2,3,25,4.2,4.717,MID,Aston Villa,513,0.412
 Sinisalo,4.0,0,0,0,0,0,0.0,0.0,GK,Aston Villa,0,0.412
 Sousa,4.0,0,0,0,0,0,0.0,0.0,DEF,Aston Villa,0,0.412
 Tielemans,5.5,6,0,2,2,19,3.2,3.455,MID,Aston Villa,533,0.412
@@ -104,10 +104,10 @@ Collins,4.5,6,0,2,2,15,2.5,3.333,DEF,Brentford,540,-0.053
 Damsgaard,5.0,4,0,0,0,12,2.0,2.4,MID,Brentford,372,-0.053
 Dasilva,4.9,0,0,0,0,0,0.0,0.0,MID,Brentford,0,-0.053
 Flekken,4.5,6,0,0,0,17,2.8,3.778,GK,Brentford,540,-0.053
-Henry,4.4,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
+Henry,4.3,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
 Hickey,4.4,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
 Janelt,4.9,6,0,0,0,13,2.2,2.653,MID,Brentford,470,-0.053
-Jensen,5.4,3,0,1,1,9,3.0,1.667,MID,Brentford,238,-0.053
+Jensen,5.3,3,0,1,1,9,3.0,1.698,MID,Brentford,238,-0.053
 Ji-soo,4.0,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
 Konak,4.5,0,0,0,0,2,1.0,0.4444,MID,Brentford,16,-0.053
 Lewis-Potter,5.0,4,0,1,1,12,2.0,2.4,MID,Brentford,366,-0.053
@@ -122,13 +122,13 @@ Schade,5.4,3,0,1,1,12,2.0,2.222,MID,Brentford,295,-0.053
 Thiago,5.9,0,0,0,0,0,0.0,0.0,FWD,Brentford,0,-0.053
 Toney,7.3,0,0,0,0,0,0.0,0.0,FWD,Brentford,0,-0.053
 Valdimarsson,4.0,0,0,0,0,0,0.0,0.0,GK,Brentford,0,-0.053
-Wissa,6.0,4,3,1,4,28,7.0,4.667,FWD,Brentford,290,-0.053
+Wissa,5.9,4,3,1,4,28,7.0,4.746,FWD,Brentford,290,-0.053
 Yarmoliuk,4.4,1,0,0,0,3,1.0,0.6818,MID,Brentford,98,-0.053
 Zanka,4.5,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
 Carvalho,4.8,2,0,1,1,12,2.0,2.5,MID,Brentford,226,-0.053
 Van den Berg,4.0,3,0,0,0,5,1.2,1.25,DEF,Brentford,285,-0.053
 Trevitt,4.5,0,0,0,0,1,1.0,0.2222,MID,Brentford,3,-0.053
-G.Nunes,5.0,0,0,0,0,0,0.0,0.0,MID,Brentford,0,-0.053
+G.Nunes,4.9,0,0,0,0,0,0.0,0.0,MID,Brentford,0,-0.053
 Meghoma,4.0,0,0,0,0,0,0.0,0.0,DEF,Brentford,0,-0.053
 Yogane,4.5,0,0,0,0,0,0.0,0.0,MID,Brentford,0,-0.053
 Adingra,5.5,1,1,1,2,14,2.8,2.545,MID,Brighton,134,0.026
@@ -152,7 +152,7 @@ Lamptey,4.5,0,0,0,0,0,0.0,0.0,DEF,Brighton,0,0.026
 March,6.5,0,0,0,0,0,0.0,0.0,MID,Brighton,0,0.026
 Mazilu,4.5,0,0,0,0,0,0.0,0.0,MID,Brighton,0,0.026
 Milner,5.0,3,0,0,0,5,1.7,1.0,MID,Brighton,169,0.026
-Minteh,5.5,4,0,2,2,14,2.3,2.545,MID,Brighton,319,0.026
+Minteh,5.4,4,0,2,2,14,2.3,2.593,MID,Brighton,319,0.026
 Mitoma,6.6,6,1,2,3,26,4.3,3.939,MID,Brighton,531,0.026
 Moder,4.4,0,0,0,0,0,0.0,0.0,MID,Brighton,0,0.026
 O’Mahony,4.5,0,0,0,0,0,0.0,0.0,FWD,Brighton,0,0.026
@@ -177,7 +177,7 @@ O'Riley,5.5,0,0,0,0,0,0.0,0.0,MID,Brighton,0,0.026
 Samuels,4.0,0,0,0,0,0,0.0,0.0,DEF,Brighton,0,0.026
 Andrey Santos,4.5,0,0,0,0,0,0.0,0.0,MID,Chelsea,0,0.333
 Ângelo,4.5,0,0,0,0,0,0.0,0.0,MID,Chelsea,0,0.333
-B.Badiashile,4.4,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
+B.Badiashile,4.3,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
 Bergström,4.0,0,0,0,0,0,0.0,0.0,GK,Chelsea,0,0.333
 Bettinelli,4.0,0,0,0,0,0,0.0,0.0,GK,Chelsea,0,0.333
 Caicedo,4.9,6,0,1,1,16,2.7,3.265,MID,Chelsea,525,0.333
@@ -194,14 +194,14 @@ Enzo,4.9,5,0,0,0,10,2.0,2.041,MID,Chelsea,431,0.333
 Gallagher,5.9,0,0,0,0,0,0.0,0.0,MID,Chelsea,0,0.333
 Gilchrist,4.0,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
 Gusto,4.9,4,0,0,0,4,1.0,0.8163,DEF,Chelsea,343,0.333
-James,5.0,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
+James,4.9,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
 Kellyman,4.4,0,0,0,0,0,0.0,0.0,MID,Chelsea,0,0.333
 Lavia,4.5,1,0,0,0,3,1.5,0.6667,MID,Chelsea,76,0.333
 Lukaku,6.3,0,0,0,0,0,0.0,0.0,FWD,Chelsea,0,0.333
 M.Sarr,4.5,0,0,0,0,0,0.0,0.0,DEF,Chelsea,0,0.333
 Madueke,6.5,5,3,1,4,33,6.6,5.077,MID,Chelsea,387,0.333
 Marc Guiu,4.9,0,0,0,0,1,1.0,0.2041,FWD,Chelsea,24,0.333
-Mudryk,6.3,1,0,0,0,3,1.0,0.4762,MID,Chelsea,80,0.333
+Mudryk,6.2,1,0,0,0,3,1.0,0.4839,MID,Chelsea,80,0.333
 N.Jackson,7.9,6,4,3,7,40,6.7,5.063,FWD,Chelsea,441,0.333
 Nkunku,6.1,1,1,0,1,12,2.0,1.967,MID,Chelsea,116,0.333
 Palmer,10.7,6,6,4,10,61,10.2,5.701,MID,Chelsea,505,0.333
@@ -219,7 +219,7 @@ Nketiah,5.9,3,0,0,0,6,2.0,1.017,FWD,Crystal Palace,227,-0.184
 Chalobah,4.4,0,0,0,0,0,0.0,0.0,DEF,Crystal Palace,0,-0.184
 Ahamada,4.5,0,0,0,0,0,0.0,0.0,MID,Crystal Palace,0,-0.184
 C.Doucouré,4.9,1,0,1,1,6,2.0,1.224,MID,Crystal Palace,91,-0.184
-C.Richards,4.5,4,0,0,0,9,2.2,2.0,DEF,Crystal Palace,343,-0.184
+C.Richards,4.4,4,0,0,0,9,2.2,2.045,DEF,Crystal Palace,343,-0.184
 Chadi Riad,4.4,1,0,0,0,1,1.0,0.2273,DEF,Crystal Palace,90,-0.184
 Clyne,4.4,2,0,0,0,3,1.5,0.6818,DEF,Crystal Palace,153,-0.184
 Ebiowei,4.5,0,0,0,0,0,0.0,0.0,MID,Crystal Palace,0,-0.184
@@ -252,7 +252,7 @@ A.Doucoure,5.2,4,0,0,0,8,1.6,1.538,MID,Everton,305,-0.193
 Beto,5.0,0,0,0,0,4,1.0,0.8,FWD,Everton,43,-0.193
 Branthwaite,4.8,1,0,0,0,2,2.0,0.4167,DEF,Everton,90,-0.193
 Calvert-Lewin,6.0,6,2,1,3,25,4.2,4.167,FWD,Everton,503,-0.193
-Coleman,4.4,1,0,0,0,1,1.0,0.2273,DEF,Everton,90,-0.193
+Coleman,4.3,1,0,0,0,1,1.0,0.2326,DEF,Everton,90,-0.193
 Gana,4.9,4,0,0,0,9,1.8,1.837,MID,Everton,340,-0.193
 Garner,5.0,1,0,0,0,4,1.3,0.8,MID,Everton,161,-0.193
 Harrison,5.3,4,0,1,1,12,2.0,2.264,MID,Everton,367,-0.193
@@ -270,7 +270,7 @@ Tarkowski,4.8,6,0,0,0,6,1.0,1.25,DEF,Everton,540,-0.193
 Y. Chermiti,4.9,0,0,0,0,0,0.0,0.0,FWD,Everton,0,-0.193
 Young,4.5,4,0,2,2,9,2.2,2.0,DEF,Everton,335,-0.193
 Lindstrøm,5.2,2,0,0,0,6,1.5,1.154,MID,Everton,147,-0.193
-O'Brien,4.8,0,0,0,0,0,0.0,0.0,DEF,Everton,26,-0.193
+O'Brien,4.7,0,0,0,0,0,0.0,0.0,DEF,Everton,26,-0.193
 Armstrong,4.5,0,0,0,0,1,1.0,0.2222,MID,Everton,1,-0.193
 Metcalfe,4.5,0,0,0,0,0,0.0,0.0,MID,Everton,0,-0.193
 Begovic,4.0,0,0,0,0,0,0.0,0.0,GK,Everton,0,-0.193
@@ -284,7 +284,7 @@ Andreas,5.3,6,0,1,1,15,2.5,2.83,MID,Fulham,480,0.237
 Bassey,4.5,6,0,0,0,15,2.5,3.333,DEF,Fulham,540,0.237
 Benda,4.0,0,0,0,0,0,0.0,0.0,GK,Fulham,0,0.237
 Cairney,4.9,0,0,0,0,2,0.5,0.4082,MID,Fulham,67,0.237
-Castagne,4.3,0,0,0,0,0,0.0,0.0,DEF,Fulham,0,0.237
+Castagne,4.2,0,0,0,0,0,0.0,0.0,DEF,Fulham,0,0.237
 Diop,4.5,3,0,0,0,8,1.6,1.778,DEF,Fulham,278,0.237
 Harris,4.5,0,0,0,0,0,0.0,0.0,MID,Fulham,0,0.237
 Iwobi,5.5,6,1,1,2,25,4.2,4.545,MID,Fulham,511,0.237
@@ -292,9 +292,9 @@ Leno,5.0,6,0,0,0,18,3.0,3.6,GK,Fulham,540,0.237
 Lukić,4.9,6,0,0,0,9,1.5,1.837,MID,Fulham,458,0.237
 Mbabu,4.0,0,0,0,0,0,0.0,0.0,DEF,Fulham,0,0.237
 Muniz,5.8,3,0,1,1,12,2.0,2.069,FWD,Fulham,274,0.237
-Raúl,5.5,3,3,0,3,27,4.5,4.909,FWD,Fulham,260,0.237
+Raúl,5.6,3,3,0,3,27,4.5,4.821,FWD,Fulham,260,0.237
 Ream,4.5,0,0,0,0,0,0.0,0.0,DEF,Fulham,0,0.237
-Reed,4.9,0,0,0,0,4,0.7,0.8163,MID,Fulham,42,0.237
+Reed,4.8,0,0,0,0,4,0.7,0.8333,MID,Fulham,42,0.237
 Robinson,4.7,6,0,2,2,24,4.0,5.106,DEF,Fulham,540,0.237
 Stansfield,5.0,0,0,0,0,1,1.0,0.2,FWD,Fulham,1,0.237
 Tete,4.5,6,0,0,0,14,2.3,3.111,DEF,Fulham,540,0.237
@@ -308,14 +308,14 @@ Berge,5.0,0,0,0,0,4,1.0,0.8,MID,Fulham,108,0.237
 Al-Hamadi,4.9,0,0,0,0,1,0.3,0.2041,FWD,Ipswich,32,-0.342
 Baggott,4.0,0,0,0,0,0,0.0,0.0,DEF,Ipswich,0,-0.342
 Broadhead,4.9,0,0,0,0,0,0.0,0.0,MID,Ipswich,0,-0.342
-Burgess,4.0,0,0,0,0,0,0.0,0.0,DEF,Ipswich,0,-0.342
+Burgess,3.9,0,0,0,0,0,0.0,0.0,DEF,Ipswich,0,-0.342
 Burns,4.9,3,0,0,0,4,1.0,0.8163,MID,Ipswich,208,-0.342
 Chaplin,5.2,1,0,0,0,6,1.2,1.154,MID,Ipswich,89,-0.342
 H.Clarke,4.0,0,0,0,0,0,0.0,0.0,DEF,Ipswich,0,-0.342
 Davis,4.5,6,0,1,1,18,3.0,4.0,DEF,Ipswich,540,-0.342
 Delap,5.6,6,3,0,3,25,4.2,4.464,FWD,Ipswich,455,-0.342
 Edmundson,4.0,0,0,0,0,1,1.0,0.25,DEF,Ipswich,1,-0.342
-Greaves,4.0,6,0,0,0,11,1.8,2.75,DEF,Ipswich,540,-0.342
+Greaves,4.1,6,0,0,0,11,1.8,2.683,DEF,Ipswich,540,-0.342
 Harness,4.9,0,0,0,0,2,1.0,0.4082,MID,Ipswich,43,-0.342
 Hirst,5.4,0,0,0,0,3,1.0,0.5556,FWD,Ipswich,49,-0.342
 Humphreys,4.5,0,0,0,0,0,0.0,0.0,MID,Ipswich,0,-0.342
@@ -377,7 +377,7 @@ Bajcetic,4.5,0,0,0,0,0,0.0,0.0,MID,Liverpool,0,0.474
 Bradley,4.7,0,0,0,0,4,1.0,0.8511,DEF,Liverpool,75,0.474
 Clark,4.5,0,0,0,0,0,0.0,0.0,MID,Liverpool,0,0.474
 Darwin,7.2,1,1,0,1,9,2.2,1.25,FWD,Liverpool,133,0.474
-Diogo J.,7.5,5,1,3,4,26,5.2,3.467,MID,Liverpool,373,0.474
+Diogo J.,7.4,5,1,3,4,26,5.2,3.514,MID,Liverpool,373,0.474
 Doak,4.5,0,0,0,0,0,0.0,0.0,MID,Liverpool,0,0.474
 Elliott,5.2,0,0,0,0,1,1.0,0.1923,MID,Liverpool,7,0.474
 Endo,4.8,0,0,0,0,1,1.0,0.2083,MID,Liverpool,1,0.474
@@ -399,20 +399,20 @@ Robertson,6.0,6,0,0,0,27,4.5,4.5,DEF,Liverpool,502,0.474
 Szoboszlai,6.5,6,0,2,2,21,3.5,3.231,MID,Liverpool,492,0.474
 Tsimikas,4.7,0,0,0,0,3,1.0,0.6383,DEF,Liverpool,33,0.474
 Virgil,6.0,6,0,0,0,28,4.7,4.667,DEF,Liverpool,540,0.474
-Chiesa,7.0,0,0,0,0,1,1.0,0.1429,MID,Liverpool,18,0.474
+Chiesa,6.9,0,0,0,0,1,1.0,0.1449,MID,Liverpool,18,0.474
 Jaros,4.0,0,0,0,0,0,0.0,0.0,GK,Liverpool,0,0.474
 Akanji,5.5,6,0,0,0,14,2.3,2.545,DEF,Man City,540,0.263
 Aké,5.3,0,0,0,0,1,1.0,0.1887,DEF,Man City,2,0.263
 Bernardo,6.5,5,0,2,2,19,3.2,2.923,MID,Man City,456,0.263
 Bobb,4.8,0,0,0,0,0,0.0,0.0,MID,Man City,0,0.263
 Carson,4.0,0,0,0,0,0,0.0,0.0,GK,Man City,0,0.263
-De Bruyne,9.5,4,1,1,2,18,4.5,1.895,MID,Man City,356,0.263
+De Bruyne,9.4,4,1,1,2,18,4.5,1.915,MID,Man City,356,0.263
 Doku,6.4,4,0,0,0,10,2.0,1.562,MID,Man City,305,0.263
 Ederson M.,5.5,6,0,1,1,21,3.5,3.818,GK,Man City,540,0.263
 Foden,9.2,0,0,0,0,3,1.0,0.3261,MID,Man City,89,0.263
 Grealish,6.4,3,0,1,1,12,2.4,1.875,MID,Man City,265,0.263
 Gvardiol,5.9,5,1,0,1,22,3.7,3.729,DEF,Man City,492,0.263
-Haaland,15.3,6,10,0,10,65,10.8,4.248,FWD,Man City,539,0.263
+Haaland,15.4,6,10,0,10,65,10.8,4.221,FWD,Man City,539,0.263
 J.Alvarez,7.0,0,0,0,0,0,0.0,0.0,FWD,Man City,0,0.263
 João Cancelo,5.3,0,0,0,0,0,0.0,0.0,DEF,Man City,0,0.263
 Kovačić,5.5,5,1,1,2,21,3.5,3.818,MID,Man City,433,0.263
@@ -451,7 +451,7 @@ Onana,5.0,6,0,0,0,33,5.5,6.6,GK,Man Utd,540,-0.061
 Pellistri,5.0,0,0,0,0,0,0.0,0.0,MID,Man Utd,0,-0.061
 Rashford,6.9,5,1,0,1,18,3.0,2.609,MID,Man Utd,417,-0.061
 Shaw,4.9,0,0,0,0,0,0.0,0.0,DEF,Man Utd,0,-0.061
-Zirkzee,6.9,4,1,0,1,15,2.5,2.174,FWD,Man Utd,354,-0.061
+Zirkzee,6.8,4,1,0,1,15,2.5,2.206,FWD,Man Utd,354,-0.061
 Yoro,4.3,0,0,0,0,0,0.0,0.0,DEF,Man Utd,0,-0.061
 De Ligt,5.0,4,1,0,1,24,4.0,4.8,DEF,Man Utd,354,-0.061
 Mazraoui,4.6,6,0,1,1,25,4.2,5.435,DEF,Man Utd,513,-0.061
@@ -501,7 +501,7 @@ C.Miguel,4.3,0,0,0,0,0,0.0,0.0,GK,Nott'm Forest,0,0.079
 Da Silva Moreira,4.5,0,0,0,0,0,0.0,0.0,MID,Nott'm Forest,0,0.079
 Danilo,4.8,1,0,0,0,1,1.0,0.2083,MID,Nott'm Forest,14,0.079
 Dennis,4.9,0,0,0,0,0,0.0,0.0,FWD,Nott'm Forest,0,0.079
-Dominguez,4.9,2,0,0,0,3,0.8,0.6122,MID,Nott'm Forest,160,0.079
+Dominguez,4.8,2,0,0,0,3,0.8,0.625,MID,Nott'm Forest,160,0.079
 Elanga,5.3,4,0,1,1,11,1.8,2.075,MID,Nott'm Forest,352,0.079
 Gibbs-White,6.3,5,1,0,1,15,3.0,2.381,MID,Nott'm Forest,432,0.079
 Hudson-Odoi,5.4,4,1,1,2,20,3.3,3.704,MID,Nott'm Forest,399,0.079
@@ -518,7 +518,7 @@ Toffolo,4.4,0,0,0,0,1,1.0,0.2273,DEF,Nott'm Forest,36,0.079
 Ui-jo,4.5,0,0,0,0,0,0.0,0.0,FWD,Nott'm Forest,0,0.079
 Wood,6.2,6,3,0,3,31,5.2,5.0,FWD,Nott'm Forest,476,0.079
 Worrall,4.5,0,0,0,0,0,0.0,0.0,DEF,Nott'm Forest,0,0.079
-Yates,5.0,2,0,1,1,13,2.2,2.6,MID,Nott'm Forest,356,0.079
+Yates,4.9,2,0,1,1,13,2.2,2.653,MID,Nott'm Forest,356,0.079
 Ward-Prowse,6.2,3,0,0,0,7,1.8,1.129,MID,Nott'm Forest,225,0.079
 Milenković,4.5,5,0,0,0,17,3.4,3.778,DEF,Nott'm Forest,450,0.079
 Jota Silva,5.9,0,0,1,1,7,1.4,1.186,MID,Nott'm Forest,89,0.079
@@ -558,7 +558,7 @@ Walker-Peters,4.4,4,0,0,0,6,1.5,1.364,DEF,Southampton,350,-0.351
 Wood,4.0,0,0,0,0,0,0.0,0.0,DEF,Southampton,0,-0.351
 Cornet,4.9,1,0,0,0,1,0.5,0.2041,MID,Southampton,71,-0.351
 Downes,4.9,6,0,0,0,9,1.5,1.837,MID,Southampton,540,-0.351
-Brereton Díaz,5.3,4,0,0,0,9,1.5,1.698,MID,Southampton,389,-0.351
+Brereton Díaz,5.2,4,0,0,0,9,1.5,1.731,MID,Southampton,389,-0.351
 Dibling,4.6,3,1,0,1,17,2.8,3.696,MID,Southampton,278,-0.351
 M.Fernandes,5.0,3,0,0,0,8,1.6,1.6,MID,Southampton,298,-0.351
 Solanke,7.6,4,2,0,2,16,4.0,2.105,FWD,Spurs,357,0.123
@@ -570,12 +570,12 @@ Bissouma,4.9,2,1,0,1,10,3.3,2.041,MID,Spurs,179,0.123
 Bryan,5.0,0,0,0,0,0,0.0,0.0,MID,Spurs,0,0.123
 Davies,4.4,0,0,0,0,0,0.0,0.0,DEF,Spurs,0,0.123
 Devine,4.5,0,0,0,0,0,0.0,0.0,MID,Spurs,0,0.123
-Dragusin,4.4,1,0,0,0,2,1.0,0.4545,DEF,Spurs,99,0.123
+Dragusin,4.3,1,0,0,0,2,1.0,0.4651,DEF,Spurs,99,0.123
 E.Royal,4.5,0,0,0,0,0,0.0,0.0,DEF,Spurs,0,0.123
 Forster,4.4,0,0,0,0,0,0.0,0.0,GK,Spurs,0,0.123
 Gray,4.8,0,0,0,0,3,1.0,0.625,MID,Spurs,32,0.123
 Højbjerg,5.0,0,0,0,0,0,0.0,0.0,MID,Spurs,0,0.123
-Johnson,6.4,5,2,2,4,29,4.8,4.531,MID,Spurs,423,0.123
+Johnson,6.5,5,2,2,4,29,4.8,4.462,MID,Spurs,423,0.123
 Kulusevski,6.2,5,1,1,2,23,3.8,3.71,MID,Spurs,437,0.123
 Lo Celso,4.9,0,0,0,0,0,0.0,0.0,MID,Spurs,0,0.123
 Maddison,7.5,6,1,3,4,29,4.8,3.867,MID,Spurs,479,0.123
@@ -589,7 +589,7 @@ Solomon,5.4,0,0,0,0,0,0.0,0.0,MID,Spurs,0,0.123
 Son,9.9,5,2,2,4,33,6.6,3.333,MID,Spurs,450,0.123
 Spence,4.4,0,0,0,0,2,0.7,0.4545,DEF,Spurs,63,0.123
 Udogie,5.0,6,0,0,0,13,2.2,2.6,DEF,Spurs,477,0.123
-Van de Ven,4.5,5,0,2,2,24,4.8,5.333,DEF,Spurs,440,0.123
+Van de Ven,4.6,5,0,2,2,24,4.8,5.217,DEF,Spurs,440,0.123
 Veliz,5.0,0,0,0,0,0,0.0,0.0,FWD,Spurs,0,0.123
 Vicario,5.0,6,0,0,0,20,3.3,4.0,GK,Spurs,540,0.123
 Werner,6.2,1,0,0,0,6,1.5,0.9677,MID,Spurs,114,0.123

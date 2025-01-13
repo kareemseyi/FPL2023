@@ -64,7 +64,7 @@ def prepareData():
             'position': pos,
             'team': teamname,
             'minutes': int(minutes),
-            'FDR_Ave': 0
+            'FDR_Average': 0
         }
 
         data_dict.append(diction)
@@ -74,7 +74,7 @@ def show_table(dict):
     players_table = PrettyTable()
     players_table.field_names = ["Player_Name", "Price (Pounds)", "Games Played", "Goals", "Assists",
                                  "Direct Goal Contributions",
-                                 "Total Points", "Points Per Game", "ROI", "Position", "Team", "Minutes", "FDR_Ave"]
+                                 "Total Points", "Points Per Game", "ROI", "Position", "Team", "Minutes", "FDR_Average"]
     players_table.align = "c"
     players_table.reversesort = True
     for _ in dict:
@@ -99,7 +99,7 @@ async def getData():
 
     for _ in dict:
         if _['team'] in g.keys():
-            _['FDR_Ave'] = round(g[_['team']], 3)
+            _['FDR_Average'] = round(g[_['team']], 3)
             # _.pop('name')  # Removing Name from Training Data
     keys = dict[0].keys()
     with open(f'../datastore/current/FPL_data_{next_gw}.csv', 'w', newline='') as output_file:
