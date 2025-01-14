@@ -50,3 +50,6 @@ wheels/
 .installed.cfg
 *.egg
 /ml/.ipynb_checkpoints/
+/ml/*.log
+/ml/*.pkl
+/datastore
