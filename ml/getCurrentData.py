@@ -21,9 +21,6 @@ player_id_list = [player["id"] for player in json_general["elements"]]
 teamname_list = [team["name"] for team in json_general["teams"]]
 player_dict = {player_id_list[i]: name_list[i] for i in range(len(name_list))}
 
-
-
-
 def get_team(team_id):
     return team_dict.get(team_id)
 
