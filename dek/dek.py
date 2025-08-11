@@ -13,7 +13,6 @@ async def test():
         print("Logged in for GW")
         user = await fpl.get_user()
         print(user)
-
         # try:
         #     my_team = await fpl.get_users_team2(user)
         #     print(my_team)
@@ -35,8 +34,6 @@ async def test():
         #
         # for i in current_top_players[0:10]:
         #     print(i)
-
-
     await session.close()
     return 'Mum is here'
 
