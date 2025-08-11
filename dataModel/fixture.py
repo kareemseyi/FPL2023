@@ -30,7 +30,7 @@ class Fixture:
 
     def get_winner(self):
         try:
-            assert getattr(self, "team_a_score") != getattr(self, "team_h_score")
+            assert not self.is_draw()
             return self.get_away_team() if getattr(self, "team_a_score") > getattr(self, "team_h_score") \
                 else self.get_home_team()
 
