@@ -54,3 +54,4 @@ wheels/
 /ml/*.pkl
 /ml/*.ipynb
 /datastore
+/tests
