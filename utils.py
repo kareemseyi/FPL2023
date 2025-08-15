@@ -6,6 +6,9 @@ import certifi
 import ssl
 import http
 from http import cookies
+import secrets
+import hashlib
+import base64
 
 headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
            'accept-language': 'en'
@@ -89,3 +92,12 @@ async def post_transfer(session, url, payload, headers):
             message = result.get("error")
 
             raise Exception(message if message else result)
+
+
+def generate_code_verifier():
+    return secrets.token_urlsafe(64)[:128]
+
+
+def generate_code_challenge(verifier):
+    digest = hashlib.sha256(verifier.encode()).digest()
+    return base64.urlsafe_b64encode(digest).decode().rstrip("=")

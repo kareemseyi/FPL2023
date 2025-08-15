@@ -19,10 +19,12 @@ from endpoints import endpoints
 headers = utils.headers
 FolderURL = endpoints['DATA_GITHUB']['FOLDER_URL']
 baseURL = endpoints['DATA_GITHUB']['BASE_URL']
+staticURL = endpoints['STATIC']['BASE_URL']
 # print(res2.json())
 #
 # print(lis)
 final = []
+data_dict = []
 
 
 # folders.remove(max(folders))
@@ -65,7 +67,7 @@ def getHistoricalPlayers(n=2, minutes=900):
 
 def getHistoricalTeamDict(season):
     teamdict = {}
-    with open('../historical/_team_dict/teams_{}.csv'.format(season), newline='') as csvfile:
+    with open('../historical/_teams/teams_{}.csv'.format(season), newline='') as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             teamdict[row['id']] = row['name']
