@@ -4,6 +4,7 @@ endpoints = {
     },
     "API": {
         "BASE_URL": "https://fantasy.premierleague.com/",
+        "AUTH": "https://account.premierleague.com/as/authorize",
         "LOGIN": "https://users.premierleague.com/accounts/login/",
         "MY_TEAM": "https://fantasy.premierleague.com/api/entry/{f}/",
         "USER_TEAM": "https://fantasy.premierleague.com/api/my-team/{f}/",

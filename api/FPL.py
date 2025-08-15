@@ -4,6 +4,9 @@ import aiohttp
 import asyncio
 import os
 import warnings
+import base64
+import uuid
+import re
 
 import utils
 import itertools
@@ -26,6 +29,10 @@ MAX_PLAYER_FROM_TEAM = 3
 # Login Url
 LOGIN_URL = endpoints["API"]["LOGIN"]
 
+
+#Login URL does not work anymore yikes
+AUTH_URL = endpoints["API"]["AUTH"]
+
 # Base Url
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
@@ -41,6 +48,7 @@ API_ALL_FIXTURES = endpoints['API']['ALL_FIXTURES']
 
 is_c = "is_captain"
 is_vc = "is_vice_captain"
+STANDARD_CONNECTION_ID = "0d8c928e4970386733ce110b9dda8412"
 
 
 async def get_current_user(session):
@@ -71,32 +79,166 @@ class FPL:
         print(f"Logging in: {email}, {password}")
 
 
-        payload = {
-            "login": email,
-            "password": password,
-            "app": "plfpl-web",
-            "redirect_uri": "https://fantasy.premierleague.com/a/login",
-            "Set-Cookie": cookies
+        credentials = f"{email}:{password}"
+        encoded_credentials = base64.b64encode(credentials.encode("ascii")).decode("ascii")
+        code_verifier = utils.generate_code_verifier()  # code_verifier for PKCE
+        code_challenge = utils.generate_code_challenge(code_verifier)
+
+        initial_state = uuid.uuid4().hex
+
+
+        params = {
+            "response_type": "code",
+            "scope": "openid profile email offline_access",
+            "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
+            "redirect_uri": "https://fantasy.premierleague.com/",
+            "state": initial_state,
+            "code_challenge": code_challenge,
+            "code_challenge_method": "S256"
         }
-        async with self.session.post(LOGIN_URL, data=payload, headers=utils.headers, cookies=utils.cookies) as response:
-            print(response)
+
+        # headers = {
+        #     "Content-Type": "application/x-www-form-urlencoded",
+        #     "Authorization": f"Basic {encoded_credentials}"
+        # }
+        async with self.session.get(AUTH_URL, params=params) as response:
             assert response.status == 200
-            if "state=success" in str(response.url):
-                print("Successfully logged In")
+            if response.status == 200:
+
+                text2 = await response.text()
+                access_token = re.search(r'"accessToken":"([^"]+)"', text2).group(1)
+                new_state = re.search(r'<input[^>]+name="state"[^>]+value="([^"]+)"', text2).group(1)
+
+                print('sc: ', access_token)
+                print("Successfully Retrieved Access Token... Continuing...")
             else:
-                if "state=fail" in str(response.url):
+                if response.status != 200:
                     raise ValueError("Incorrect email or password!")
+
+        # Step 2: Use accessToken to get interaction id and token
+        new_headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+        async with self.session.post('https://account.premierleague.com/davinci/policy/262ce4b01d19dd9d385d26bddb4297b6/start',
+                                     headers=new_headers) as response:
+            assert response.status == 200
+            response = await response.json()
+            interaction_id = response["interactionId"]
+            interaction_token = response["interactionToken"]
+
+        print('id: ', interaction_id)
+        print('it: ', interaction_token)
+
+        # Step 3: log in with interaction tokens (requires 3 post requests)
+        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(STANDARD_CONNECTION_ID),
+            headers={
+                "interactionId": interaction_id,
+                "interactionToken": interaction_token,
+            },
+            json={
+                "id": response["id"],
+                "eventName": "continue",
+                "parameters": {"eventType": "polling"},
+                "pollProps": {"status": "continue", "delayInMs": 10, "retriesAllowed": 1, "pollChallengeStatus": False},
+            },
+        ) as response:
+            assert response.status == 200
+            response = await response.json()
+            print('first post complete', interaction_token)
+
+        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(STANDARD_CONNECTION_ID),
+            headers={
+                "interactionId": interaction_id,
+                "interactionToken": interaction_token,
+            },
+            json={
+                "id": response["id"],
+                "nextEvent": {
+                    "constructType": "skEvent",
+                    "eventName": "continue",
+                    "params": [],
+                    "eventType": "post",
+                    "postProcess": {},
+                },
+                "parameters": {
+                    "buttonType": "form-submit",
+                    "buttonValue": "SIGNON",
+                    "username": email,
+                    "password": password,
+                },
+                "eventName": "continue",
+            }
+        ) as response:
+            assert response.status == 200
+            response = await response.json()
+            print('second post complete', interaction_token)
+
+
+        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(response["connectionId"]),  # need to use new connectionId from prev response
+            headers=new_headers,
+            json={
+                "id": response["id"],
+                "nextEvent": {
+                    "constructType": "skEvent",
+                    "eventName": "continue",
+                    "params": [],
+                    "eventType": "post",
+                    "postProcess": {},
+                },
+                "parameters": {
+                    "buttonType": "form-submit",
+                    "buttonValue": "SIGNON",
+                },
+                "eventName": "continue",
+            },
+        ) as response:
+            assert response.status == 200
+            response = await response.json()
+            print('third post complete', interaction_token)
+
+        # Step 4: Resume the login using the dv_response and handle redirect
+        async with self.session.post('https://account.premierleague.com/as/resume',
+            data={
+                "dvResponse": response["dvResponse"],
+                "state": new_state,
+            },
+            allow_redirects=False,
+        ) as response:
+            assert response.status in (200, 302)
+
+
+
+            location = response.headers["Location"]
+            auth_code = re.search(r"[?&]code=([^&]+)", location).group(1)
+            print('auth_code: ', auth_code)
+            print('location: ', location)
+
+        # Step 5: Exchange auth code for access token
+        async with self.session.post('https://account.premierleague.com/as/token',
+            data={
+                "grant_type": "authorization_code",
+                "redirect_uri": "https://fantasy.premierleague.com/",
+                "code": auth_code,  # from the parsed redirect URL
+                "code_verifier": code_verifier,  # the original code_verifier generated at the start
+                "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
+            },
+        ) as response:
+             assert response.status == 200
+        print('Finally WTF FPL')
+
+        for i in self.session.cookie_jar.filter_cookies("https://account.premierleague.com/"):
+            print(i)
         return self.session
 
     def logged_in(self):
         """Checks that the user is logged in within the session.
 
-
         :return: True if user is logged in else False
         :rtype: bool
         """
-        return "csrftoken" in self.session.cookie_jar.filter_cookies(
-            "https://users.premierleague.com/")
+        return "interactionToken" and "interactionId" in self.session.cookie_jar.filter_cookies(
+            "https://account.premierleague.com/")
 
     async def get_user(self, user_id=None, return_json=False):
         """Returns the user with the given ``user_id``.
