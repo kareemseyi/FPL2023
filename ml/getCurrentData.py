@@ -95,6 +95,9 @@ async def getData():
     print(show_table(dict))
 
     for _ in dict:
+        if next_gw == 1:
+            _['games_played'] =0
+            _['minutes'] = 0
         if _['team'] in g.keys():
             _['FDR_Average'] = round(g[_['team']], 3)
             # _.pop('name')  # Removing Name from Training Data
