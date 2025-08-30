@@ -2,11 +2,12 @@ import aiohttp
 from endpoints import endpoints
 from dataModel.player import Player
 from utils import fetch
-STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
-API_MY_TEAM_URL = endpoints['API']['MY_TEAM']
-API_GET_PLAYER = endpoints['API']['GET_PLAYER']
-API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
+STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
+
+API_MY_TEAM_URL = endpoints["API"]["MY_TEAM"]
+API_GET_PLAYER = endpoints["API"]["GET_PLAYER"]
+API_GW_FIXTURES = endpoints["API"]["GW_FIXTURES"]
 
 
 # async def get_user(session, user_id=None, return_json=False):
@@ -41,6 +42,7 @@ API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
 #         return user
 #     return User(user, session)
 
+
 def get_team(team_dict, team_id):
     return team_dict.get(team_id)
 
@@ -49,12 +51,17 @@ def get_team(team_dict, team_id):
 #     user = await fetch(session, API_ME)
 #     return user
 
-#TODO Move to utils
+
+# TODO Move to utils
 async def get_players(session):
     dynamic = await fetch(session, STATIC_BASE_URL)
     player_id_list = [player["id"] for player in dynamic["elements"]]
-    name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
+    name_list = [
+        str(player["first_name"] + " " + player["second_name"])
+        for player in dynamic["elements"]
+    ]
     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
+
 
 # async def get_users_team(session, User, gw):
 #     """Returns a logged-in user's current team. Requires the user to have

@@ -1,7 +1,5 @@
 endpoints = {
-    "STATIC": {
-        "BASE_URL": "https://fantasy.premierleague.com/api/bootstrap-static/"
-    },
+    "STATIC": {"BASE_URL": "https://fantasy.premierleague.com/api/bootstrap-static/"},
     "API": {
         "BASE_URL": "https://fantasy.premierleague.com/",
         "AUTH": "https://account.premierleague.com/as/authorize",
@@ -18,10 +16,10 @@ endpoints = {
         "DAVINCI_POLICY_START": "https://account.premierleague.com/davinci/policy/262ce4b01d19dd9d385d26bddb4297b6/start",
         "DAVINCI_CONNECTIONS": "https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate",
         "AS_RESUME": "https://account.premierleague.com/as/resume",
-        "AS_TOKEN": "https://account.premierleague.com/as/token"
+        "AS_TOKEN": "https://account.premierleague.com/as/token",
     },
     "DATA_GITHUB": {
         "BASE_URL": "https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/",
-        "FOLDER_URL": "https://github.com/vaastav/Fantasy-Premier-League/tree/master/data"
-    }
+        "FOLDER_URL": "https://github.com/vaastav/Fantasy-Premier-League/tree/master/data",
+    },
 }
