@@ -10,17 +10,23 @@ import secrets
 import hashlib
 import base64
 
-headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
+
+headers= {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
            'accept-language': 'en'
            }
+
 cookies = http.cookies.SimpleCookie()
 ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
+def headers_access(access_token):
+    headers["Authorization"]="Bearer {}".format(access_token)
+    return headers
 
-async def fetch(session, url):
+
+async def fetch(session, url, headers=None):
     while True:
         try:
             async with session.get(url, headers=headers, ssl=ssl_context, cookies=cookies) as response:

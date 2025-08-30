@@ -4,9 +4,6 @@ import aiohttp
 import asyncio
 import os
 import warnings
-import base64
-import uuid
-import re
 
 import utils
 import itertools
@@ -18,6 +15,7 @@ from dataModel.user import User
 from dataModel.player import Player
 from dataModel.fixture import Fixture
 from dataModel.team import Team
+from auth.fpl_auth import FPLAuth
 
 MAX_DEF = 5
 MAX_GK = 2
@@ -26,20 +24,12 @@ MAX_FWD = 3
 MAX_BUDGET = 100
 MAX_PLAYER_FROM_TEAM = 3
 
-# Login Url
-LOGIN_URL = endpoints["API"]["LOGIN"]
-
-
-#Login URL does not work anymore yikes
-AUTH_URL = endpoints["API"]["AUTH"]
-
 # Base Url
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
 API_MY_TEAM = endpoints['API']['MY_TEAM']
 API_USER_TEAM = endpoints['API']['USER_TEAM']
-API_ME = endpoints['API']['ME']
 API_TRANSFERS = endpoints['API']['TRANSFERS']
 
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
@@ -48,188 +38,24 @@ API_ALL_FIXTURES = endpoints['API']['ALL_FIXTURES']
 
 is_c = "is_captain"
 is_vc = "is_vice_captain"
-STANDARD_CONNECTION_ID = "0d8c928e4970386733ce110b9dda8412"
-
-
-async def get_current_user(session):
-    user = await fetch(session, API_ME)
-    return user
 
 
 class FPL:
     """The FPL class."""
 
-    def __init__(self, session):
+    def __init__(self, session, auth=None):
         self.session = session
+        self.auth = auth or FPLAuth(session)
 
     async def login(self, email=None, password=None):
-        """Returns a requests session with FPL login authentication.
+        """Login using the auth module.
 
         :param string email: Email address for the user's Fantasy Premier League
             account.
         :param string password: Password for the user's Fantasy Premier League
             account.
         """
-        if not email and not password:
-            email = os.getenv("FPL_EMAIL", 'okareem@stellaralgo.com')
-            password = os.getenv("FPL_PASSWORD", '@Testing123')
-        if not email or not password:
-            raise ValueError("Email and password must be set")
-        print(f"Logging in: {LOGIN_URL}")
-        print(f"Logging in: {email}, {password}")
-
-
-        credentials = f"{email}:{password}"
-        encoded_credentials = base64.b64encode(credentials.encode("ascii")).decode("ascii")
-        code_verifier = utils.generate_code_verifier()  # code_verifier for PKCE
-        code_challenge = utils.generate_code_challenge(code_verifier)
-
-        initial_state = uuid.uuid4().hex
-
-
-        params = {
-            "response_type": "code",
-            "scope": "openid profile email offline_access",
-            "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
-            "redirect_uri": "https://fantasy.premierleague.com/",
-            "state": initial_state,
-            "code_challenge": code_challenge,
-            "code_challenge_method": "S256"
-        }
-
-        # headers = {
-        #     "Content-Type": "application/x-www-form-urlencoded",
-        #     "Authorization": f"Basic {encoded_credentials}"
-        # }
-        async with self.session.get(AUTH_URL, params=params) as response:
-            assert response.status == 200
-            if response.status == 200:
-
-                text2 = await response.text()
-                access_token = re.search(r'"accessToken":"([^"]+)"', text2).group(1)
-                new_state = re.search(r'<input[^>]+name="state"[^>]+value="([^"]+)"', text2).group(1)
-
-                print('sc: ', access_token)
-                print("Successfully Retrieved Access Token... Continuing...")
-            else:
-                if response.status != 200:
-                    raise ValueError("Incorrect email or password!")
-
-        # Step 2: Use accessToken to get interaction id and token
-        new_headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        }
-        async with self.session.post('https://account.premierleague.com/davinci/policy/262ce4b01d19dd9d385d26bddb4297b6/start',
-                                     headers=new_headers) as response:
-            assert response.status == 200
-            response = await response.json()
-            interaction_id = response["interactionId"]
-            interaction_token = response["interactionToken"]
-
-        print('id: ', interaction_id)
-        print('it: ', interaction_token)
-
-        # Step 3: log in with interaction tokens (requires 3 post requests)
-        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(STANDARD_CONNECTION_ID),
-            headers={
-                "interactionId": interaction_id,
-                "interactionToken": interaction_token,
-            },
-            json={
-                "id": response["id"],
-                "eventName": "continue",
-                "parameters": {"eventType": "polling"},
-                "pollProps": {"status": "continue", "delayInMs": 10, "retriesAllowed": 1, "pollChallengeStatus": False},
-            },
-        ) as response:
-            assert response.status == 200
-            response = await response.json()
-            print('first post complete', interaction_token)
-
-        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(STANDARD_CONNECTION_ID),
-            headers={
-                "interactionId": interaction_id,
-                "interactionToken": interaction_token,
-            },
-            json={
-                "id": response["id"],
-                "nextEvent": {
-                    "constructType": "skEvent",
-                    "eventName": "continue",
-                    "params": [],
-                    "eventType": "post",
-                    "postProcess": {},
-                },
-                "parameters": {
-                    "buttonType": "form-submit",
-                    "buttonValue": "SIGNON",
-                    "username": email,
-                    "password": password,
-                },
-                "eventName": "continue",
-            }
-        ) as response:
-            assert response.status == 200
-            response = await response.json()
-            print('second post complete', interaction_token)
-
-
-        async with self.session.post('https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate'.format(response["connectionId"]),  # need to use new connectionId from prev response
-            headers=new_headers,
-            json={
-                "id": response["id"],
-                "nextEvent": {
-                    "constructType": "skEvent",
-                    "eventName": "continue",
-                    "params": [],
-                    "eventType": "post",
-                    "postProcess": {},
-                },
-                "parameters": {
-                    "buttonType": "form-submit",
-                    "buttonValue": "SIGNON",
-                },
-                "eventName": "continue",
-            },
-        ) as response:
-            assert response.status == 200
-            response = await response.json()
-            print('third post complete', interaction_token)
-
-        # Step 4: Resume the login using the dv_response and handle redirect
-        async with self.session.post('https://account.premierleague.com/as/resume',
-            data={
-                "dvResponse": response["dvResponse"],
-                "state": new_state,
-            },
-            allow_redirects=False,
-        ) as response:
-            assert response.status in (200, 302)
-
-
-
-            location = response.headers["Location"]
-            auth_code = re.search(r"[?&]code=([^&]+)", location).group(1)
-            print('auth_code: ', auth_code)
-            print('location: ', location)
-
-        # Step 5: Exchange auth code for access token
-        async with self.session.post('https://account.premierleague.com/as/token',
-            data={
-                "grant_type": "authorization_code",
-                "redirect_uri": "https://fantasy.premierleague.com/",
-                "code": auth_code,  # from the parsed redirect URL
-                "code_verifier": code_verifier,  # the original code_verifier generated at the start
-                "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
-            },
-        ) as response:
-             assert response.status == 200
-        print('Finally WTF FPL')
-
-        for i in self.session.cookie_jar.filter_cookies("https://account.premierleague.com/"):
-            print(i)
-        return self.session
+        return await self.auth.login(email, password)
 
     def logged_in(self):
         """Checks that the user is logged in within the session.
@@ -237,8 +63,10 @@ class FPL:
         :return: True if user is logged in else False
         :rtype: bool
         """
-        return "interactionToken" and "interactionId" in self.session.cookie_jar.filter_cookies(
-            "https://account.premierleague.com/")
+        return self.auth.logged_in()
+
+    async def get_current_user(self):
+        return await self.auth.get_current_user()
 
     async def get_user(self, user_id=None, return_json=False):
         """Returns the user with the given ``user_id``.
@@ -259,18 +87,15 @@ class FPL:
         else:
             # If no user ID provided get it from current session
             try:
-                user = await get_current_user(self.session)
+                user = await self.get_current_user()
                 user_id = user["player"]["entry"]
             except TypeError:
                 raise Exception("You must log in before using `get_user` if "
                                 "you do not provide a user ID.")
 
-        url = API_ME.format(user_id)
-        user = await fetch(self.session, url)
-
-        if return_json:
-            return user
-        return User(user, self.session)
+            if return_json:
+                return user
+            return User(user, self.session)
 
     async def get_users_team_for_gw(self, user, gw):
         """Returns a logged-in user's current team. Requires the user to have
@@ -278,7 +103,7 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -294,12 +119,12 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
             response = await fetch(
-                self.session, API_USER_TEAM.format(f=user.entry))
+                self.session, API_USER_TEAM.format(f=user.entry), headers=utils.headers_access(self.auth.access_token))
         except Exception as e:
             raise Exception("Client has not set a team for gameweek ")
         return response['picks']
@@ -310,7 +135,7 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -397,19 +222,22 @@ class FPL:
 
     async def get_fixtures_for_next_GW(self, gameweek):
         assert gameweek > 0
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
-            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
+            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek),
+                                   headers=utils.headers_access(self.auth.access_token))
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("User ID does not match provided email address!")
 
+
+
         team_dict = utils.get_teams()
-        fixtures = [x for x in response if x['event'] in gameweek]
+        fixtures = [x for x in response if x['event'] == gameweek]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
     async def get_all_fixtures(self, *gameweek):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         task = asyncio.ensure_future(fetch(self.session, API_ALL_FIXTURES))
@@ -421,7 +249,7 @@ class FPL:
         return [Fixture(fixture, team_dict) for fixture in fixtures if fixture['event'] in gameweek]
 
     async def get_upcoming_gameweek(self):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             response = await fetch(self.session, API_GW_FIXTURES)
@@ -441,7 +269,7 @@ class FPL:
         :param aiohttp.ClientSession session: A logged-in user's session.
         :rtype: int
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             response = await fetch(
@@ -466,7 +294,7 @@ class FPL:
         return [Team(team, self.session) for team in team]
 
     async def pickTeam(self, gw, initial=False):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             fixtures = await self.get_all_fixtures(*range(gw, gw + 5))
@@ -548,7 +376,7 @@ class FPL:
             free_hit):
 
         """Returns the payload needed to make the desired transfers."""
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -604,7 +432,7 @@ class FPL:
         :rtype: dict
         """
 
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         user = await FPL.get_user(self)
@@ -612,7 +440,7 @@ class FPL:
         if wildcard and free_hit:
             raise Exception("Can only use 1 of wildcard and free hit.")
 
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         if not players_in:
