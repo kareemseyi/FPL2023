@@ -5,5 +5,4 @@ pandas
 scikit-learn
 requests
 prettytable
-flake8
-pylint
+black
