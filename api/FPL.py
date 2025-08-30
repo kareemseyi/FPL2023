@@ -15,6 +15,7 @@ from dataModel.user import User
 from dataModel.player import Player
 from dataModel.fixture import Fixture
 from dataModel.team import Team
+from auth.fpl_auth import FPLAuth
 
 MAX_DEF = 5
 MAX_GK = 2
@@ -23,16 +24,12 @@ MAX_FWD = 3
 MAX_BUDGET = 100
 MAX_PLAYER_FROM_TEAM = 3
 
-# Login Url
-LOGIN_URL = endpoints["API"]["LOGIN"]
-
 # Base Url
 STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
 
 API_MY_TEAM_GW_URL = endpoints['API']['MY_TEAM_GW']
 API_MY_TEAM = endpoints['API']['MY_TEAM']
 API_USER_TEAM = endpoints['API']['USER_TEAM']
-API_ME = endpoints['API']['ME']
 API_TRANSFERS = endpoints['API']['TRANSFERS']
 
 API_GW_FIXTURES = endpoints['API']['GW_FIXTURES']
@@ -43,60 +40,33 @@ is_c = "is_captain"
 is_vc = "is_vice_captain"
 
 
-async def get_current_user(session):
-    user = await fetch(session, API_ME)
-    return user
-
-
 class FPL:
     """The FPL class."""
 
-    def __init__(self, session):
+    def __init__(self, session, auth=None):
         self.session = session
+        self.auth = auth or FPLAuth(session)
 
     async def login(self, email=None, password=None):
-        """Returns a requests session with FPL login authentication.
+        """Login using the auth module.
 
         :param string email: Email address for the user's Fantasy Premier League
             account.
         :param string password: Password for the user's Fantasy Premier League
             account.
         """
-        if not email and not password:
-            email = os.getenv("FPL_EMAIL", 'okareem@stellaralgo.com')
-            password = os.getenv("FPL_PASSWORD", '@Testing123')
-        if not email or not password:
-            raise ValueError("Email and password must be set")
-        print(f"Logging in: {LOGIN_URL}")
-        print(f"Logging in: {email}, {password}")
-
-
-        payload = {
-            "login": email,
-            "password": password,
-            "app": "plfpl-web",
-            "redirect_uri": "https://fantasy.premierleague.com/a/login",
-            "Set-Cookie": cookies
-        }
-        async with self.session.post(LOGIN_URL, data=payload, headers=utils.headers, cookies=utils.cookies) as response:
-            print(response)
-            assert response.status == 200
-            if "state=success" in str(response.url):
-                print("Successfully logged In")
-            else:
-                if "state=fail" in str(response.url):
-                    raise ValueError("Incorrect email or password!")
-        return self.session
+        return await self.auth.login(email, password)
 
     def logged_in(self):
         """Checks that the user is logged in within the session.
 
-
         :return: True if user is logged in else False
         :rtype: bool
         """
-        return "csrftoken" in self.session.cookie_jar.filter_cookies(
-            "https://users.premierleague.com/")
+        return self.auth.logged_in()
+
+    async def get_current_user(self):
+        return await self.auth.get_current_user()
 
     async def get_user(self, user_id=None, return_json=False):
         """Returns the user with the given ``user_id``.
@@ -117,18 +87,15 @@ class FPL:
         else:
             # If no user ID provided get it from current session
             try:
-                user = await get_current_user(self.session)
+                user = await self.get_current_user()
                 user_id = user["player"]["entry"]
             except TypeError:
                 raise Exception("You must log in before using `get_user` if "
                                 "you do not provide a user ID.")
 
-        url = API_ME.format(user_id)
-        user = await fetch(self.session, url)
-
-        if return_json:
-            return user
-        return User(user, self.session)
+            if return_json:
+                return user
+            return User(user, self.session)
 
     async def get_users_team_for_gw(self, user, gw):
         """Returns a logged-in user's current team. Requires the user to have
@@ -136,7 +103,7 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -152,12 +119,12 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
             response = await fetch(
-                self.session, API_USER_TEAM.format(f=user.entry))
+                self.session, API_USER_TEAM.format(f=user.entry), headers=utils.headers_access(self.auth.access_token))
         except Exception as e:
             raise Exception("Client has not set a team for gameweek ")
         return response['picks']
@@ -168,7 +135,7 @@ class FPL:
 
         :rtype: list
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -255,19 +222,22 @@ class FPL:
 
     async def get_fixtures_for_next_GW(self, gameweek):
         assert gameweek > 0
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
-            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
+            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek),
+                                   headers=utils.headers_access(self.auth.access_token))
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("User ID does not match provided email address!")
 
+
+
         team_dict = utils.get_teams()
-        fixtures = [x for x in response if x['event'] in gameweek]
+        fixtures = [x for x in response if x['event'] == gameweek]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
     async def get_all_fixtures(self, *gameweek):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         task = asyncio.ensure_future(fetch(self.session, API_ALL_FIXTURES))
@@ -279,7 +249,7 @@ class FPL:
         return [Fixture(fixture, team_dict) for fixture in fixtures if fixture['event'] in gameweek]
 
     async def get_upcoming_gameweek(self):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             response = await fetch(self.session, API_GW_FIXTURES)
@@ -299,7 +269,7 @@ class FPL:
         :param aiohttp.ClientSession session: A logged-in user's session.
         :rtype: int
         """
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             response = await fetch(
@@ -324,7 +294,7 @@ class FPL:
         return [Team(team, self.session) for team in team]
 
     async def pickTeam(self, gw, initial=False):
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             fixtures = await self.get_all_fixtures(*range(gw, gw + 5))
@@ -406,7 +376,7 @@ class FPL:
             free_hit):
 
         """Returns the payload needed to make the desired transfers."""
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         try:
@@ -462,7 +432,7 @@ class FPL:
         :rtype: dict
         """
 
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         user = await FPL.get_user(self)
@@ -470,7 +440,7 @@ class FPL:
         if wildcard and free_hit:
             raise Exception("Can only use 1 of wildcard and free hit.")
 
-        if not FPL.logged_in(self):
+        if not self.logged_in():
             raise Exception("User must be logged in.")
 
         if not players_in:

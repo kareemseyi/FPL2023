@@ -7,6 +7,7 @@ from endpoints import endpoints
 import requests
 from prettytable import PrettyTable
 from api.FPL import FPL
+from auth.fpl_auth import FPLAuth
 import aiohttp
 
 roi_list = []
@@ -82,7 +83,8 @@ def show_table(dict):
 
 async def getData():
     session = aiohttp.ClientSession(trust_env=True)
-    fpl = FPL(session)
+    auth = FPLAuth(session)
+    fpl = FPL(session, auth)
     await fpl.login()
     next_gw = await fpl.get_upcoming_gameweek()
 
@@ -95,6 +97,9 @@ async def getData():
     print(show_table(dict))
 
     for _ in dict:
+        if next_gw == 1:
+            _['games_played'] =0
+            _['minutes'] = 0
         if _['team'] in g.keys():
             _['FDR_Average'] = round(g[_['team']], 3)
             # _.pop('name')  # Removing Name from Training Data
@@ -106,5 +111,6 @@ async def getData():
     await session.close()
 
 asyncio.run(getData())
+
 
 

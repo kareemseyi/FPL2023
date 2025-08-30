@@ -1,25 +1,49 @@
 import sys
 from collections import Counter
 from api.FPL import FPL
+from auth.fpl_auth import FPLAuth
 import aiohttp
 import asyncio
 import requests
 
+
+game_week = None
+fixtures = None
+players = None
+
+
+
+
 async def test():
     session = aiohttp.ClientSession(trust_env=True)
-    fpl = FPL(session)
-    await fpl.login()
+    auth = FPLAuth(session)
+    fpl = FPL(session, auth)
+    token = await fpl.login()
+
+
     if fpl.logged_in():
         print("Logged in for GW")
         user = await fpl.get_user()
-        print(user)
-        # try:
-        #     my_team = await fpl.get_users_team2(user)
-        #     print(my_team)
-        # except Exception as err:
-        #     pass
-        # transfer_status = await fpl.transfer([235, 495, 360], [91, 339, 186]) # Order Matters here
-        # print(transfer_status)
+        print("user:", user)
+        try:
+            my_team = await fpl.get_users_team(user)
+            print('my_team', my_team)
+        except Exception as err:
+            'Cant get users team info from FPL'
+        try:
+            my_players = await fpl.get_users_players(user)
+            print('my_players', my_players)
+        except Exception as err:
+            'Cant get users players from FPL'
+        try:
+            game_week = await fpl.get_upcoming_gameweek()
+            print('next_gameweek', game_week)
+            fixtures = await fpl.get_fixtures_for_next_GW(int(game_week))
+            for i in fixtures:
+                print(str(i))
+        except Exception as err:
+            'Cant get next gameweek from FPL'
+
 
         # a = FullHistorical.getHistoricalPlayers(n=2)
         # a.sort(key=lambda x: x.points_per_Min(), reverse=True)
