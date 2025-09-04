@@ -1,10 +1,8 @@
 import os
-import base64
 import uuid
 import re
 import utils
 from endpoints import endpoints
-from .auth_exceptions import AuthenticationError, LoginError
 
 LOGIN_URL = endpoints["API"]["LOGIN"]
 AUTH_URL = endpoints["API"]["AUTH"]
@@ -68,7 +66,7 @@ class FPLAuth:
                 print("Successfully Retrieved Access Token... Continuing...")
             else:
                 if response.status != 200:
-                    raise LoginError("Incorrect email or password!")
+                    raise Exception("Incorrect email or password!")
 
         new_headers = {
             "Authorization": f"Bearer {access_token}",
@@ -82,11 +80,9 @@ class FPLAuth:
             interaction_id = response["interactionId"]
             interaction_token = response["interactionToken"]
 
-        print("id: ", interaction_id)
-        print("it: ", interaction_token)
 
         async with self.session.post(
-            "DAVINCI_CONNECTIONS_URL".format(STANDARD_CONNECTION_ID),
+            DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
             headers={
                 "interactionId": interaction_id,
                 "interactionToken": interaction_token,
@@ -105,10 +101,9 @@ class FPLAuth:
         ) as response:
             assert response.status == 200
             response = await response.json()
-            print("first post complete", interaction_token)
 
         async with self.session.post(
-            "DAVINCI_CONNECTIONS_URL".format(STANDARD_CONNECTION_ID),
+            DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
             headers={
                 "interactionId": interaction_id,
                 "interactionToken": interaction_token,
@@ -133,10 +128,9 @@ class FPLAuth:
         ) as response:
             assert response.status == 200
             response = await response.json()
-            print("second post complete", interaction_token)
 
         async with self.session.post(
-            "DAVINCI_CONNECTIONS_URL".format(response["connectionId"]),
+            DAVINCI_CONNECTIONS_URL.format(response["connectionId"]),
             headers=new_headers,
             json={
                 "id": response["id"],
@@ -170,8 +164,6 @@ class FPLAuth:
 
             location = response.headers["Location"]
             auth_code = re.search(r"[?&]code=([^&]+)", location).group(1)
-            print("auth_code: ", auth_code)
-            print("location: ", location)
 
         async with self.session.post(
             AS_TOKEN_URL,
@@ -186,7 +178,6 @@ class FPLAuth:
             assert response.status == 200
             response = await response.json()
             self.access_token = response["access_token"]
-            print("access token: ", access_token)
 
         return self.session
 
