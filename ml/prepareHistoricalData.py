@@ -2,6 +2,7 @@ import csv
 import os
 import requests
 from prettytable import PrettyTable
+
 url = "https://fantasy.premierleague.com/api/bootstrap-static/"
 json_general = requests.get(url).json()
 print(json_general.keys())

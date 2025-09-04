@@ -1,4 +1,4 @@
-from utils import  get_team
+from utils import get_team
 
 
 class Fixture:
