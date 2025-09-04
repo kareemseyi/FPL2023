@@ -72,6 +72,9 @@ def get_teams():
         for i in range(len(teamname_list))
     }
 
+def get_team(team_id, team_dict=None):
+    if team_dict:
+        return team_dict.get(team_id)
 
 def get_headers(referer):
     """Returns the headers needed for the transfer request."""
@@ -81,7 +84,7 @@ def get_headers(referer):
         "Referer": referer,
     }
 
-
+# def get_transfer_candidates(my_team, player_pool,max=3):
 async def post(session, url, payload, headers):
     async with session.post(url, data=payload, headers=headers) as response:
         return await response.json()
