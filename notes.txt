@@ -132,6 +132,14 @@ TODO
         YES?
           -- Use gameweek 1 or (1-5) and Last Seasons data to pick team
         NO?
-          -- Use currentSeasons Data + next Gamewee to pick team
+          -- Use currentSeasons Data + next Gameweek to pick team
 
-    --
+
+Simple bot flow
+-- identify underperforming players in my team (max Three)
+    -- Player Pool
+    -- Your team
+-- Transfer the underperforming players for high ROI players that are affordable/within budget/within restrictions
+   -- Who EXACTLY would I transfer
+-- Sort and Set Team
+

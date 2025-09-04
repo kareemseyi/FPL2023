@@ -16,7 +16,6 @@ data_dict = []
 id_dict = {}
 url = endpoints["STATIC"]["BASE_URL"]
 json_general = requests.get(url).json()
-team_dict = utils.get_teams()
 name_list = [
     str(player["first_name"] + " " + player["second_name"])
     for player in json_general["elements"]
@@ -24,10 +23,6 @@ name_list = [
 player_id_list = [player["id"] for player in json_general["elements"]]
 teamname_list = [team["name"] for team in json_general["teams"]]
 player_dict = {player_id_list[i]: name_list[i] for i in range(len(name_list))}
-
-
-def get_team(team_id):
-    return team_dict.get(team_id)
 
 
 def prepareData():
@@ -38,8 +33,7 @@ def prepareData():
         goal_contributions = baller["goals_scored"] + baller["assists"]
         games_played = baller["starts"]
         minutes = baller["minutes"]
-
-        teamname = get_team(baller["team"])
+        teamname = utils.get_team(baller["team"])
         roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):000.4}")
         roi_per_gw = roi / games_played if games_played > 0 else 0
         roi_list.append(roi)  # add all ROIs for all players
