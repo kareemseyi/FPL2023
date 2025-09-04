@@ -17,12 +17,14 @@ from endpoints import endpoints
 # 'influence', 'threat', 'bonus', 'bps', 'ict_index', 'clean_sheets', 'red_cards', 'yellow_cards', 'selected_by_percent'
 # , 'now_cost', 'element_type']
 headers = utils.headers
-FolderURL = endpoints['DATA_GITHUB']['FOLDER_URL']
-baseURL = endpoints['DATA_GITHUB']['BASE_URL']
+FolderURL = endpoints["DATA_GITHUB"]["FOLDER_URL"]
+baseURL = endpoints["DATA_GITHUB"]["BASE_URL"]
+staticURL = endpoints["STATIC"]["BASE_URL"]
 # print(res2.json())
 #
 # print(lis)
 final = []
+data_dict = []
 
 
 # folders.remove(max(folders))
@@ -39,22 +41,24 @@ def getHistoricalPlayers(n=2, minutes=900):
     :return:
     """
     res2 = requests.get(FolderURL, headers=headers)
-    lis = res2.json()['payload']['tree']['items']
-    folders = [x['name'] for x in lis if re.match('[0-9]*-[0-9]*', x['name'])]
+    lis = res2.json()["payload"]["tree"]["items"]
+    folders = [x["name"] for x in lis if re.match("[0-9]*-[0-9]*", x["name"])]
     print(folders[-n:])
     for i in folders[-n:]:
-        dataURL = baseURL + i + '/cleaned_players.csv'
+        dataURL = baseURL + i + "/cleaned_players.csv"
         try:
             res = requests.get(dataURL, headers=headers)
             assert res.status_code == 200
-            data = res.json()['payload']['blob']['csv']
+            data = res.json()["payload"]["blob"]["csv"]
             _keys = data[0]
             print(len(data))
             for j in range(1, len(data)):
                 player = dict(zip(_keys, data[j]))
-                player['season'] = str(i)
+                player["season"] = str(i)
 
-                if int(player['minutes']) >= minutes:  # Only add players who played over 1000 mins
+                if (
+                    int(player["minutes"]) >= minutes
+                ):  # Only add players who played over 1000 mins
                     final.append(player)
 
         except Exception as e:
@@ -65,16 +69,20 @@ def getHistoricalPlayers(n=2, minutes=900):
 
 def getHistoricalTeamDict(season):
     teamdict = {}
-    with open('../historical/_team_dict/teams_{}.csv'.format(season), newline='') as csvfile:
+    with open(
+        "../historical/_teams/teams_{}.csv".format(season), newline=""
+    ) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
-            teamdict[row['id']] = row['name']
+            teamdict[row["id"]] = row["name"]
     return teamdict
 
 
 def getHistoricalFixtures(season, team_dict):
     hist_fixtures = []
-    with open('../historical/_fixtures/fixtures_{}.csv'.format(season), newline='') as csvfile:
+    with open(
+        "../historical/_fixtures/fixtures_{}.csv".format(season), newline=""
+    ) as csvfile:
         reader = csv.DictReader(csvfile)
         for row in reader:
             hist_fixtures.append(row)
@@ -94,18 +102,18 @@ def getFormDict(season=None, fixtures=None):
     score_strength_dict = {}
 
     for i in team_dict:
-        form_dict[team_dict[i]] = ''
+        form_dict[team_dict[i]] = ""
         score_strength_dict[team_dict[i]] = 0
         for j in fixtures:
-            if (team_dict[i] == j.get_away_team() or team_dict[i] == j.get_home_team()):
+            if team_dict[i] == j.get_away_team() or team_dict[i] == j.get_home_team():
                 if j.get_winner() == team_dict[i]:
-                    form_dict[team_dict[i]] += 'W'
+                    form_dict[team_dict[i]] += "W"
                     if abs(int(j.team_h_score) - int(j.team_a_score)) >= 3:
                         score_strength_dict[team_dict[i]] += 1
                 if j.is_draw():
-                    form_dict[team_dict[i]] += 'D'
+                    form_dict[team_dict[i]] += "D"
                 if not j.is_draw() and j.get_winner() != team_dict[i]:
-                    form_dict[team_dict[i]] += 'L'
+                    form_dict[team_dict[i]] += "L"
                     if abs(int(j.team_h_score) - int(j.team_a_score)) >= 3:
                         score_strength_dict[team_dict[i]] -= 1
     return form_dict, score_strength_dict
@@ -114,13 +122,15 @@ def getFormDict(season=None, fixtures=None):
 def convertTeamForm(form: str):
     res = 0
     for i in form:
-        if i == 'W':
+        if i == "W":
             res += 3
-        if i == 'D':
+        if i == "D":
             res += 1
-        if i == 'L':
+        if i == "L":
             res += 0
-    return float(res / (38 * 3))  # Normalize for max scenario where team won all its games? lol
+    return float(
+        res / (38 * 3)
+    )  # Normalize for max scenario where team won all its games? lol
 
 
 def get_FDR(form_dict, fixtures=None, season=None):
@@ -134,8 +144,12 @@ def get_FDR(form_dict, fixtures=None, season=None):
         fdr_dict[i] = 0
         for j in fixtures:
             if i == j.get_away_team():
-                fdr_dict[i] += (convertTeamForm(form_dict[i]) - convertTeamForm(form_dict[j.get_home_team()]))
+                fdr_dict[i] += convertTeamForm(form_dict[i]) - convertTeamForm(
+                    form_dict[j.get_home_team()]
+                )
             if i == j.get_home_team():
-                fdr_dict[i] += (convertTeamForm(form_dict[i]) - convertTeamForm(form_dict[j.get_away_team()]))
+                fdr_dict[i] += convertTeamForm(form_dict[i]) - convertTeamForm(
+                    form_dict[j.get_away_team()]
+                )
 
     return fdr_dict

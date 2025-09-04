@@ -6,21 +6,34 @@ import certifi
 import ssl
 import http
 from http import cookies
+import secrets
+import hashlib
+import base64
 
-headers = {"User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
-           'accept-language': 'en'
-           }
+
+headers = {
+    "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
+    "accept-language": "en",
+}
+
 cookies = http.cookies.SimpleCookie()
 ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 
-STATIC_BASE_URL = endpoints['STATIC']['BASE_URL']
+STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
 
 
-async def fetch(session, url):
+def headers_access(access_token):
+    headers["Authorization"] = "Bearer {}".format(access_token)
+    return headers
+
+
+async def fetch(session, url, headers=None):
     while True:
         try:
-            async with session.get(url, headers=headers, ssl=ssl_context, cookies=cookies) as response:
+            async with session.get(
+                url, headers=headers, ssl=ssl_context, cookies=cookies
+            ) as response:
                 assert response.status == 200
                 return await response.json(content_type=None)
         except Exception as e:
@@ -34,12 +47,7 @@ async def post(session, url, payload, headers):
 
 def position_converter(position):
     """Converts a player's `element_type` to their actual position."""
-    position_map = {
-        1: "Goalkeeper",
-        2: "Defender",
-        3: "Midfielder",
-        4: "Forward"
-    }
+    position_map = {1: "Goalkeeper", 2: "Defender", 3: "Midfielder", 4: "Forward"}
     return position_map[position]
 
 
@@ -49,14 +57,25 @@ def team_converter(team_id):
     except exceptions.RequestException as e:
         raise e
     teamname_list = [team["name"] for team in dynamic["teams"]]
-    teamdict = {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
+    teamdict = {
+        dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"]
+        for i in range(len(teamname_list))
+    }
     return teamdict[team_id]
 
 
 def get_teams():
     dynamic = requests.get(STATIC_BASE_URL).json()
     teamname_list = [team["name"] for team in dynamic["teams"]]
-    return {dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"] for i in range(len(teamname_list))}
+    return {
+        dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"]
+        for i in range(len(teamname_list))
+    }
+
+
+def get_team(team_id, team_dict=None):
+    if team_dict:
+        return team_dict.get(team_id)
 
 
 def get_headers(referer):
@@ -64,10 +83,11 @@ def get_headers(referer):
     return {
         "Content-Type": "application/json;charset=UTF-8",
         "X-Requested-With": "XMLHttpRequest",
-        "Referer": referer
+        "Referer": referer,
     }
 
 
+# def get_transfer_candidates(my_team, player_pool,max=3):
 async def post(session, url, payload, headers):
     async with session.post(url, data=payload, headers=headers) as response:
         return await response.json()
@@ -89,3 +109,12 @@ async def post_transfer(session, url, payload, headers):
             message = result.get("error")
 
             raise Exception(message if message else result)
+
+
+def generate_code_verifier():
+    return secrets.token_urlsafe(64)[:128]
+
+
+def generate_code_challenge(verifier):
+    digest = hashlib.sha256(verifier.encode()).digest()
+    return base64.urlsafe_b64encode(digest).decode().rstrip("=")

@@ -1,4 +1,4 @@
-from api import handler
+from utils import get_team
 
 
 class Fixture:
@@ -7,10 +7,12 @@ class Fixture:
     def __init__(self, fixture_information, team_dict):
         for k, v in fixture_information.items():
             if k == "team_a":
-                v = handler.get_team(team_dict=team_dict, team_id=v)
+                v = get_team(team_dict=team_dict, team_id=v)
             if k == "team_h":
-                v = handler.get_team(team_dict=team_dict, team_id=v)
-            if k == "stats" and isinstance(v, list):  # Historical Does not Have Stats in list format
+                v = get_team(team_dict=team_dict, team_id=v)
+            if k == "stats" and isinstance(
+                v, list
+            ):  # Historical Does not Have Stats in list format
                 v = {w["identifier"]: {"a": w["a"], "h": w["h"]} for w in v}
 
             setattr(self, k, v)
@@ -31,13 +33,14 @@ class Fixture:
     def get_winner(self):
         try:
             assert not self.is_draw()
-            return self.get_away_team() if getattr(self, "team_a_score") > getattr(self, "team_h_score") \
+            return (
+                self.get_away_team()
+                if getattr(self, "team_a_score") > getattr(self, "team_h_score")
                 else self.get_home_team()
+            )
 
         except AssertionError:
             return False
 
     def __str__(self):
-        return (f"{self.team_h} vs. "
-                f"{self.team_a} - "
-                f"{self.kickoff_time}")
+        return f"{self.team_h} vs. " f"{self.team_a} - " f"{self.kickoff_time}"
