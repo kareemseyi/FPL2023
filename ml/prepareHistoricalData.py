@@ -1,13 +1,7 @@
-from matplotlib.pyplot import figure
 import csv
 import os
-import aiohttp
-import sys
-import asyncio
 import requests
 from prettytable import PrettyTable
-import datetime
-
 url = "https://fantasy.premierleague.com/api/bootstrap-static/"
 json_general = requests.get(url).json()
 print(json_general.keys())

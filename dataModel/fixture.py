@@ -1,4 +1,4 @@
-from api import handler
+from utils import  get_team
 
 
 class Fixture:
@@ -7,9 +7,9 @@ class Fixture:
     def __init__(self, fixture_information, team_dict):
         for k, v in fixture_information.items():
             if k == "team_a":
-                v = handler.get_team(team_dict=team_dict, team_id=v)
+                v = get_team(team_dict=team_dict, team_id=v)
             if k == "team_h":
-                v = handler.get_team(team_dict=team_dict, team_id=v)
+                v = get_team(team_dict=team_dict, team_id=v)
             if k == "stats" and isinstance(
                 v, list
             ):  # Historical Does not Have Stats in list format
