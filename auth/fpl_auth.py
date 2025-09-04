@@ -80,7 +80,6 @@ class FPLAuth:
             interaction_id = response["interactionId"]
             interaction_token = response["interactionToken"]
 
-
         async with self.session.post(
             DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
             headers={
