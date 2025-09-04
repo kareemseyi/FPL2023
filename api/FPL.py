@@ -8,9 +8,8 @@ import warnings
 import utils
 import itertools
 from endpoints import endpoints
-from http import cookies
 import json
-from utils import fetch, get_headers, post_transfer, post
+from utils import fetch, post_transfer, post
 from dataModel.user import User
 from dataModel.player import Player
 from dataModel.fixture import Fixture
