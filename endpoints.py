@@ -17,7 +17,7 @@ endpoints = {
         "DAVINCI_CONNECTIONS": "https://account.premierleague.com/davinci/connections/{}/capabilities/customHTMLTemplate",
         "AS_RESUME": "https://account.premierleague.com/as/resume",
         "AS_TOKEN": "https://account.premierleague.com/as/token",
-    },
+     },
     "DATA_GITHUB": {
         "BASE_URL": "https://github.com/vaastav/Fantasy-Premier-League/blob/master/data/",
         "FOLDER_URL": "https://github.com/vaastav/Fantasy-Premier-League/tree/master/data",
