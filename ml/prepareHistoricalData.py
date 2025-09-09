@@ -14,8 +14,6 @@ name_list = [
     str(player["first_name"] + " " + player["second_name"])
     for player in json_general["elements"]
 ]
-# print(name_list)
-# print((name_list))
 player_id_list = [player["id"] for player in json_general["elements"]]
 teamname_list = [team["name"] for team in json_general["teams"]]
 teamid_list = [team["id"] for team in json_general["teams"]]
@@ -23,10 +21,6 @@ roi_list = []
 teamid_list_g = []
 pos_list_g = []
 data_dict = []
-
-# star_players = ['Grealish', 'Watkins', 'Werner', 'Calvert-Lewin', 'Vardy', 'Bamford', 'Harrison', 'Mané', 'Salah',
-#                 'De Bruyne', 'Sterling', 'Borges Fernandes', 'Rashford', 'Wilson', 'Kane', 'Son', 'Pereira']
-
 id_dict = {}
 # Dictionary of team_ids and Team
 team_dict = {

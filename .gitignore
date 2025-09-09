@@ -49,6 +49,7 @@ wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+*.log
 /ml/.ipynb_checkpoints/
 /ml/*.log
 /ml/*.pkl
