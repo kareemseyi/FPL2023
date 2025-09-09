@@ -99,14 +99,11 @@ async def getData():
     fpl = FPL(session, auth)
     await fpl.login()
     next_gw = await fpl.get_upcoming_gameweek()
-
     fixtures = await fpl.get_all_fixtures(*range(1, next_gw))
     f, s = historical.getFormDict(fixtures=fixtures)
-    print(f)
     g = historical.get_FDR(form_dict=f, fixtures=fixtures)
 
     dict = prepareData()
-    print(show_table(dict))
 
     for _ in dict:
         if next_gw == 1:
@@ -123,6 +120,5 @@ async def getData():
         dict_writer.writeheader()
         dict_writer.writerows(dict)
     await session.close()
-
 
 asyncio.run(getData())
