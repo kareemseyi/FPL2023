@@ -9,7 +9,6 @@ from pycaret.classification import load_model, predict_model
 from ml import currentData
 
 
-
 game_week = None
 fixtures = None
 players = None
@@ -72,8 +71,8 @@ async def main():
         "Cant get current data from FPL"
 
     try:
-        print('loading Model')
-        roi_model = load_model('../ml/Final Lightgbm Model ROI-Target')
+        print("loading Model")
+        roi_model = load_model("../ml/Final Lightgbm Model ROI-Target")
         print("ROI model loaded")
         session = aiohttp.ClientSession(trust_env=True)
         helpers = FPLHelpers(session)
@@ -89,45 +88,36 @@ async def main():
         #         player = await fpl.get_current_player(player_id=i['element'])
         #         print("player", player)
 
-
-
         game_week = await helpers.get_upcoming_gameweek()
         print("Game Week: {}".format(game_week))
-        unseen_data = pd.read_csv(f'../datastore/current/FPL_data_{game_week}.csv')
+        unseen_data = pd.read_csv(f"../datastore/current/FPL_data_{game_week}.csv")
 
         print("\nPredictions on unseen data:")
-        predictions = (predict_model(roi_model, data=unseen_data).
-                       sort_values('prediction_label', ascending=False))
+        predictions = predict_model(roi_model, data=unseen_data).sort_values(
+            "prediction_label", ascending=False
+        )
 
         predictions = predictions.head(200)
 
-
-        avg_ppg = predictions['points_per_game'].mean()
-        avg_roi = predictions['roi'].mean()
-        avg_proi = predictions['prediction_label'].mean()
-
+        avg_ppg = predictions["points_per_game"].mean()
+        avg_roi = predictions["roi"].mean()
+        avg_proi = predictions["prediction_label"].mean()
 
         #
-        predictions = predictions[(predictions['points_per_game'] >= avg_ppg) &
-                                  (predictions['roi'] >= avg_roi) &
-                                  (predictions['prediction_label'] >= avg_proi)] #Take only top 60 players
-
+        predictions = predictions[
+            (predictions["points_per_game"] >= avg_ppg)
+            & (predictions["roi"] >= avg_roi)
+            & (predictions["prediction_label"] >= avg_proi)
+        ]  # Take only top 60 players
 
         print(predictions.shape[0])
-        predicted_players = predictions.to_dict('records')
-        print("\nPredicted players: " , predicted_players[-2])
-
+        predicted_players = predictions.to_dict("records")
+        print("\nPredicted players: ", predicted_players[-2])
 
         await session.close()
 
     except Exception as err:
         "Cant get current data from FPL"
-
-
-
-
-
-
 
 
 asyncio.run(main())

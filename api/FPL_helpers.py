@@ -209,10 +209,9 @@ class FPLHelpers:
             if player["element"] == captain:
                 player[captain_type] = True
 
-
     async def get_all_fixtures(self, *gameweek):
         """Returns all fixtures for the specified gameweeks.
-        
+
         :param gameweek: Gameweek numbers to fetch fixtures for
         :rtype: list
         """
@@ -230,7 +229,7 @@ class FPLHelpers:
 
     async def get_upcoming_gameweek(self):
         """Returns the upcoming gameweek number.
-        
+
         :rtype: int
         """
         try:
@@ -264,7 +263,7 @@ class FPLHelpers:
 
 def get_transfer_in_candidates(team, player_pool):
     """Utility function for getting transfer candidates.
-    
+
     :param team: Current team
     :param player_pool: Available player pool
     :return: Transfer candidates
