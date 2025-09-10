@@ -11,7 +11,7 @@ async def getData():
     session = aiohttp.ClientSession(trust_env=True)
     helpers = FPLHelpers(session)
     next_gw = await helpers.get_upcoming_gameweek()
-    print('Next GW: {}'.format(next_gw))
+    print("Next GW: {}".format(next_gw))
     fixtures = await helpers.get_all_fixtures(*range(1, next_gw))
     f, s = historical.getFormDict(fixtures=fixtures)
     g = historical.get_FDR(form_dict=f, fixtures=fixtures)
@@ -26,9 +26,8 @@ async def getData():
     with open(
         f"../datastore/current/FPL_data_{next_gw}.csv", "w", newline=""
     ) as output_file:
-        print(f'...Writing to CSV...')
+        print(f"...Writing to CSV...")
         dict_writer = csv.DictWriter(output_file, keys)
         dict_writer.writeheader()
         dict_writer.writerows(dict)
     await session.close()
-

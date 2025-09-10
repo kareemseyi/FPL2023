@@ -155,7 +155,6 @@ class FPL:
         """
         return await self.helpers.get_all_current_players(player_ids, return_json)
 
-
     async def get_current_player(
         self, player_id=None, player=None, return_json=False, convert_hist=False
     ):
@@ -169,7 +168,9 @@ class FPL:
         :rtype: :class:`Player` or ``dict``
         :raises ValueError: Player with ``player_id`` not found
         """
-        return await self.helpers.get_current_player(player_id, player, return_json, convert_hist)
+        return await self.helpers.get_current_player(
+            player_id, player, return_json, convert_hist
+        )
 
     async def get_fixtures_for_next_GW(self, gameweek):
         assert gameweek > 0
@@ -256,12 +257,8 @@ class FPL:
         """
         return FPLHelpers.set_captain(lineup, captain, captain_type, player_ids)
 
-# Moved to FPL_helpers.py
-# def get_transfer_candidates(team, player_pool):
-
-
-
-
+    # Moved to FPL_helpers.py
+    # def get_transfer_candidates(team, player_pool):
 
     # async def get_transfers_status(self):
     #     """Returns a logged in user's transfer status, which is a dictionary
