@@ -1,5 +1,5 @@
 from asyncio import exceptions
-from endpoints import endpoints
+from constants import endpoints
 from json import JSONDecodeError
 import requests
 import certifi
@@ -47,7 +47,7 @@ async def post(session, url, payload, headers):
 
 def position_converter(position):
     """Converts a player's `element_type` to their actual position."""
-    position_map = {1: "Goalkeeper", 2: "Defender", 3: "Midfielder", 4: "Forward"}
+    position_map = {1: "GK", 2: "DEF", 3: "MID", 4: "FWD"}
     return position_map[position]
 
 
@@ -62,6 +62,18 @@ def team_converter(team_id):
         for i in range(len(teamname_list))
     }
     return teamdict[team_id]
+
+
+def convertTeamForm(form: str):
+    res = 0
+    for i in form:
+        if i == "W":
+            res += 3
+        if i == "D":
+            res += 1
+        if i == "L":
+            res += 0
+    return float(res / (len(form) * 3))
 
 
 def get_teams():
