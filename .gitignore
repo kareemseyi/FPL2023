@@ -50,8 +50,18 @@ wheels/
 .installed.cfg
 *.egg
 *.log
+
+
+
 /ml/.ipynb_checkpoints/
 /ml/*.log
 /ml/*.pkl
 /ml/*.ipynb
 /datastore
+
+
+#ignore historical data
+/historical/_*
+
+
+

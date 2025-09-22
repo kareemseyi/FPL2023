@@ -1,15 +1,18 @@
+
+"""
+!!!!!! ONLY RUN AT END OF SEASON !!!!!!!!!
+
+"""
+
 import csv
 import os
 import requests
 from prettytable import PrettyTable
+from utils import get_teams
 
 url = "https://fantasy.premierleague.com/api/bootstrap-static/"
 json_general = requests.get(url).json()
-print(json_general.keys())
 season = "24_25"
-
-print(json_general["element_types"])
-
 name_list = [
     str(player["first_name"] + " " + player["second_name"])
     for player in json_general["elements"]
@@ -31,12 +34,6 @@ player_dict = {player_id_list[i]: name_list[i] for i in range(len(name_list))}
 print(name_list)
 print(player_dict)
 
-
-# async def get_element(session, element_id):
-#     url = f"https://fantasy.premierleague.com/api/element-summary/{str(element_id)}/"
-#     async with session.get(url, headers={"User-Agent": ""}) as response:
-#         data = await response.json()
-#         return element_id, data["fixtures"]
 
 
 def get_team(team_id):
@@ -64,12 +61,12 @@ for baller in sorted_players:
     goals = baller["goals_scored"]
     assists = baller["assists"]
     goal_contributions = baller["goals_scored"] + baller["assists"]
-    games_played = baller["starts"]
+    starts = baller["starts"]
     minutes = baller["minutes"]
 
     teamname = get_team(baller["team"])
     roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):0000000.4}")
-    roi_per_gw = roi / games_played if games_played > 0 else 0
+    roi_per_gw = roi / starts if starts > 0 else 0
     roi_list.append(roi)  # add all ROIs for all players
     teamid_list_g.append(baller["team"])
 
@@ -87,10 +84,10 @@ for baller in sorted_players:
         "name": baller["web_name"],
         "price": f"£{baller['now_cost'] / 10}",
         "team": teamname,
-        "goals": int(goals),
+        "goals_scored": int(goals),
         "assists": int(assists),
         "goal_contributions": int(goal_contributions),
-        "games_played": int(games_played),
+        "starts": int(starts),
         "minutes": int(minutes),
         "total_points": int(baller["total_points"]),
         "points_per_game": float(baller["points_per_game"]),
