@@ -1,6 +1,6 @@
 from dataModel.player import Player
 from utils import fetch
-from endpoints import endpoints
+from constants import endpoints
 
 STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
 
