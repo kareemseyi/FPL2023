@@ -18,65 +18,87 @@ class Player:
 
         :rtype: int
         """
-        return sum(
-            [1 for fixture in getattr(self, "fixtures", []) if fixture["minutes"] > 0]
-        )
+        fixtures = getattr(self, "fixtures", [])
+        if fixtures:
+            return sum([1 for fixture in fixtures if fixture["minutes"] > 0])
+        return getattr(self, "starts", 0)
 
-    def points_per_GW(self):
+    def points_per_gw(self):
         """Points per Gameweek
-
         :rtype: float
         """
-        games_played = self.games_played()
-        if games_played == 0:
+        try:
+            return getattr(self, "total_points", 0) / self.games_played()
+        except ZeroDivisionError:
             return 0
-        return getattr(self, "total_points", 0) / float(games_played)
 
-    def points_per_Min(self):
+    def points_per_min(self):
         """Points per Gameweek
-
         :rtype: float
         """
         mins = getattr(self, "minutes", 0)
-        if mins == 0:
+        try:
+            return getattr(self, "total_points", 0) / mins
+        except ZeroDivisionError:
             return 0
-        return getattr(self, "total_points", 0) / mins
+
+    def _position(self):
+        if getattr(self, "element_type", None):
+            return position_converter(getattr(self, "element_type"))
+        if getattr(self, "position", None):
+            return getattr(self, "position")
+        return "MID"  # Default fallback
 
     def roi(self):
         cost = getattr(self, "now_cost", 0)
         try:
-            return getattr(self, "total_points", 0) / cost
+            return float(getattr(self, "total_points", 0) / cost)
         except ZeroDivisionError:
             return 0
 
-    def roi_per_GW(self):
+    def roi_per_gw(self):
         try:
             return float(self.roi() / self.games_played())
         except ZeroDivisionError:
-            pass
+            return 0
 
-    def roi_per_Min(self):
+    def roi_per_min(self):
         mins = getattr(self, "minutes", 0)
         try:
-            return self.roi() / mins
+            return float(self.roi() / mins)
         except ZeroDivisionError:
             return 0
 
-    def goalcontributions_per_Min(self):
+    def goals_scored(self):
+        goals_scored = getattr(self, "goals_scored", 0)
+        try:
+            return goals_scored
+        except AssertionError:
+            goals = int(getattr(self, "goals_scored", 0))
+            return goals
+
+    def goal_contributions_per_min(self):
         mins = getattr(self, "minutes", 0)
         try:
             assert mins > 0
-            return getattr(self, "goals") + getattr(self, "assists") / getattr(
-                self, "minutes"
-            )
-        except ZeroDivisionError:
-            pass
+            goals_scored = self.goals_scored
+            assists = getattr(self, "assists", 0)
+
+            return float((goals_scored + assists) / mins)
+        except AssertionError:
+            return 0
 
     def __str__(self):
-        if getattr(self, "season", None):
-            return f"{(self.first_name)} - " f"{self.second_name} - " f"{self.season}"
+        if isinstance(getattr(self, "team"), str):
+            return (
+                f"{(self.first_name)} - "
+                f"{self.second_name} - "
+                f"{(self.team)}"
+                f"{self._position()} - "
+            )
         return (
-            f"{(self.web_name)} - "
-            f"{position_converter(self.element_type)} - "
+            f"{(self.first_name)} - "
+            f"{self.second_name} - "
+            f"{self._position()} - "
             f"{team_converter(self.team)}"
         )
