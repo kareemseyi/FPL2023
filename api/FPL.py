@@ -2,7 +2,7 @@ import aiohttp
 import asyncio
 import utils
 import itertools
-from endpoints import endpoints
+from constants import endpoints
 import json
 from utils import fetch, post_transfer, post
 from dataModel.user import User
@@ -28,10 +28,10 @@ is_vc = "is_vice_captain"
 class FPL:
     """The FPL class."""
 
-    def __init__(self, session, auth=None):
+    def __init__(self, session, auth=None, helpers=None):
         self.session = session
         self.auth = auth or FPLAuth(session)
-        self.helpers = FPLHelpers(session)
+        self.helpers = helpers or FPLHelpers(session)
 
     async def login(self, email=None, password=None):
         """Login using the auth module.
@@ -213,6 +213,55 @@ class FPL:
 
     async def get_team(self, *team_ids, team_names=None):
         return await self.helpers.get_team(*team_ids, team_names=team_names)
+
+    def get_optimal_transfers(
+        self,
+        current_team,
+        player_pool,
+        max_transfers=3,
+        metric="total_points",
+        min_improvement=0.1,
+    ):
+        """Get optimal transfers for the current team from available player pool.
+
+        :param current_team: List of current Player objects
+        :param player_pool: List of available Player objects
+        :param max_transfers: Maximum number of transfers to suggest
+        :param metric: Optimization metric ('total_points', 'roi', 'points_per_Min')
+        :param min_improvement: Minimum improvement required to suggest transfer
+        :return: Dict with transfer recommendations
+        """
+        return self.helpers.get_optimal_transfers(
+            current_team, player_pool, max_transfers, metric, min_improvement
+        )
+
+    async def get_optimal_transfers_with_fixtures(
+        self,
+        current_team,
+        player_pool,
+        upcoming_gameweeks=5,
+        max_transfers=3,
+        metric="projected_points",
+        min_improvement=0.1,
+    ):
+        """Get optimal transfers considering upcoming fixtures and predicted points.
+
+        :param current_team: List of current Player objects
+        :param player_pool: List of available Player objects
+        :param upcoming_gameweeks: Number of gameweeks to consider for projections
+        :param max_transfers: Maximum number of transfers to suggest
+        :param metric: Optimization metric ('projected_points', 'form_adjusted', 'fixture_adjusted')
+        :param min_improvement: Minimum improvement required to suggest transfer
+        :return: Dict with transfer recommendations including fixture analysis
+        """
+        return await self.helpers.get_optimal_transfers_with_fixtures(
+            current_team,
+            player_pool,
+            upcoming_gameweeks,
+            max_transfers,
+            metric,
+            min_improvement,
+        )
 
     async def pickTeam(self, gw, initial=False):
         if not self.logged_in():

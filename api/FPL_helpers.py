@@ -1,10 +1,10 @@
 import asyncio
 import warnings
 import itertools
-
-import utils
-from endpoints import endpoints
-from utils import fetch, get_team
+import csv
+import pandas as pd
+from constants import endpoints, PLAYER_DATA_SCHEMA, POSITION_MAP
+from utils import fetch, get_team, position_converter
 from dataModel.player import Player
 from dataModel.team import Team
 from dataModel.fixture import Fixture
@@ -103,12 +103,12 @@ class FPLHelpers:
                     )
                     or x["web_name"] == player.first_name + " " + player.second_name
                 )
-            except StopIteration:
+            except Exception as e:
                 warnings.warn(
                     f"Player name {player.first_name} {player.second_name} not found, Might not be in the EPL"
                     f"anymore Dawg"
                 )
-                pass
+                print(e)
         return Player(player)
 
     async def get_team(self, *team_ids, team_names=None):
@@ -123,7 +123,7 @@ class FPLHelpers:
             team = (team for team in teams if team["name"] in team_names)
         return [Team(team, self.session) for team in team]
 
-    async def prepareData(self):
+    async def prepareData(self, historical=False):
         try:
             response = await fetch(self.session, STATIC_BASE_URL)
             team_dict = utils.get_teams()
@@ -131,41 +131,37 @@ class FPLHelpers:
             raise Exception("Failed to fetch team data")
         sorted_players = response["elements"]
         for baller in sorted_players:
-            goals = baller["goals_scored"]
+            goals_scored = baller["goals_scored"]
             assists = baller["assists"]
-            goal_contributions = baller["goals_scored"] + baller["assists"]
-            games_played = baller["starts"]
+            goal_contributions = goals_scored + assists
+            starts = baller["starts"]
             minutes = baller["minutes"]
+
             teamname = utils.get_team(baller["team"], team_dict)
             roi = float(f"{(baller['total_points'] / (baller['now_cost'] / 10)):000.4}")
-
-            roi_list.append(roi)  # add all ROIs for all players
-            teamid_list_g.append(baller["team"])
-
-            if baller["element_type"] == 1:
-                pos = "GK"
-            elif baller["element_type"] == 2:
-                pos = "DEF"
-            elif baller["element_type"] == 3:
-                pos = "MID"
-            else:
-                pos = "FWD"
-
-            diction = {
-                "name": baller["web_name"],
-                "price": round(baller["now_cost"] / 10, 2),
-                "games_played": int(games_played),
-                "goals": int(goals),
-                "assists": int(assists),
-                "goal_contributions": int(goal_contributions),
-                "total_points": int(baller["total_points"]),
-                "points_per_game": float(baller["points_per_game"]),
-                "roi": float(roi),
-                "position": pos,
-                "team": teamname,
-                "minutes": int(minutes),
-                "FDR_Average": 0,
-            }
+            roi_per_gw = roi / starts if starts > 0 else 0
+            # pos = utils.position_converter(baller["element_type"])
+            diction = PLAYER_DATA_SCHEMA.copy()
+            diction.update(
+                {
+                    "first_name": baller["first_name"],
+                    "second_name": baller["second_name"],
+                    "now_cost": round(baller["now_cost"] / 10, 2),
+                    "starts": int(starts),
+                    "goals_scored": int(goals_scored),
+                    "assists": int(assists),
+                    "goal_contributions": int(goal_contributions),
+                    "total_points": int(baller["total_points"]),
+                    "points_per_game": float(baller["points_per_game"]),
+                    "roi": float(roi),
+                    "roi_per_gw": float(roi_per_gw),
+                    "element_type": baller["element_type"],
+                    "team": baller["team"],
+                    "team_name": teamname,
+                    "minutes": int(minutes),
+                    "FDR_Average": 0.0,
+                }
+            )
 
             data_dict.append(diction)
         return data_dict
@@ -209,6 +205,35 @@ class FPLHelpers:
             if player["element"] == captain:
                 player[captain_type] = True
 
+    async def getData(self, gameweek):
+
+        try:
+            unseen_data = pd.read_csv(f"../datastore/current/FPL_data_{gameweek}.csv")
+
+        except Exception:
+
+            fixtures = await self.get_all_fixtures(*range(1, gameweek))
+            f, s = self.getFormDict(fixtures=fixtures)
+            print(f)
+            print(s)
+            g = self.get_FDR(form_dict=f, fixtures=fixtures)
+            print(g)
+            dict = await self.prepareData()
+            for _ in dict:
+                if gameweek == 1:
+                    _["starts"] = 0
+                    _["minutes"] = 0
+                if _["team"] in g.keys():
+                    _["FDR_Average"] = round(g[_["team"]], 3)
+            keys = dict[0].keys()
+            with open(
+                f"../datastore/current/FPL_data_{gameweek}.csv", "w", newline=""
+            ) as output_file:
+                print(f"...Writing to CSV...")
+                dict_writer = csv.DictWriter(output_file, keys)
+                dict_writer.writeheader()
+                dict_writer.writerows(dict)
+
     async def get_all_fixtures(self, *gameweek):
         """Returns all fixtures for the specified gameweeks.
 
@@ -241,8 +266,80 @@ class FPLHelpers:
             return 1
         if len(response) == 0:
             raise Exception("No Active Events yet.... TODO")
-
         return int(gw) + 1  # Adds one to previous gameweek
+
+    def getHistoricalTeamDict(self, season):
+        teamdict = {}
+        with open(
+            "../historical/_teams/teams_{}.csv".format(season), newline=""
+        ) as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                teamdict[row["id"]] = row["name"]
+        return teamdict
+
+    def getHistoricalFixtures(self, season, team_dict):
+        hist_fixtures = []
+        with open(
+            "../historical/_fixtures/fixtures_{}.csv".format(season), newline=""
+        ) as csvfile:
+            reader = csv.DictReader(csvfile)
+            for row in reader:
+                hist_fixtures.append(row)
+            return [Fixture(fixture, team_dict=team_dict) for fixture in hist_fixtures]
+
+    def getFormDict(self, season=None, fixtures=None):
+        if season:
+            team_dict = self.getHistoricalTeamDict(season)
+            fixtures = self.getHistoricalFixtures(season, team_dict)
+
+        else:
+            team_dict = utils.get_teams()
+            fixtures = fixtures
+
+        form_dict = {}
+        score_strength_dict = {}
+
+        for i in team_dict:
+            form_dict[team_dict[i]] = ""
+            score_strength_dict[team_dict[i]] = 0
+            for j in fixtures:
+                if (
+                    team_dict[i] == j.get_away_team()
+                    or team_dict[i] == j.get_home_team()
+                ):
+                    if j.get_winner() == team_dict[i]:
+                        form_dict[team_dict[i]] += "W"
+                        if abs(int(j.team_h_score) - int(j.team_a_score)) >= 3:
+                            score_strength_dict[team_dict[i]] += 1
+                    if j.is_draw():
+                        form_dict[team_dict[i]] += "D"
+                    if not j.is_draw() and j.get_winner() != team_dict[i]:
+                        form_dict[team_dict[i]] += "L"
+                        if abs(int(j.team_h_score) - int(j.team_a_score)) >= 3:
+                            score_strength_dict[team_dict[i]] -= 1
+        return form_dict, score_strength_dict
+
+    def get_FDR(self, form_dict, fixtures=None, season=None):
+        if season:
+            team_dict = self.getHistoricalTeamDict(season)
+            fixtures = self.getHistoricalFixtures(season, team_dict)
+        else:
+            fixtures = fixtures
+        fdr_dict = {}
+        for i in form_dict:
+            fdr_dict[i] = 0
+            for j in fixtures:
+                if i == j.get_away_team():
+                    fdr_dict[i] += utils.convertTeamForm(
+                        form_dict[i]
+                    ) - utils.convertTeamForm(form_dict[j.get_home_team()])
+                if i == j.get_home_team():
+                    fdr_dict[i] += utils.convertTeamForm(
+                        form_dict[i]
+                    ) - utils.convertTeamForm(form_dict[j.get_away_team()])
+
+        return fdr_dict
 
     async def get_fixtures_for_gameweek(self, gameweek: int):
         """Returns the fixtures for the current gameweek.
@@ -260,22 +357,426 @@ class FPLHelpers:
         fixtures = [x for x in response if x["event"] == gameweek]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
+    # def get_optimal_transfers(self, current_team, player_pool, max_transfers=3, metric="total_points", min_improvement=0.1):
+    #     """Get optimal transfers for the current team from available player pool.
+    #
+    #     :param current_team: List of current Player objects
+    #     :param player_pool: List of available Player objects
+    #     :param max_transfers: Maximum number of transfers to suggest
+    #     :param metric: Optimization metric ('total_points', 'roi', 'points_per_Min')
+    #     :param min_improvement: Minimum improvement required to suggest transfer
+    #     :return: Dict with transfer recommendations
+    #     """
+    #     return optimize_team_transfers(current_team, player_pool, max_transfers, metric, min_improvement)
+    #
+    # async def get_optimal_transfers_with_fixtures(self, current_team, player_pool, upcoming_gameweeks=5, max_transfers=3, metric="projected_points", min_improvement=0.1):
+    #     """Get optimal transfers considering upcoming fixtures and predicted points.
+    #
+    #     :param current_team: List of current Player objects
+    #     :param player_pool: List of available Player objects
+    #     :param upcoming_gameweeks: Number of gameweeks to consider for projections
+    #     :param max_transfers: Maximum number of transfers to suggest
+    #     :param metric: Optimization metric ('projected_points', 'form_adjusted', 'fixture_adjusted')
+    #     :param min_improvement: Minimum improvement required to suggest transfer
+    #     :return: Dict with transfer recommendations including fixture analysis
+    #     """
+    #     try:
+    #         current_gw = await self.get_upcoming_gameweek()
+    #         fixtures = await self.get_all_fixtures(*range(current_gw, current_gw + upcoming_gameweeks))
+    #
+    #         return optimize_team_transfers_with_fixtures(
+    #             current_team, player_pool, fixtures, upcoming_gameweeks,
+    #             max_transfers, metric, min_improvement
+    #         )
+    #     except Exception as e:
+    #         # Fallback to basic optimization if fixture data unavailable
+    #         return optimize_team_transfers(current_team, player_pool, max_transfers, "total_points", min_improvement)
 
-def get_transfer_in_candidates(team, player_pool):
-    """Utility function for getting transfer candidates.
+    def validate_team_constraints(self, team=None):
+        """Validates that a team meets all FPL constraints.
 
-    :param team: Current team
-    :param player_pool: Available player pool
-    :return: Transfer candidates
-    """
-    pass
+        :param team: List of Player objects
+        :return: Dict with constraint validation results
+        """
+        if team is None:
+            team = [Player]
+        if not team or len(team) != 15:
+            return {
+                "valid": False,
+                "error": f"Team must have exactly 15 players, has {len(team)}",
+            }
 
+        # Count positions
+        position_counts = {"GK": 0, "DEF": 0, "MID": 0, "FWD": 0}  # GK, DEF, MID, FWD
+        team_counts = {}
+        total_cost = 0
 
-def get_transfer_out_candidates(team, player_pool):
-    """Utility function for getting transfer candidates.
+        for player in team:
 
-    :param team: Current team
-    :param player_pool: Available player pool
-    :return: Transfer candidates
-    """
-    pass
+            pos = player._position()
+            position_counts[pos] = position_counts.get(pos, 0) + 1
+            team_counts[player.team] = team_counts.get(player.team, 0) + 1
+            total_cost += player.now_cost
+
+        # Check position constraints
+        if position_counts.get("GK", 0) != MAX_GK:
+            return {
+                "valid": False,
+                "error": f"Must have {MAX_GK} goalkeepers, has {position_counts.get('GK', 0)}",
+            }
+        if position_counts.get("DEF", 0) != MAX_DEF:
+            return {
+                "valid": False,
+                "error": f"Must have {MAX_DEF} defenders, has {position_counts.get('DEF', 0)}",
+            }
+        if position_counts.get("MID", 0) != MAX_MID:
+            return {
+                "valid": False,
+                "error": f"Must have {MAX_MID} midfielders, has {position_counts.get('MID', 0)}",
+            }
+        if position_counts.get("FWD", 0) != MAX_FWD:
+            return {
+                "valid": False,
+                "error": f"Must have {MAX_FWD} forwards, has {position_counts.get('FWD', 0)}",
+            }
+
+        # Check budget constraint
+        if total_cost > MAX_BUDGET:
+            return {
+                "valid": False,
+                "error": f"Team cost {total_cost:.1f} exceeds budget {MAX_BUDGET}",
+            }
+
+        # Check team constraint
+        for team_id, count in team_counts.items():
+            if count > MAX_PLAYER_FROM_TEAM:
+                return {
+                    "valid": False,
+                    "error": f"Team {team_id} has {count} players, max is {MAX_PLAYER_FROM_TEAM}",
+                }
+
+        return {
+            "valid": True,
+            "position_counts": position_counts,
+            "team_counts": team_counts,
+            "total_cost": total_cost,
+            "remaining_budget": MAX_BUDGET - total_cost,
+        }
+
+    def get_team_analysis(self, team, metrics):
+        """Analyzes team performance by position.
+
+        :param team: List of Player objects
+        :param metrics: List of metrics to analyze (['total_points', 'roi', 'points_per_Min'], etc.)
+        :return: Dict with team analysis
+        """
+        metric_values = {}
+        analysis = {
+            "by_position": {1: [], 2: [], 3: [], 4: []},
+            "total_metric": 0,
+            "weakest_players": [],
+            "metrics_used": metrics,
+        }
+
+        # def get_player_metric_value(player, single_metric):
+        #     """Helper function to get metric value for a player."""
+        #     if single_metric == "total_points":
+        #         return c
+        #     elif single_metric == "roi":
+        #         return player.roi()
+        #     elif single_metric == "points_per_Min":
+        #         return player.points_per_Min()
+        #     else:
+        #         return getattr(player, single_metric, 0)
+
+        for player in team:
+            total_value = 0
+            # Calculate value for each metric and sum them
+            for metric in metrics:
+                match metric:
+                    case "total_points" | "goals_scored" | "assists" | "starts":
+                        val = float(getattr(player, metric))
+                        total_value += val
+                        metric_values[metric] = val
+
+                    case (
+                        "roi"
+                        | "points_per_min"
+                        | "points_per_gw"
+                        | "roi_per_gw"
+                        | "goal_contributions_per_min"
+                        | "roi_per_min"
+                    ):
+                        val = float(getattr(player, metric)())
+                        total_value *= val  # multipliers
+                        metric_values[metric] = val
+
+            analysis["by_position"][player.element_type].append(
+                {
+                    "player_object": player,
+                    "player_name": str(player),
+                    "total_metric_value": total_value,
+                    "individual_metrics": str(metric_values),
+                }
+            )
+        # Sort by metric within each position and identify weakest
+        for position in analysis["by_position"]:
+            analysis["by_position"][position].sort(
+                key=lambda x: x["total_metric_value"]
+            )
+            if analysis["by_position"][position]:
+                analysis["weakest_players"].append(analysis["by_position"][position][0])
+
+        # Sort the weakest players globally
+        analysis["weakest_players"].sort(key=lambda x: x["total_metric_value"])
+        return analysis
+
+    def find_valid_replacement(self, player_out, player_pool, current_team, metrics):
+        """Finds valid replacement for a player from the pool.
+
+        :param player_out: Player to replace
+        :param player_pool: Available players
+        :param current_team: Current team (without player_out)
+        :param metric: Optimization metric
+        :return: Best replacement player or None
+        """
+        # Exrtact player object
+        player_out = player_out["player_object"]
+        # Filter pool to same position
+        candidates = [p for p in player_pool if p._position() == player_out._position()]
+
+        # Remove players already in team
+        _ids_in_team = {p.id for p in current_team if hasattr(p, "id")} | {
+            getattr(p, "id", None) for p in current_team
+        }
+        candidates = [
+            p for p in candidates if getattr(p, "id", None) not in _ids_in_team
+        ]
+
+        valid_candidates = []
+
+        for candidate in candidates:
+            total_metric_improvement_val = 0
+            # Check if replacement maintains team constraints
+            temp_team = [p for p in current_team if p != player_out] + [candidate]
+
+            # Check budget constraint (assuming selling price = current cost for simplicity)
+            cost_diff = candidate.now_cost - player_out.now_cost
+            team_validation = self.validate_team_constraints(temp_team)
+            individual_metrics = {}
+
+            if team_validation["valid"]:
+                for metric in metrics:
+                    metric_improvement_val = 0
+                    match metric:
+                        case (
+                            "total_points"
+                            | "goals_scored"
+                            | "assists"
+                            | "minutes"
+                            | "starts"
+                        ):
+                            metric_improvement_val = getattr(
+                                candidate, metric
+                            ) - getattr(player_out, metric)
+                            total_metric_improvement_val += metric_improvement_val
+                            individual_metrics[metric] = metric_improvement_val
+
+                            # multipliers
+                        case (
+                            "points_per_min"
+                            | "points_per_gw"
+                            | "goal_contributions_per_min"
+                        ):
+                            metric_improvement_val = (
+                                getattr(candidate, metric)()
+                                - getattr(player_out, metric)()
+                            )
+                            total_metric_improvement_val *= metric_improvement_val
+                            individual_metrics[metric] = metric_improvement_val
+
+                        case "roi" | "roi_per_gw":
+                            metric_improvement_val = (
+                                getattr(candidate, metric)
+                                - getattr(player_out, metric)()
+                            )
+                            total_metric_improvement_val *= metric_improvement_val
+                            individual_metrics[metric] = metric_improvement_val
+
+                valid_candidates.append(
+                    {
+                        "player": candidate,
+                        "cost_diff": cost_diff,
+                        "individual_metrics": individual_metrics,
+                        "total_metric_improvement_val": total_metric_improvement_val,
+                    }
+                )
+
+        # Return best candidate (highest improvement)
+        if valid_candidates:
+            valid_candidates.sort(
+                key=lambda x: x["total_metric_improvement_val"], reverse=True
+            )
+            return valid_candidates
+
+        return None
+
+    # def optimize_team_transfers(self, current_team, player_pool, max_transfers=3, metric="total_points", min_improvement=0.1):
+    #     """Optimizes team by suggesting transfers that improve performance while maintaining constraints.
+    #
+    #     :param current_team: List of current Player objects
+    #     :param player_pool: List of available Player objects
+    #     :param max_transfers: Maximum number of transfers to suggest
+    #     :param metric: Optimization metric ('total_points', 'roi', 'points_per_Min')
+    #     :param min_improvement: Minimum improvement required to suggest transfer
+    #     :return: Dict with transfer recommendations
+    #     """
+    #     # Validate current team
+    #     team_validation = self.validate_team_constraints(current_team)
+    #     if not team_validation["valid"]:
+    #         return {"error": f"Current team invalid: {team_validation['error']}"}
+    #
+    #     # Analyze current team
+    #     team_analysis = self.get_team_analysis(current_team, [metric])
+    #
+    #     suggested_transfers = []
+    #     temp_team = current_team.copy()
+    #
+    #     # Try to make transfers for weakest players
+    #     for weak_player_info in team_analysis["weakest_players"]:
+    #         if len(suggested_transfers) >= max_transfers:
+    #             break
+    #
+    #         player_out = weak_player_info["player"]
+    #
+    #         # Find best replacement
+    #         replacement = self.find_valid_replacement(player_out, player_pool, temp_team, metric)
+    #
+    #         if replacement:
+    #             # Calculate improvement
+    #             if metric == "total_points":
+    #                 current_value = getattr(player_out, "total_points", 0)
+    #                 new_value = getattr(replacement, "total_points", 0)
+    #             elif metric == "roi":
+    #                 current_value = player_out.roi()
+    #                 new_value = replacement.roi()
+    #             elif metric == "points_per_Min":
+    #                 current_value = player_out.points_per_Min()
+    #                 new_value = replacement.points_per_Min()
+    #             else:
+    #                 current_value = getattr(player_out, metric, 0)
+    #                 new_value = getattr(replacement, metric, 0)
+    #
+    #             improvement = new_value - current_value
+    #
+    #             if improvement >= min_improvement:
+    #                 suggested_transfers.append({
+    #                     "player_out": player_out,
+    #                     "player_in": replacement,
+    #                     "improvement": improvement,
+    #                     "cost_change": replacement.now_cost - player_out.now_cost,
+    #                     "position": position_converter(player_out.element_type)
+    #                 })
+    #
+    #                 # Update temp team for next iteration
+    #                 temp_team = [p for p in temp_team if p != player_out] + [replacement]
+    #
+    #     # Calculate total improvement
+    #     total_improvement = sum(t["improvement"] for t in suggested_transfers)
+    #     total_cost_change = sum(t["cost_change"] for t in suggested_transfers)
+    #
+    #     return {
+    #         "transfers": suggested_transfers,
+    #         "total_improvement": total_improvement,
+    #         "total_cost_change": total_cost_change,
+    #         "new_budget_used": team_validation["total_cost"] + total_cost_change,
+    #         "metric_used": metric,
+    #         "current_team_analysis": team_analysis
+    #     }
+
+    # def calculate_fdr_for_upcoming_fixtures(self, team_name, fixtures, gameweeks=5):
+    #     """Calculate FDR-based fixture difficulty for a team using your existing FDR system.
+    #
+    #     :param team_name: Team name to analyze
+    #     :param fixtures: List of Fixture objects
+    #     :param gameweeks: Number of gameweeks to consider
+    #     :return: Dict with FDR-based difficulty metrics
+    #     """
+    #     # Get current form and FDR data
+    #     try:
+    #         form_dict, score_strength_dict = getFormDict(fixtures=fixtures)
+    #         fdr_dict = get_FDR(form_dict=form_dict, fixtures=fixtures)
+    #     except Exception:
+    #         # Fallback if FDR calculation fails
+    #         return {
+    #             'team_fdr': 0.0,
+    #             'home_fixtures': 0,
+    #             'away_fixtures': 0,
+    #             'total_fixtures': 0,
+    #             'fdr_score': 0.0,
+    #             'fixtures': []
+    #         }
+    #
+    #     # Get team's overall FDR
+    #     team_fdr = fdr_dict.get(team_name, 0.0)
+    #
+    #     # Analyze upcoming fixtures specifically
+    #     team_fixtures = []
+    #     for fixture in fixtures:
+    #         home_team = getattr(fixture, 'team_h', '') or fixture.get_home_team()
+    #         away_team = getattr(fixture, 'team_a', '') or fixture.get_away_team()
+    #
+    #         if team_name == home_team or team_name == away_team:
+    #             is_home = (team_name == home_team)
+    #             opponent = away_team if is_home else home_team
+    #
+    #             # Calculate specific fixture FDR (team form - opponent form)
+    #             team_form = form_dict.get(team_name, "")
+    #             opponent_form = form_dict.get(opponent, "")
+    #
+    #             from historical.historical import convertTeamForm
+    #             team_strength = convertTeamForm(team_form)
+    #             opponent_strength = convertTeamForm(opponent_form)
+    #
+    #             fixture_fdr = team_strength - opponent_strength
+    #             # Add small home advantage bonus
+    #             if is_home:
+    #                 fixture_fdr += 0.1
+    #
+    #             team_fixtures.append({
+    #                 'gameweek': getattr(fixture, 'event', 0),
+    #                 'is_home': is_home,
+    #                 'opponent': opponent,
+    #                 'fixture_fdr': fixture_fdr,
+    #                 'team_form': team_form,
+    #                 'opponent_form': opponent_form
+    #             })
+    #
+    #     # Sort by gameweek and take only upcoming fixtures
+    #     team_fixtures.sort(key=lambda x: x['gameweek'])
+    #     upcoming_fixtures = team_fixtures[:gameweeks]
+    #
+    #     if not upcoming_fixtures:
+    #         return {
+    #             'team_fdr': team_fdr,
+    #             'home_fixtures': 0,
+    #             'away_fixtures': 0,
+    #             'total_fixtures': 0,
+    #             'fdr_score': team_fdr,
+    #             'fixtures': []
+    #         }
+    #
+    #     # Calculate metrics for upcoming fixtures
+    #     avg_fixture_fdr = sum(f['fixture_fdr'] for f in upcoming_fixtures) / len(upcoming_fixtures)
+    #     home_fixtures = sum(1 for f in upcoming_fixtures if f['is_home'])
+    #     away_fixtures = len(upcoming_fixtures) - home_fixtures
+    #
+    #     return {
+    #         'team_fdr': team_fdr,  # Overall team FDR
+    #         'avg_fixture_fdr': avg_fixture_fdr,  # Average FDR for upcoming fixtures
+    #         'home_fixtures': home_fixtures,
+    #         'away_fixtures': away_fixtures,
+    #         'total_fixtures': len(upcoming_fixtures),
+    #         'fdr_score': avg_fixture_fdr,  # Use upcoming fixture FDR as main score
+    #         'fixtures': upcoming_fixtures
+    #     }
