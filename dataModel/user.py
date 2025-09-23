@@ -34,6 +34,16 @@ class User:
     async def get_current_user_entry(self):
         return getattr(self, "entry", None)
 
+    async def get_user(self, user_id=None):
+        """Returns the user with the given ``user_id``
+        :param user_id: A user's ID.
+        :type user_id: string or int
+        :rtype: :class:`User`
+        """
+        if user_id:
+            raise NotImplementedError("Getting other users not implemented")
+        return self
+
     # async def get_user(self, user_id=None):
     #     """Returns the user with the given ``user_id``
     #     :param session:
@@ -119,6 +129,23 @@ class User:
                 API_USER_TEAM.format(f=getattr(self, "entry", None)),
                 headers=utils.headers_access(self.access_token),
             )
+            transfers = response["transfers"]
+            transfers["value"] = transfers["value"] / 10
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("User ID does not match provided email address!")
         return response["transfers"]
+
+    async def get_users_team(self, user=None):
+        """Returns a logged-in user's current team info. Requires the user to have
+        logged in using ``fpl.login()``.
+        :rtype: dict
+        """
+        return await self.get_users_team_info()
+
+    async def get_users_players(self, user=None):
+        """Returns a logged-in user's current team players. Requires the user to have
+        logged in using ``fpl.login()``.
+        :rtype: list
+        """
+        team_info = await self.get_users_team_info()
+        return team_info.get("picks", [])
