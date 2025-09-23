@@ -1,4 +1,5 @@
 import pandas as pd
+
 season = "24_25"  # HardCoded for now
 from historical import historical
 
@@ -14,7 +15,6 @@ FDR["Burnley"] = FDR["Ipswich"]
 FDR["Sunderland"] = FDR["Leicester"]
 FDR["Leeds"] = FDR["Southampton"]
 df = pd.read_csv(csv_file_path)
-
 
 
 df["FDR_Average"] = df.apply(lambda x: FDR[x["team_name"]], axis=1)

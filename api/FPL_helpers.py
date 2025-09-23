@@ -24,7 +24,6 @@ is_c = "is_captain"
 is_vc = "is_vice_captain"
 
 
-
 class FPLHelpers:
     """Helper class for FPL operations that don't require authentication."""
 
@@ -348,7 +347,9 @@ class FPLHelpers:
         :rtype: list
         """
         try:
-            response = await utils.fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
+            response = await utils.fetch(
+                self.session, API_GW_FIXTURES.format(f=gameweek)
+            )
         except Exception:
             raise Exception("Failed to fetch fixtures for gameweek")
 
