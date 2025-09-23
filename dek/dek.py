@@ -128,8 +128,6 @@ async def main():
         print("Logged in")
         await session.close()
 
-
-
     # TODO retrain every 5 gameweeks
     # print("Game Week: {}".format(gameweek))
     # try:
