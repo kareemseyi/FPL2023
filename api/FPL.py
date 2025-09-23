@@ -1,13 +1,8 @@
-import http
-
 import aiohttp
 import asyncio
-import os
-import warnings
-
 import utils
 import itertools
-from endpoints import endpoints
+from constants import endpoints
 import json
 from utils import fetch, post_transfer, post
 from dataModel.user import User
@@ -15,16 +10,7 @@ from dataModel.player import Player
 from dataModel.fixture import Fixture
 from dataModel.team import Team
 from auth.fpl_auth import FPLAuth
-
-MAX_DEF = 5
-MAX_GK = 2
-MAX_MID = 5
-MAX_FWD = 3
-MAX_BUDGET = 100
-MAX_PLAYER_FROM_TEAM = 3
-
-# Base Url
-STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
+from api.FPL_helpers import FPLHelpers
 
 API_MY_TEAM_GW_URL = endpoints["API"]["MY_TEAM_GW"]
 API_MY_TEAM = endpoints["API"]["MY_TEAM"]
@@ -42,9 +28,10 @@ is_vc = "is_vice_captain"
 class FPL:
     """The FPL class."""
 
-    def __init__(self, session, auth=None):
+    def __init__(self, session, auth=None, helpers=None):
         self.session = session
         self.auth = auth or FPLAuth(session)
+        self.helpers = helpers or FPLHelpers(session)
 
     async def login(self, email=None, password=None):
         """Login using the auth module.
@@ -166,32 +153,7 @@ class FPL:
         :type return_json: bool
         :rtype: list
         """
-        try:
-            data = await fetch(self.session, STATIC_BASE_URL)
-            players = data["elements"]
-        except Exception as e:
-            print(e)
-            raise Exception
-        if player_ids:
-            players = [player for player in players if player["id"] in player_ids]
-            if not return_json:
-                return players
-            else:
-                return [Player(player) for player in players]
-        if not player_ids:
-            tasks = [
-                asyncio.ensure_future(self.get_current_player(player=player))
-                for player in players
-            ]
-            players = await asyncio.gather(*tasks)
-
-            return players
-
-    # async def get_current_players(self):
-    #     dynamic = await fetch(self.session, STATIC_BASE_URL)
-    #     player_id_list = [player["id"] for player in dynamic["elements"]]
-    #     name_list = [str(player["first_name"] + ' ' + player['second_name']) for player in dynamic["elements"]]
-    #     return {player_id_list[i]: name_list[i] for i in range(len(name_list))}
+        return await self.helpers.get_all_current_players(player_ids, return_json)
 
     async def get_current_player(
         self, player_id=None, player=None, return_json=False, convert_hist=False
@@ -206,39 +168,12 @@ class FPL:
         :rtype: :class:`Player` or ``dict``
         :raises ValueError: Player with ``player_id`` not found
         """
-        data = await fetch(self.session, STATIC_BASE_URL)
-        players = data["elements"]
-        if not player and player_id:
-            try:
-                player = next(player for player in players if player["id"] == player_id)
-                # print(player)
-            except StopIteration:
-                raise ValueError(f"Player with ID {player_id} not found")
-            if return_json:
-                return player
-        if player and convert_hist:
-            try:
-                player = next(
-                    x
-                    for x in players
-                    if (
-                        x["first_name"] == player.first_name
-                        and x["second_name"] == player.second_name
-                    )
-                    or x["web_name"] == player.first_name + " " + player.second_name
-                )
-            except StopIteration:
-                warnings.warn(
-                    f"Player name {player.first_name} {player.second_name} not found, Might not be in the EPL"
-                    f"anymore Dawg"
-                )
-                pass
-            return player
+        return await self.helpers.get_current_player(
+            player_id, player, return_json, convert_hist
+        )
 
     async def get_fixtures_for_next_GW(self, gameweek):
         assert gameweek > 0
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
         try:
             response = await fetch(
                 self.session,
@@ -253,64 +188,80 @@ class FPL:
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
     async def get_all_fixtures(self, *gameweek):
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
+        """Returns all fixtures for the specified gameweeks.
 
-        task = asyncio.ensure_future(fetch(self.session, API_ALL_FIXTURES))
-
-        gameweek_fixtures = await asyncio.gather(task)
-        fixtures = list(itertools.chain(*gameweek_fixtures))
-
-        team_dict = utils.get_teams()
-        return [
-            Fixture(fixture, team_dict)
-            for fixture in fixtures
-            if fixture["event"] in gameweek
-        ]
+        :param gameweek: Gameweek numbers to fetch fixtures for
+        :rtype: list
+        """
+        return await self.helpers.get_all_fixtures(*gameweek)
 
     async def get_upcoming_gameweek(self):
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
-        try:
-            response = await fetch(self.session, API_GW_FIXTURES)
-            gw = max([x["event"] for x in response if x["finished"] is True])
-            # This is the previous gameweek
-        except Exception:
-            Warning("Start of the season, gameweek 1")
-            return 1
-        if len(response) == 0:
-            raise Exception("No Active Events yet.... TODO")
+        """Returns the upcoming gameweek number.
 
-        return int(gw) + 1  # Adds one to previous gameweek
+        :rtype: int
+        """
+        return await self.helpers.get_upcoming_gameweek()
 
     async def get_fixtures_for_gameweek(self, gameweek: int):
         """Returns the fixtures for the current gameweek.
 
-        :param aiohttp.ClientSession session: A logged-in user's session.
-        :rtype: int
+        :param gameweek: The gameweek number
+        :type gameweek: int
+        :rtype: list
         """
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
-        try:
-            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
-        except aiohttp.client_exceptions.ClientResponseError:
-            raise Exception("User ID does not match provided email address!")
-
-        team_dict = utils.get_teams()
-        fixtures = [x for x in response if x["event"] == gameweek]
-        return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
+        return await self.helpers.get_fixtures_for_gameweek(gameweek)
 
     async def get_team(self, *team_ids, team_names=None):
-        try:
-            response = await fetch(self.session, STATIC_BASE_URL)
-        except aiohttp.client_exceptions.ClientResponseError:
-            raise Exception("User ID does not match provided email address!")
-        teams = response["teams"]
-        if team_ids:
-            team = (team for team in teams if team["id"] in team_ids)
-        else:
-            team = (team for team in teams if team["name"] in team_names)
-        return [Team(team, self.session) for team in team]
+        return await self.helpers.get_team(*team_ids, team_names=team_names)
+
+    def get_optimal_transfers(
+        self,
+        current_team,
+        player_pool,
+        max_transfers=3,
+        metric="total_points",
+        min_improvement=0.1,
+    ):
+        """Get optimal transfers for the current team from available player pool.
+
+        :param current_team: List of current Player objects
+        :param player_pool: List of available Player objects
+        :param max_transfers: Maximum number of transfers to suggest
+        :param metric: Optimization metric ('total_points', 'roi', 'points_per_Min')
+        :param min_improvement: Minimum improvement required to suggest transfer
+        :return: Dict with transfer recommendations
+        """
+        return self.helpers.get_optimal_transfers(
+            current_team, player_pool, max_transfers, metric, min_improvement
+        )
+
+    async def get_optimal_transfers_with_fixtures(
+        self,
+        current_team,
+        player_pool,
+        upcoming_gameweeks=5,
+        max_transfers=3,
+        metric="projected_points",
+        min_improvement=0.1,
+    ):
+        """Get optimal transfers considering upcoming fixtures and predicted points.
+
+        :param current_team: List of current Player objects
+        :param player_pool: List of available Player objects
+        :param upcoming_gameweeks: Number of gameweeks to consider for projections
+        :param max_transfers: Maximum number of transfers to suggest
+        :param metric: Optimization metric ('projected_points', 'form_adjusted', 'fixture_adjusted')
+        :param min_improvement: Minimum improvement required to suggest transfer
+        :return: Dict with transfer recommendations including fixture analysis
+        """
+        return await self.helpers.get_optimal_transfers_with_fixtures(
+            current_team,
+            player_pool,
+            upcoming_gameweeks,
+            max_transfers,
+            metric,
+            min_improvement,
+        )
 
     async def pickTeam(self, gw, initial=False):
         if not self.logged_in():
@@ -341,7 +292,7 @@ class FPL:
         for i in player_pool:
             print(str(i), i.points_per_Min())
 
-    def _set_captain(lineup, captain, captain_type, player_ids):
+    def _set_captain(self, lineup, captain, captain_type, player_ids):
         """Sets the given captain's captain_type to True.
 
         :param lineup: List of players.
@@ -353,31 +304,10 @@ class FPL:
         :param player_ids: List of the team's players' IDs.
         :type player_ids: list
         """
-        if captain and captain not in player_ids:
-            raise ValueError("Cannot (vice) captain player who isn't in user's team.")
+        return FPLHelpers.set_captain(lineup, captain, captain_type, player_ids)
 
-        current_captain = next(player for player in lineup if player[captain_type])
-        chosen_captain = next(
-            player for player in lineup if player["element"] == captain
-        )
-
-        # If the chosen captain is already a (vice) captain, then give his previous
-        # role to the current (vice) captain.
-        if chosen_captain[is_c] or chosen_captain[is_vc]:
-            current_captain[is_c], chosen_captain[is_c] = (
-                chosen_captain[is_c],
-                current_captain[is_c],
-            )
-            current_captain[is_vc], chosen_captain[is_vc] = (
-                chosen_captain[is_vc],
-                current_captain[is_vc],
-            )
-
-        for player in lineup:
-            player[captain_type] = False
-
-            if player["element"] == captain:
-                player[captain_type] = True
+    # Moved to FPL_helpers.py
+    # def get_transfer_candidates(team, player_pool):
 
     # async def get_transfers_status(self):
     #     """Returns a logged in user's transfer status, which is a dictionary
