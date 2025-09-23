@@ -9,8 +9,9 @@ from dataModel.fixture import Fixture
 from auth.fpl_auth import FPLAuth
 from api.FPL_helpers import FPLHelpers
 
-API_MY_TEAM_GW_URL = endpoints["API"]["MY_TEAM_GW"]
-API_MY_TEAM = endpoints["API"]["MY_TEAM"]
+API_MANAGER_INFO_PER_GW_URL = endpoints["API"]["MANAGER_INFO_PER_GW"]
+API_MANAGER_INFO = endpoints["API"]["MANAGER_INFO"]
+API_ME = endpoints["API"]["ME"]
 API_USER_TEAM = endpoints["API"]["USER_TEAM"]
 API_TRANSFERS = endpoints["API"]["TRANSFERS"]
 
@@ -46,58 +47,26 @@ class FPL:
         :return: True if user is logged in else False
         :rtype: bool
         """
-        return self.auth.logged_in()
+        return self.auth.user.logged_in()
 
-    async def get_current_user(self):
-        return await self.auth.get_current_user()
+    async def get_current_user_entry(self):
+        return await self.auth.user.get_current_user_entry()
 
-    async def get_user(self, user_id=None, return_json=False):
-        """Returns the user with the given ``user_id``.
-
-        Information is taken from e.g.:
-            https://fantasy.premierleague.com/api/entry/91928/
-
+    async def get_user(self, user_id=None):
+        """Returns the user with the given ``user_id``
         :param session:
         :param user_id: A user's ID.
-        :type user_id: string or int
-        :param return_json: (optional) Boolean. If ``True`` returns a ``dict``,
-            if ``False`` returns a :class:`User` object. Defaults to ``False``.
-        :type return_json: bool
-        :rtype: :class:`User` or `dict`
+        :rtype: :class:`User`
         """
-        if user_id:
-            assert int(user_id) > 0, "User ID must be a positive number."
-        else:
-            # If no user ID provided get it from current session
-            try:
-                user = await self.get_current_user()
-                user_id = user["player"]["entry"]
-            except TypeError:
-                raise Exception(
-                    "You must log in before using `get_user` if "
-                    "you do not provide a user ID."
-                )
+        return await self.auth.user.get_user(user_id)
 
-            if return_json:
-                return user
-            return User(user, self.session)
-
-    async def get_users_team_for_gw(self, user, gw):
-        """Returns a logged-in user's current team. Requires the user to have
+    async def get_manager_info_for_gw(self, user, gw):
+        """Returns info on the managers team per gameweek. Requires the user to have
         logged in using ``fpl.login()``.
 
         :rtype: list
         """
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
-
-        try:
-            response = await fetch(
-                self.session, API_MY_TEAM_GW_URL.format(f=user.entry, gw=gw)
-            )
-        except Exception as e:
-            raise Exception("Client has not set a team for gameweek " + str(gw))
-        return response["picks"]
+        return await self.auth.user.get_manager_info_for_gw(user, gw)
 
     async def get_users_players(self, user):
         """Returns a logged-in user's current team. Requires the user to have
@@ -105,33 +74,23 @@ class FPL:
 
         :rtype: list
         """
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
+        return await self.auth.user.get_users_players(user)
 
-        try:
-            response = await fetch(
-                self.session,
-                API_USER_TEAM.format(f=user.entry),
-                headers=utils.headers_access(self.auth.access_token),
-            )
-        except Exception as e:
-            raise Exception("Client has not set a team for gameweek ")
-        return response["picks"]
 
-    async def get_users_team(self, user):
-        """Returns a logged-in user's current team. Requires the user to have
+    async def get_manager_info(self):
+        """Returns info on the managers team. Requires the user to have
         logged in using ``fpl.login()``.
-
         :rtype: list
         """
-        if not self.logged_in():
-            raise Exception("User must be logged in.")
+        return await self.auth.user.get_manager_info()
 
-        try:
-            response = await fetch(self.session, API_MY_TEAM.format(f=user.entry))
-        except Exception as e:
-            raise Exception("Client has not set a team for gameweek ")
-        return response
+    async def get_transfers_status(self):
+        """Returns info on the managers team. Requires the user to have
+        logged in using ``fpl.login()``.
+        :rtype: list
+        """
+        return await self.auth.user.get_transfers_status()
+
 
     async def get_all_current_players(self, player_ids=None, return_json=False):
         """Returns either a list of *all* players, or a list of players whose
@@ -305,28 +264,6 @@ class FPL:
 
     # Moved to FPL_helpers.py
     # def get_transfer_candidates(team, player_pool):
-
-    # async def get_transfers_status(self):
-    #     """Returns a logged in user's transfer status, which is a dictionary
-    #     containing their bank value, how many free transfers they have left
-    #     and so on. Requires the user to have logged in using ``fpl.login()``.
-    #
-    #     Information is taken from e.g.:
-    #         https://fantasy.premierleague.com/api/my-team/81629336/
-    #
-    #     :rtype: dict
-    #     """
-    #     if not FPL.logged_in(self):
-    #         raise Exception("User must be logged in.")
-    #
-    #     try:
-    #         user = await FPL.get_user(self)
-    #         print(user.id)
-    #         response = await fetch(self.session, API_MY_TEAM.format(f=user.id))
-    #     except aiohttp.client_exceptions.ClientResponseError:
-    #         raise Exception("User ID does not match provided email address!")
-    #
-    #     return response["transfers"]
 
     async def _get_transfer_payload(
         self, players_out, players_in, user_team, players, wildcard, free_hit
