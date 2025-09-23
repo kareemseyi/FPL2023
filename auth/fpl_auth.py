@@ -3,6 +3,7 @@ import uuid
 import re
 import utils
 from constants import endpoints
+from dataModel.user import User
 
 LOGIN_URL = endpoints["API"]["LOGIN"]
 AUTH_URL = endpoints["API"]["AUTH"]
@@ -20,7 +21,7 @@ class FPLAuth:
 
     def __init__(self, session):
         self.session = session
-        self.access_token = None
+        self.user = None
 
     async def login(self, email=None, password=None):
         """Returns a requests session with FPL login authentication.
@@ -31,8 +32,8 @@ class FPLAuth:
             account.
         """
         if not email and not password:
-            email = os.getenv("FPL_EMAIL", "")
-            password = os.getenv("FPL_PASSWORD", "")
+            email = os.getenv("FPL_EMAIL", "okareem@stellaralgo.com")
+            password = os.getenv("FPL_PASSWORD", "@Testing123")
         if not email or not password:
             raise ValueError("Email and password must be set")
         print(f"Logging in: {LOGIN_URL}")
@@ -176,28 +177,9 @@ class FPLAuth:
         ) as response:
             assert response.status == 200
             response = await response.json()
-            self.access_token = response["access_token"]
-
-        return self.session
-
-    def logged_in(self):
-        """Checks that the user is logged in within the session.
-
-        :return: True if user is logged in else False
-        :rtype: bool
-        """
-        assert all(
-            x
-            in self.session.cookie_jar.filter_cookies(
-                "https://account.premierleague.com/"
+            access_token = response["access_token"]
+            user = await utils.fetch(
+                self.session, API_ME, headers=utils.headers_access(access_token)
             )
-            for x in ["interactionToken", "interactionId"]
-        ), "Must Be logged in"
-        return True
-
-    async def get_current_user(self):
-        """Returns the current authenticated user."""
-        user = await utils.fetch(
-            self.session, API_ME, headers=utils.headers_access(self.access_token)
-        )
-        return user
+            self.user = User(user, self.session, access_token)
+            return self.session
