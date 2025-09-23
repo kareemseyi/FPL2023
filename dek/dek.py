@@ -6,12 +6,28 @@ from auth.fpl_auth import FPLAuth
 import aiohttp
 import asyncio
 from pycaret.classification import load_model, predict_model
-from ml import currentData
-
+from ml import ml
+import logging
 
 game_week = None
 fixtures = None
 players = None
+MY_TEAM = []
+metrics = [
+    "roi",
+    "points_per_min",
+    "points_per_gw",
+    "roi_per_gw",
+    "goal_contributions_per_min",
+    "roi_per_min",
+    "total_points",
+    "goals_scored",
+    "assists",
+    "minutes",
+    "starts",
+]
+
+predictions_to_player_obj = []
 
 
 # async def test():
@@ -62,35 +78,48 @@ players = None
 #
 #     await session.close()
 
+# TODO
+# async def get_historical_data():
+#     try:
+#         print("loading Model")
+#         roi_model = load_model("../ml/Final Lightgbm Model ROI-Target")
+#         print("ROI model loaded")
+#     except Exception as e:
+#         session = aiohttp.ClientSession(trust_env=True)
+#         auth = FPLAuth(session)
+#         helpers = FPLHelpers(session)
+#         fpl = FPL(session, auth, helpers)
+#         fpl.helpers.prepareData(historical=True)
+
+# def get_current_data():
+#     try:
+#         print("loading Model")
+#         roi_model = load_model("../ml/Final Lightgbm Model ROI-Target")
+#         print("ROI model loaded")
+#         session = aiohttp.ClientSession(trust_env=True)
+#         auth = FPLAuth(session)
+#         helpers = FPLHelpers(session)
+#         fpl = FPL(session, auth, helpers)
+#         fpl.helpers.prepareData(historical=False)
+#     except Exception as e:
+#         logging.error(e)
+
 
 async def main():
+    roi_model = load_model("../ml/Final et Model ROI-Target")
+    print("ROI model loaded")
+    session = aiohttp.ClientSession(trust_env=True)
+    auth = FPLAuth(session)
+    helpers = FPLHelpers(session)
+    fpl = FPL(session, auth, helpers)
+
+    gameweek = await fpl.helpers.get_upcoming_gameweek()
+
+    # TODO retrain every 5 gameweeks
+    print("Game Week: {}".format(gameweek))
     try:
-        await asyncio.wait_for(currentData.getData(), timeout=60.0)
-
-    except Exception as err:
-        "Cant get current data from FPL"
-
-    try:
-        print("loading Model")
-        roi_model = load_model("../ml/Final Lightgbm Model ROI-Target")
-        print("ROI model loaded")
-        session = aiohttp.ClientSession(trust_env=True)
-        helpers = FPLHelpers(session)
-        auth = FPLAuth(session)
-
-        # fpl = FPL(session, auth)
-
-        # if fpl.logged_in():
-        #     user = await fpl.get_user()
-        #     my_players = await fpl.get_users_players(user)
-        #     print("my_players", my_players)
-        #     for i in my_players:
-        #         player = await fpl.get_current_player(player_id=i['element'])
-        #         print("player", player)
-
-        game_week = await helpers.get_upcoming_gameweek()
-        print("Game Week: {}".format(game_week))
-        unseen_data = pd.read_csv(f"../datastore/current/FPL_data_{game_week}.csv")
+        await asyncio.wait_for(fpl.helpers.getData(gameweek), timeout=60.0)
+        unseen_data = pd.read_csv(f"../datastore/current/FPL_data_{gameweek}.csv")
 
         print("\nPredictions on unseen data:")
         predictions = predict_model(roi_model, data=unseen_data).sort_values(
@@ -103,21 +132,60 @@ async def main():
         avg_roi = predictions["roi"].mean()
         avg_proi = predictions["prediction_label"].mean()
 
-        #
         predictions = predictions[
             (predictions["points_per_game"] >= avg_ppg)
             & (predictions["roi"] >= avg_roi)
             & (predictions["prediction_label"] >= avg_proi)
-        ]  # Take only top 60 players
+        ]
 
         print(predictions.shape[0])
         predicted_players = predictions.to_dict("records")
-        print("\nPredicted players: ", predicted_players[-2])
+
+        for i in predicted_players:
+            convert = await fpl.get_current_player(player=i, convert_hist=False)
+            predictions_to_player_obj.append(convert)
+
+        print("\nPredicted player: ", predicted_players[-2])
+        print("\nPredicted player converted: ", vars(predictions_to_player_obj[0]))
+
+        await fpl.login()
+
+        if fpl.logged_in():
+            user = await fpl.get_user()
+            my_players = await fpl.get_users_players(user)
+            print("my_players", my_players)
+            for i in my_players:
+                player = await fpl.get_current_player(player_id=i["element"])
+                MY_TEAM.append(player)
+            MY_TEAM.sort(key=lambda x: x.roi())
+            print("MY_TEAM", MY_TEAM[0])
+            res = fpl.helpers.get_team_analysis(MY_TEAM, metrics=metrics)[
+                "weakest_players"
+            ]
+
+            for i in res:
+                candidates = fpl.helpers.find_valid_replacement(
+                    player_out=i,
+                    player_pool=predictions_to_player_obj,
+                    current_team=MY_TEAM,
+                    metrics=metrics,
+                )
+                print(i)
+                print(len(predictions_to_player_obj))
+                print(len(candidates))
+                for i in candidates:
+                    print(i["player"])
+
+            # for i in MY_TEAM:
+            #     print(vars(i))
+            # #
+            # for i in MY_TEAM:
+            #     print((i))
 
         await session.close()
-
     except Exception as err:
         "Cant get current data from FPL"
+        print(err)
 
 
 asyncio.run(main())

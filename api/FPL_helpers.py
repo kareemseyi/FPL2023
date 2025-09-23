@@ -3,8 +3,8 @@ import warnings
 import itertools
 import csv
 import pandas as pd
+import utils
 from constants import endpoints, PLAYER_DATA_SCHEMA, POSITION_MAP
-from utils import fetch, get_team, position_converter
 from dataModel.player import Player
 from dataModel.team import Team
 from dataModel.fixture import Fixture
@@ -22,9 +22,7 @@ API_ALL_FIXTURES = endpoints["API"]["ALL_FIXTURES"]
 
 is_c = "is_captain"
 is_vc = "is_vice_captain"
-roi_list = []
-teamid_list_g = []
-data_dict = []
+
 
 
 class FPLHelpers:
@@ -51,7 +49,7 @@ class FPLHelpers:
         :rtype: list
         """
         try:
-            data = await fetch(self.session, STATIC_BASE_URL)
+            data = await utils.fetch(self.session, STATIC_BASE_URL)
             players = data["elements"]
         except Exception as e:
             print(e)
@@ -83,7 +81,7 @@ class FPLHelpers:
         :rtype: :class:`Player` or ``dict``
         :raises ValueError: Player with ``player_id`` not found
         """
-        data = await fetch(self.session, STATIC_BASE_URL)
+        data = await utils.fetch(self.session, STATIC_BASE_URL)
         players = data["elements"]
         if not player and player_id:
             try:
@@ -113,7 +111,7 @@ class FPLHelpers:
 
     async def get_team(self, *team_ids, team_names=None):
         try:
-            response = await fetch(self.session, STATIC_BASE_URL)
+            response = await utils.fetch(self.session, STATIC_BASE_URL)
         except Exception:
             raise Exception("Failed to fetch team data")
         teams = response["teams"]
@@ -124,8 +122,9 @@ class FPLHelpers:
         return [Team(team, self.session) for team in team]
 
     async def prepareData(self, historical=False):
+        data_dict = []
         try:
-            response = await fetch(self.session, STATIC_BASE_URL)
+            response = await utils.fetch(self.session, STATIC_BASE_URL)
             team_dict = utils.get_teams()
         except Exception:
             raise Exception("Failed to fetch team data")
@@ -240,7 +239,7 @@ class FPLHelpers:
         :param gameweek: Gameweek numbers to fetch fixtures for
         :rtype: list
         """
-        task = asyncio.ensure_future(fetch(self.session, API_ALL_FIXTURES))
+        task = asyncio.ensure_future(utils.fetch(self.session, API_ALL_FIXTURES))
 
         gameweek_fixtures = await asyncio.gather(task)
         fixtures = list(itertools.chain(*gameweek_fixtures))
@@ -258,7 +257,7 @@ class FPLHelpers:
         :rtype: int
         """
         try:
-            response = await fetch(self.session, API_GW_FIXTURES)
+            response = await utils.fetch(self.session, API_GW_FIXTURES)
             gw = max([x["event"] for x in response if x["finished"] is True])
             # This is the previous gameweek
         except Exception:
@@ -349,11 +348,11 @@ class FPLHelpers:
         :rtype: list
         """
         try:
-            response = await fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
+            response = await utils.fetch(self.session, API_GW_FIXTURES.format(f=gameweek))
         except Exception:
             raise Exception("Failed to fetch fixtures for gameweek")
 
-        team_dict = get_team()
+        team_dict = utils.get_teams()
         fixtures = [x for x in response if x["event"] == gameweek]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
