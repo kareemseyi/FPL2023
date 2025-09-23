@@ -9,7 +9,6 @@ API_MANAGER_INFO_PER_GW_URL = endpoints["API"]["MANAGER_INFO_PER_GW"]
 API_MANAGER_INFO = endpoints["API"]["MANAGER_INFO"]
 
 
-
 class User:
     def __init__(self, user_information, session, access_token):
         self.session = session
@@ -78,7 +77,9 @@ class User:
         if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
-            response = await utils.fetch(self.session, API_MANAGER_INFO.format(f=getattr(self, "entry", None)))
+            response = await utils.fetch(
+                self.session, API_MANAGER_INFO.format(f=getattr(self, "entry", None))
+            )
         except Exception as e:
             raise Exception("Client has not set a team for gameweek ")
         return response
@@ -113,8 +114,11 @@ class User:
         if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
-            response = await utils.fetch(self.session, API_USER_TEAM.format(f=getattr(self, "entry", None)),
-                                         headers=utils.headers_access(self.access_token))
+            response = await utils.fetch(
+                self.session,
+                API_USER_TEAM.format(f=getattr(self, "entry", None)),
+                headers=utils.headers_access(self.access_token),
+            )
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("User ID does not match provided email address!")
         return response["transfers"]

@@ -76,7 +76,6 @@ class FPL:
         """
         return await self.auth.user.get_users_players(user)
 
-
     async def get_manager_info(self):
         """Returns info on the managers team. Requires the user to have
         logged in using ``fpl.login()``.
@@ -90,7 +89,6 @@ class FPL:
         :rtype: list
         """
         return await self.auth.user.get_transfers_status()
-
 
     async def get_all_current_players(self, player_ids=None, return_json=False):
         """Returns either a list of *all* players, or a list of players whose

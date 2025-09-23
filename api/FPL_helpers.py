@@ -272,8 +272,8 @@ class FPLHelpers:
         """
         try:
             response = await utils.fetch(self.session, STATIC_BASE_URL)
-            gw_stats = [x for x in response['events'] if x['can_manage'] is False]
-            gw_stats = next(x for x in gw_stats if x['id'] == gw)
+            gw_stats = [x for x in response["events"] if x["can_manage"] is False]
+            gw_stats = next(x for x in gw_stats if x["id"] == gw)
             # This is the for all gws finished
         except Exception:
             Warning("Start of the season, gameweek 1")
