@@ -266,6 +266,20 @@ class FPLHelpers:
             raise Exception("No Active Events yet.... TODO")
         return int(gw) + 1  # Adds one to previous gameweek
 
+    async def get_gameweek_stats(self, gw):
+        """Returns the stats for gameweek.
+        :rtype: dictionary
+        """
+        try:
+            response = await utils.fetch(self.session, STATIC_BASE_URL)
+            gw_stats = [x for x in response["events"] if x["can_manage"] is False]
+            gw_stats = next(x for x in gw_stats if x["id"] == gw)
+            # This is the for all gws finished
+        except Exception:
+            Warning("Start of the season, gameweek 1")
+            return 1
+        return gw_stats
+
     def getHistoricalTeamDict(self, season):
         teamdict = {}
         with open(
