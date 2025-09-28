@@ -221,8 +221,8 @@ class FPLHelpers:
                 if gameweek == 1:
                     _["starts"] = 0
                     _["minutes"] = 0
-                if _["team"] in g.keys():
-                    _["FDR_Average"] = round(g[_["team"]], 3)
+                if _["team_name"] in g.keys():
+                    _["FDR_Average"] = round(g[_["team_name"]], 3)
             keys = dict[0].keys()
             with open(
                 f"../datastore/current/FPL_data_{gameweek}.csv", "w", newline=""

@@ -113,10 +113,7 @@ async def main():
     auth = FPLAuth(session)
     helpers = FPLHelpers(session)
     fpl = FPL(session, auth, helpers)
-    print("FPL model loaded")
-
     gameweek = await fpl.helpers.get_upcoming_gameweek()
-    print(gameweek)
     #
     # await fpl.login()
     #
@@ -130,9 +127,10 @@ async def main():
     #     await session.close()
 
     # TODO retrain every 5 gameweeks
-    print("Game Week: {}".format(gameweek))
+    print("upcoming Game Week: {}".format(gameweek))
     try:
         await asyncio.wait_for(fpl.helpers.getData(gameweek), timeout=60.0)
+        # unseen_data = pd.read_csv(f"../datastore/current/FPL_data_{gameweek}.csv")
         unseen_data = pd.read_csv(f"datastore/current/FPL_data_{gameweek}.csv")
 
         print("\nPredictions on unseen data:")
