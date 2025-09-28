@@ -72,7 +72,7 @@ resource "google_iam_workload_identity_pool_provider" "github_provider" {
     "attribute.repository" = "assertion.repository"
   }
 
-  attribute_condition = "attribute.repository == \"${var.github_repo}\""
+  attribute_condition = "attribute.repository == ${var.github_repo}"
   depends_on = [
     google_iam_workload_identity_pool.github_pool
   ]
