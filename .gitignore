@@ -65,8 +65,8 @@ wheels/
 
 # terraform
 google_resources/terraform/.terraform/*
-google_resources/terraform/.terraform.lock.hcl
-
-
+google_resources/terraform/terraform.lock.hcl
+google_resources/terraform/terraform.tfstate
+google_resources/terraform/terraform.tfstate.backup
 
 
