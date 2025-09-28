@@ -30,7 +30,7 @@ id_dict = {}
 team_dict = {}
 
 with open(
-    f"/Users/Kareem/FPL2025/historical/_teams/teams_{season}.csv", mode="r"
+        f"/docker/historical/_teams/teams_{season}.csv", mode="r"
 ) as teams:
     reader = csv.DictReader(teams)
     for team in reader:
@@ -58,7 +58,7 @@ players_table.field_names = [
 players_table.align = "c"
 
 with open(
-    f"/Users/Kareem/FPL2025/historical/_summary/players_raw_{season}.csv", mode="r"
+        f"/docker/historical/_summary/players_raw_{season}.csv", mode="r"
 ) as sorted_players:
     print(team_dict)
     reader = csv.DictReader(sorted_players)
