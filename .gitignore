@@ -63,5 +63,13 @@ wheels/
 #ignore historical data
 /historical/_*
 
+# terraform
+.terraform/
+.terraform.lock.hcl # This should generally be committed for consistent provider versions across environments.
+*.tfstate
+*.tfstate.*
+crash.log
+*.tfvars.json
+
 
 
