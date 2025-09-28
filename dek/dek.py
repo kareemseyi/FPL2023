@@ -106,8 +106,8 @@ predictions_to_player_obj = []
 
 
 async def main():
+    # roi_model = load_model("../ml/Final et Model ROI-Target")
     roi_model = load_model("ml/Final et Model ROI-Target")
-    roi_model = load_model("../ml/Final et Model ROI-Target")
     print("ROI model loaded")
     session = aiohttp.ClientSession(trust_env=True)
     auth = FPLAuth(session)
@@ -133,7 +133,7 @@ async def main():
     print("Game Week: {}".format(gameweek))
     try:
         await asyncio.wait_for(fpl.helpers.getData(gameweek), timeout=60.0)
-        unseen_data = pd.read_csv(f"/datastore/current/FPL_data_{gameweek}.csv")
+        unseen_data = pd.read_csv(f"datastore/current/FPL_data_{gameweek}.csv")
 
         print("\nPredictions on unseen data:")
         predictions = predict_model(roi_model, data=unseen_data).sort_values(
