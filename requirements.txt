@@ -7,3 +7,4 @@ requests
 prettytable
 black
 pycaret
+black
