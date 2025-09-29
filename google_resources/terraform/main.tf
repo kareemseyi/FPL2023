@@ -42,8 +42,8 @@ module "cloud_run" {
   source                  = "./cloud_run"
   project_id              = var.project_id
   region                  = var.region
-  container_image =       "us-docker.pkg.dev/cloudrun/container/hello"
-  # container_image         = "${module.artifact_registry.repository_url}/fpl-app:latest"
+  # container_image =       "us-docker.pkg.dev/cloudrun/container/hello"
+  container_image         = "${module.artifact_registry.repository_url}/fpl-app:latest"
   api_services_dependency = google_project_service.apis
 }
 
