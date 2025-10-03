@@ -73,14 +73,21 @@ class User:
 
         :rtype: list
         """
-        info = ['event', 'points', 'total_points']
+        info = ["event", "points", "total_points"]
         if not self.logged_in():
             raise Exception("User must be logged in.")
         try:
             response = await utils.fetch(
-                self.session, API_MANAGER_INFO_PER_GW_URL.format(f=await self.get_current_user_entry(), gw=gw)
+                self.session,
+                API_MANAGER_INFO_PER_GW_URL.format(
+                    f=await self.get_current_user_entry(), gw=gw
+                ),
             )
-            manager_info = {key: value for key, value in response['entry_history'].items() if key in info}
+            manager_info = {
+                key: value
+                for key, value in response["entry_history"].items()
+                if key in info
+            }
         except Exception as e:
             raise Exception("Client has not set a team for gameweek " + str(gw))
         return manager_info

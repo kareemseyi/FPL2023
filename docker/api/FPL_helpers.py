@@ -272,7 +272,7 @@ class FPLHelpers:
         """Returns the stats for gameweek.
         :rtype: dictionary
         """
-        stats = ['id','average_entry_score', 'highest_score']
+        stats = ["id", "average_entry_score", "highest_score"]
         try:
             response = await utils.fetch(self.session, STATIC_BASE_URL)
             gw_stats = [x for x in response["events"] if x["can_manage"] is False]

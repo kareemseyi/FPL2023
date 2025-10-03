@@ -4,7 +4,15 @@ from api.FPL_helpers import FPLHelpers
 from auth.fpl_auth import FPLAuth
 import aiohttp
 import asyncio
-from pycaret.regression import load_model, predict_model, setup, tune_model, finalize_model, save_model, create_model
+from pycaret.regression import (
+    load_model,
+    predict_model,
+    setup,
+    tune_model,
+    finalize_model,
+    save_model,
+    create_model,
+)
 import logging
 
 # Configure logger
@@ -157,7 +165,6 @@ async def main():
     # save_model(final_retrained_model, 'Final et Model ROI-Target - Retrained')
     # print(str(final_retrained_model))
 
-
     # status = await fpl.get_transfers_status()
     # stats = await fpl.helpers.get_gameweek_stats(gw=prev_gameweek)
     # print(status)
@@ -198,11 +205,17 @@ async def main():
         await fpl.login()
         logger.info("upcoming Game Week: {}".format(gameweek))
         info = await fpl.get_manager_info_for_gw(gw=prev_gameweek)
-        logger.info("(previous) Game Week {} Manager info: {}".format(prev_gameweek, info))
+        logger.info(
+            "(previous) Game Week {} Manager info: {}".format(prev_gameweek, info)
+        )
         gw_stats = await fpl.get_gameweek_stats(gw=prev_gameweek)
         logger.info("(previous) Game Week {} Stats: {}".format(prev_gameweek, gw_stats))
-        logger.info("U_Highest {}".format(abs(info['points']-gw_stats['highest_score'])))
-        logger.info("U_Average {}".format(abs(info['points']-gw_stats['average_entry_score'])))
+        logger.info(
+            "U_Highest {}".format(abs(info["points"] - gw_stats["highest_score"]))
+        )
+        logger.info(
+            "U_Average {}".format(abs(info["points"] - gw_stats["average_entry_score"]))
+        )
 
         if fpl.logged_in():
             user = await fpl.get_user()

@@ -53,7 +53,7 @@ class FPL:
     async def get_transfers_status(self):
         return await self.auth.user.get_transfers_status()
 
-    async def get_gameweek_stats(self,gw):
+    async def get_gameweek_stats(self, gw):
         return await self.helpers.get_gameweek_stats(gw)
 
     async def get_all_current_players(self, player_ids=None, return_json=False):
