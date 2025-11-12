@@ -8,6 +8,12 @@ output "secret_name" {
   description = "The full resource name of the secret."
 }
 
+output "secret_data" {
+  value       = google_secret_manager_secret_version.fpl_credentials_version.secret_data
+  description = "The full resource name of the secret."
+  sensitive = true
+}
+
 output "secret_version_name" {
   value       = google_secret_manager_secret_version.fpl_credentials_version.name
   description = "The full resource name of the secret version."

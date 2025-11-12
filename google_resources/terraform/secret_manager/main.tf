@@ -10,4 +10,8 @@ resource "google_secret_manager_secret" "fpl_credentials" {
 resource "google_secret_manager_secret_version" "fpl_credentials_version" {
   secret      = google_secret_manager_secret.fpl_credentials.id
   secret_data = var.secret_data
+
+  lifecycle {
+    ignore_changes = [secret_data]
+  }
 }
