@@ -28,6 +28,8 @@ API_ALL_FIXTURES = endpoints["API"]["ALL_FIXTURES"]
 is_c = "is_captain"
 is_vc = "is_vice_captain"
 
+fpl_bucket = 'fpl_2025'
+
 
 class FPLHelpers:
     """Helper class for FPL operations that don't require authentication."""
@@ -210,7 +212,7 @@ class FPLHelpers:
 
     async def getData(self, gameweek):
         file_name = f"datastore/current/FPL_data_{gameweek}.csv"
-        if not os.path.exists(file_name):
+        if not utils.check_file_exists_google_cloud(bucket_name=fpl_bucket, file_name=file_name):
             fixtures = await self.get_all_fixtures(*range(1, gameweek))
             f, s = self.getFormDict(fixtures=fixtures)
             logger.info("form_dict: %s", f)
@@ -230,6 +232,9 @@ class FPLHelpers:
                 dict_writer = csv.DictWriter(output_file, keys)
                 dict_writer.writeheader()
                 dict_writer.writerows(dict)
+            utils.write_file_to_google_storage(bucket_name=fpl_bucket,
+                                               source_file_name=file_name,
+                                               destination_blob_name=file_name)
 
     async def get_all_fixtures(self, *gameweek):
         """Returns all fixtures for the specified gameweeks.
