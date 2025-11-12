@@ -88,7 +88,6 @@ class FPLAuth:
             DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
             headers={
                 "interactionId": interaction_id,
-                # "interactionToken": interaction_token,
             },
             json={
                 "id": response["id"],
@@ -109,7 +108,6 @@ class FPLAuth:
             DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
             headers={
                 "interactionId": interaction_id,
-                # "interactionToken": interaction_token,
             },
             json={
                 "id": response["id"],

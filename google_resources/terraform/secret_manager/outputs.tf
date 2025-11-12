@@ -6,7 +6,6 @@ output "secret_id" {
 output "secret_name" {
   value       = google_secret_manager_secret.fpl_credentials.name
   description = "The full resource name of the secret."
-
 }
 
 output "secret_version_name" {

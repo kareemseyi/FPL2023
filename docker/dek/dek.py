@@ -229,7 +229,7 @@ async def main():
             res = res["no_position"]
             print(res)
 
-            for i in res[0:3]:
+            for i in res[0:4]:
                 candidates = fpl.helpers.find_valid_replacement(
                     player_out=i,
                     player_pool=predictions_to_player_obj,
