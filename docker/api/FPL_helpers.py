@@ -597,7 +597,7 @@ class FPLHelpers:
         # Remove players already in team
         _ids_in_team = {p.id for p in current_team if hasattr(p, "id")} | {
             getattr(p, "id", None) for p in current_team
-        }git
+        }
         candidates = [
             p for p in candidates if  getattr(p, "id", None) not in _ids_in_team        ]
 
