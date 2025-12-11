@@ -55,6 +55,7 @@ PLAYER_DATA_SCHEMA = {
     "minutes": 0,  # int: Total minutes played
     "FDR_Average": 0.0,  # float: Fixture Difficulty Rating average
     "team": 0,  # int: team code
+    "id": 0
 }
 
 # Position mapping
