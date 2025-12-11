@@ -165,6 +165,7 @@ class FPLHelpers:
                     "team_name": teamname,
                     "minutes": int(minutes),
                     "FDR_Average": 0.0,
+                    "id":baller["id"],
                 }
             )
 
@@ -294,6 +295,16 @@ class FPLHelpers:
             Warning("Start of the season, gameweek 1")
             return 1
         return gw_stats
+
+    # def get_model(self):
+    #     try:
+    #         utils.read_file_from_google_storage(
+    #             bucket_name=fpl_bucket,
+    #             source_blob_name=fpl_bucket + "/model",
+    #             destination_file_name=fpl_bucket + "/model"
+    #         )
+    #     except Exception as e:
+    #         print(e)
 
     def getHistoricalTeamDict(self, season):
         teamdict = {}
@@ -586,10 +597,9 @@ class FPLHelpers:
         # Remove players already in team
         _ids_in_team = {p.id for p in current_team if hasattr(p, "id")} | {
             getattr(p, "id", None) for p in current_team
-        }
+        }git
         candidates = [
-            p for p in candidates if getattr(p, "id", None) not in _ids_in_team
-        ]
+            p for p in candidates if  getattr(p, "id", None) not in _ids_in_team        ]
 
         valid_candidates = []
 
