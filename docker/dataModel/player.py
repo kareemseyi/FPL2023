@@ -23,7 +23,7 @@ class Player:
             return sum([1 for fixture in fixtures if fixture["minutes"] > 0])
         return getattr(self, "starts", 0)
 
-    def points_per_gw(self):
+    def points_per_game(self):
         """Points per Gameweek
         :rtype: float
         """

@@ -28,17 +28,13 @@ fixtures = None
 players = None
 MY_TEAM = []
 metrics = [
-    "roi",
-    "points_per_min",
-    "points_per_gw",
-    "roi_per_gw",
-    "goal_contributions_per_min",
-    "roi_per_min",
     "total_points",
     "goals_scored",
     "assists",
     "minutes",
     "starts",
+    "roi",
+    "points_per_game",
 ]
 
 predictions_to_player_obj = []
@@ -185,7 +181,7 @@ async def main():
             "prediction_label", ascending=False
         )
 
-        predictions = predictions.head(200)
+        predictions = predictions.head(250)
 
         avg_ppg = predictions["points_per_game"].mean()
         avg_roi = predictions["roi"].mean()
@@ -238,6 +234,7 @@ async def main():
                 )
                 logger.info("Weak player: %s", i)
                 logger.info("Number of potential candidates: %d", len(candidates))
+                # candidates.sort(key=lambda x: x.total_metric_improvement_val)
                 for i in candidates:
                     logger.info("Candidate: %s", i["player"])
         # entry = await fpl.get_current_user_entry()

@@ -165,7 +165,7 @@ class FPLHelpers:
                     "team_name": teamname,
                     "minutes": int(minutes),
                     "FDR_Average": 0.0,
-                    "id":baller["id"],
+                    "id": baller["id"],
                 }
             )
 
@@ -536,19 +536,20 @@ class FPLHelpers:
             # Calculate value for each metric and sum them
             for metric in metrics:
                 match metric:
-                    case "total_points" | "goals_scored" | "assists" | "starts":
+                    case (
+                        "total_points"
+                        | "goals_scored"
+                        | "assists"
+                        | "starts"
+                        | "points_per_game"
+                    ):
                         val = float(getattr(player, metric))
+                        if metric == "points_per_game":
+                            total_value *= val
                         total_value += val
                         metric_values[metric] = val
 
-                    case (
-                        "roi"
-                        | "points_per_min"
-                        | "points_per_gw"
-                        | "roi_per_gw"
-                        | "goal_contributions_per_min"
-                        | "roi_per_min"
-                    ):
+                    case "roi":
                         val = float(getattr(player, metric)())
                         total_value *= val  # multipliers
                         metric_values[metric] = val
@@ -599,7 +600,8 @@ class FPLHelpers:
             getattr(p, "id", None) for p in current_team
         }
         candidates = [
-            p for p in candidates if  getattr(p, "id", None) not in _ids_in_team        ]
+            p for p in candidates if getattr(p, "id", None) not in _ids_in_team
+        ]
 
         valid_candidates = []
 
@@ -621,29 +623,18 @@ class FPLHelpers:
                             "total_points"
                             | "goals_scored"
                             | "assists"
-                            | "minutes"
                             | "starts"
+                            | "points_per_game"
                         ):
-                            metric_improvement_val = getattr(
-                                candidate, metric
-                            ) - getattr(player_out, metric)
+                            metric_improvement_val = getattr(candidate, metric) - float(
+                                getattr(player_out, metric)
+                            )
+                            if metric == "points_per_game":
+                                total_metric_improvement_val *= metric_improvement_val
                             total_metric_improvement_val += metric_improvement_val
                             individual_metrics[metric] = metric_improvement_val
 
-                            # multipliers
-                        case (
-                            "points_per_min"
-                            | "points_per_gw"
-                            | "goal_contributions_per_min"
-                        ):
-                            metric_improvement_val = (
-                                getattr(candidate, metric)()
-                                - getattr(player_out, metric)()
-                            )
-                            total_metric_improvement_val *= metric_improvement_val
-                            individual_metrics[metric] = metric_improvement_val
-
-                        case "roi" | "roi_per_gw":
+                        case "roi":
                             metric_improvement_val = (
                                 getattr(candidate, metric)
                                 - getattr(player_out, metric)()
