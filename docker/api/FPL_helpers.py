@@ -309,9 +309,7 @@ class FPLHelpers:
     #         print(e)
 
     def get_historical_team_dict(self, season):
-        with open(
-            f"../historical/_teams/teams_{season}.csv", newline=""
-        ) as csvfile:
+        with open(f"../historical/_teams/teams_{season}.csv", newline="") as csvfile:
             reader = csv.DictReader(csvfile)
             return {row["id"]: row["name"] for row in reader}
 

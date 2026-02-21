@@ -48,9 +48,7 @@ class FPLAuth:
             "Content-Type": "application/json",
         }
 
-        dv_response = await self._davinci_flow(
-            auth_headers, email, password
-        )
+        dv_response = await self._davinci_flow(auth_headers, email, password)
 
         auth_code = await self._get_auth_code(dv_response, new_state)
         await self._exchange_token(auth_code, code_verifier)
@@ -85,9 +83,7 @@ class FPLAuth:
         async with self.session.get(AUTH_URL, params=params) as response:
             assert response.status == 200
             text = await response.text()
-            access_token = re.search(
-                r'"accessToken":"([^"]+)"', text
-            ).group(1)
+            access_token = re.search(r'"accessToken":"([^"]+)"', text).group(1)
             new_state = re.search(
                 r'<input[^>]+name="state"[^>]+value="([^"]+)"', text
             ).group(1)

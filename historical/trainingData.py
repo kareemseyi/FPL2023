@@ -1,7 +1,6 @@
 import pandas as pd
 import historical
 
-
 season = "24_25"
 csv_file_path = f"historical/_summary/FPL_data_{season}.csv"
 csv_file_path_dest = f"datastore/training/FPL_data_{season}.csv"

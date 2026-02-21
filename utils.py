@@ -13,7 +13,6 @@ from google.cloud import secretmanager, storage
 import json
 import os
 
-
 headers = {
     "User-Agent": "Dalvik/2.1.0 (Linux; U; Android 5.1; PRO 5 Build/LMY47D)",
     "accept-language": "en",

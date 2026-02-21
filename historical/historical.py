@@ -8,17 +8,13 @@ final = []
 
 
 def get_historical_team_dict(season):
-    with open(
-        f"../historical/_teams/teams_{season}.csv", newline=""
-    ) as csvfile:
+    with open(f"../historical/_teams/teams_{season}.csv", newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         return {row["id"]: row["name"] for row in reader}
 
 
 def get_historical_fixtures(season, team_dict):
-    with open(
-        f"../historical/_fixtures/fixtures_{season}.csv", newline=""
-    ) as csvfile:
+    with open(f"../historical/_fixtures/fixtures_{season}.csv", newline="") as csvfile:
         reader = csv.DictReader(csvfile)
         return [Fixture(row, team_dict=team_dict) for row in reader]
 
