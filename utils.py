@@ -1,5 +1,5 @@
 from asyncio import exceptions
-from constants import endpoints
+from constants import endpoints, POSITION_MAP
 from json import JSONDecodeError
 import requests
 import certifi
@@ -32,60 +32,38 @@ def headers_access(access_token):
 
 
 async def fetch(session, url, headers=None):
-    while True:
-        try:
-            async with session.get(
-                url, headers=headers, ssl=ssl_context, cookies=cookies
-            ) as response:
-                assert response.status == 200
-                return await response.json(content_type=None)
-        except Exception as e:
-            raise e
-
-
-async def post(session, url, payload, headers):
-    async with session.post(url, data=payload, headers=headers) as response:
-        return await response.json()
+    async with session.get(
+        url, headers=headers, ssl=ssl_context, cookies=cookies
+    ) as response:
+        assert response.status == 200
+        return await response.json(content_type=None)
 
 
 def position_converter(position):
     """Converts a player's `element_type` to their actual position."""
-    position_map = {1: "GK", 2: "DEF", 3: "MID", 4: "FWD"}
-    return position_map[position]
+    return POSITION_MAP[position]
 
 
-def team_converter(team_id):
-    try:
-        dynamic = requests.get(STATIC_BASE_URL).json()
-    except exceptions.RequestException as e:
-        raise e
-    teamname_list = [team["name"] for team in dynamic["teams"]]
-    teamdict = {
-        dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"]
-        for i in range(len(teamname_list))
-    }
-    return teamdict[team_id]
+_team_cache = {}
 
 
-def convertTeamForm(form: str):
-    res = 0
-    for i in form:
-        if i == "W":
-            res += 3
-        if i == "D":
-            res += 1
-        if i == "L":
-            res += 0
+def team_converter(team_id, team_dict=None):
+    if team_dict:
+        return team_dict.get(team_id)
+    if not _team_cache:
+        _team_cache.update(get_teams())
+    return _team_cache.get(team_id)
+
+
+def convert_team_form(form: str):
+    score_map = {"W": 3, "D": 1, "L": 0}
+    res = sum(score_map.get(c, 0) for c in form)
     return float(res / (len(form) * 3))
 
 
 def get_teams():
     dynamic = requests.get(STATIC_BASE_URL).json()
-    teamname_list = [team["name"] for team in dynamic["teams"]]
-    return {
-        dynamic["teams"][i]["id"]: dynamic["teams"][i]["name"]
-        for i in range(len(teamname_list))
-    }
+    return {team["id"]: team["name"] for team in dynamic["teams"]}
 
 
 def get_team(team_id, team_dict=None):

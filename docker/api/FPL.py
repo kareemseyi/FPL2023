@@ -1,4 +1,7 @@
+import logging
+
 import aiohttp
+
 import utils
 from constants import endpoints
 import json
@@ -6,6 +9,8 @@ from utils import fetch, post_transfer, post
 from dataModel.fixture import Fixture
 from auth.fpl_auth import FPLAuth
 from api.FPL_helpers import FPLHelpers
+
+logger = logging.getLogger(__name__)
 
 API_MANAGER_INFO_PER_GW_URL = endpoints["API"]["MANAGER_INFO_PER_GW"]
 API_MANAGER_INFO = endpoints["API"]["MANAGER_INFO"]
@@ -142,7 +147,7 @@ class FPL:
             min_improvement,
         )
 
-    async def pickTeam(self, gw, initial=False):
+    async def pick_team(self, gw, initial=False):
         if not self.logged_in():
             raise Exception("User must be logged in.")
         try:

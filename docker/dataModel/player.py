@@ -69,24 +69,13 @@ class Player:
         except ZeroDivisionError:
             return 0
 
-    def goals_scored(self):
-        goals_scored = getattr(self, "goals_scored", 0)
-        try:
-            return goals_scored
-        except AssertionError:
-            goals = int(getattr(self, "goals_scored", 0))
-            return goals
-
     def goal_contributions_per_min(self):
         mins = getattr(self, "minutes", 0)
-        try:
-            assert mins > 0
-            goals_scored = self.goals_scored
-            assists = getattr(self, "assists", 0)
-
-            return float((goals_scored + assists) / mins)
-        except AssertionError:
+        if mins <= 0:
             return 0
+        goals = getattr(self, "goals_scored", 0)
+        assists = getattr(self, "assists", 0)
+        return float((goals + assists) / mins)
 
     def __str__(self):
         if isinstance(getattr(self, "team"), str):

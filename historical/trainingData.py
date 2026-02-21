@@ -6,7 +6,7 @@ season = "24_25"
 csv_file_path = f"historical/_summary/FPL_data_{season}.csv"
 csv_file_path_dest = f"datastore/training/FPL_data_{season}.csv"
 
-form_dict, r = historical.getFormDict(season=season)
+form_dict, r = historical.get_form_dict(season=season)
 print(form_dict)
 FDR = historical.get_FDR(form_dict, season=season)
 print(FDR)

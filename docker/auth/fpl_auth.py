@@ -1,10 +1,14 @@
+import logging
 import os
 import uuid
 import re
 import json
+
 import utils
 from constants import endpoints
 from dataModel.user import User
+
+logger = logging.getLogger(__name__)
 
 
 LOGIN_URL = endpoints["API"]["LOGIN"]
@@ -28,11 +32,33 @@ class FPLAuth:
     async def login(self, email=None, password=None):
         """Returns a requests session with FPL login authentication.
 
-        :param string email: Email address for the user's Fantasy Premier League
-            account.
-        :param string password: Password for the user's Fantasy Premier League
-            account.
+        Args:
+            email: Email address for the user's FPL account.
+            password: Password for the user's FPL account.
         """
+        email, password = self._resolve_credentials(email, password)
+        logger.info("Logging in: %s", LOGIN_URL)
+
+        code_verifier = utils.generate_code_verifier()
+        code_challenge = utils.generate_code_challenge(code_verifier)
+
+        access_token, new_state = await self._authorize(code_challenge)
+        auth_headers = {
+            "Authorization": f"Bearer {access_token}",
+            "Content-Type": "application/json",
+        }
+
+        dv_response = await self._davinci_flow(
+            auth_headers, email, password
+        )
+
+        auth_code = await self._get_auth_code(dv_response, new_state)
+        await self._exchange_token(auth_code, code_verifier)
+        return self.session
+
+    @staticmethod
+    def _resolve_credentials(email, password):
+        """Resolves credentials from args, Secret Manager, or env vars."""
         if not email and not password:
             email, password = utils.get_credentials_from_secret_manager()
             if not email or not password:
@@ -40,55 +66,47 @@ class FPLAuth:
                 password = os.getenv("FPL_PASSWORD")
         if not email or not password:
             raise ValueError(
-                "Email and password must be set. Configure them in Google Secret Manager or environment variables."
+                "Email and password must be set. Configure them in "
+                "Google Secret Manager or environment variables."
             )
-        print(f"Logging in: {LOGIN_URL}")
+        return email, password
 
-        code_verifier = utils.generate_code_verifier()
-        code_challenge = utils.generate_code_challenge(code_verifier)
-
-        initial_state = uuid.uuid4().hex
-
+    async def _authorize(self, code_challenge):
+        """Initiates OAuth2 authorize and returns access token + state."""
         params = {
             "response_type": "code",
             "scope": "openid profile email offline_access",
             "client_id": "bfcbaf69-aade-4c1b-8f00-c1cb8a193030",
             "redirect_uri": REDIRECT_URI,
-            "state": initial_state,
+            "state": uuid.uuid4().hex,
             "code_challenge": code_challenge,
             "code_challenge_method": "S256",
         }
-
         async with self.session.get(AUTH_URL, params=params) as response:
             assert response.status == 200
-            if response.status == 200:
-                text2 = await response.text()
-                access_token = re.search(r'"accessToken":"([^"]+)"', text2).group(1)
-                new_state = re.search(
-                    r'<input[^>]+name="state"[^>]+value="([^"]+)"', text2
-                ).group(1)
-                print("Successfully Retrieved Access Token... Continuing...")
-            else:
-                if response.status != 200:
-                    raise Exception("Incorrect email or password!")
+            text = await response.text()
+            access_token = re.search(
+                r'"accessToken":"([^"]+)"', text
+            ).group(1)
+            new_state = re.search(
+                r'<input[^>]+name="state"[^>]+value="([^"]+)"', text
+            ).group(1)
+            logger.info("Successfully Retrieved Access Token... Continuing...")
+            return access_token, new_state
 
-        new_headers = {
-            "Authorization": f"Bearer {access_token}",
-            "Content-Type": "application/json",
-        }
+    async def _davinci_flow(self, auth_headers, email, password):
+        """Runs the DaVinci policy flow and returns the dvResponse."""
         async with self.session.post(
-            DAVINCI_POLICY_START_URL, headers=new_headers
+            DAVINCI_POLICY_START_URL, headers=auth_headers
         ) as response:
             assert response.status == 200
             response = await response.json()
             interaction_id = response["interactionId"]
-            # interactionToken = response["interactionToken"]
 
+        # Polling step
         async with self.session.post(
             DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
-            headers={
-                "interactionId": interaction_id,
-            },
+            headers={"interactionId": interaction_id},
             json={
                 "id": response["id"],
                 "eventName": "continue",
@@ -104,11 +122,10 @@ class FPLAuth:
             assert response.status == 200
             response = await response.json()
 
+        # Submit credentials
         async with self.session.post(
             DAVINCI_CONNECTIONS_URL.format(STANDARD_CONNECTION_ID),
-            headers={
-                "interactionId": interaction_id,
-            },
+            headers={"interactionId": interaction_id},
             json={
                 "id": response["id"],
                 "nextEvent": {
@@ -130,9 +147,10 @@ class FPLAuth:
             assert response.status == 200
             response = await response.json()
 
+        # Confirm sign-on
         async with self.session.post(
             DAVINCI_CONNECTIONS_URL.format(response["connectionId"]),
-            headers=new_headers,
+            headers=auth_headers,
             json={
                 "id": response["id"],
                 "nextEvent": {
@@ -151,21 +169,22 @@ class FPLAuth:
         ) as response:
             assert response.status == 200
             response = await response.json()
-            print("third post completed, interactionToken received")
+            logger.info("DaVinci flow completed, interactionToken received")
+            return response["dvResponse"]
 
+    async def _get_auth_code(self, dv_response, state):
+        """Resumes the auth session and extracts the authorization code."""
         async with self.session.post(
             AS_RESUME_URL,
-            data={
-                "dvResponse": response["dvResponse"],
-                "state": new_state,
-            },
+            data={"dvResponse": dv_response, "state": state},
             allow_redirects=False,
         ) as response:
             assert response.status in (200, 302)
-
             location = response.headers["Location"]
-            auth_code = re.search(r"[?&]code=([^&]+)", location).group(1)
+            return re.search(r"[?&]code=([^&]+)", location).group(1)
 
+    async def _exchange_token(self, auth_code, code_verifier):
+        """Exchanges authorization code for access token and sets user."""
         async with self.session.post(
             AS_TOKEN_URL,
             data={
@@ -183,4 +202,3 @@ class FPLAuth:
                 self.session, API_ME, headers=utils.headers_access(access_token)
             )
             self.user = User(user, self.session, access_token)
-            return self.session

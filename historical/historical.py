@@ -7,32 +7,26 @@ headers = utils.headers
 final = []
 
 
-def getHistoricalTeamDict(season):
-    teamdict = {}
+def get_historical_team_dict(season):
     with open(
-        "../historical/_teams/teams_{}.csv".format(season), newline=""
+        f"../historical/_teams/teams_{season}.csv", newline=""
     ) as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
-            teamdict[row["id"]] = row["name"]
-    return teamdict
+        return {row["id"]: row["name"] for row in reader}
 
 
-def getHistoricalFixtures(season, team_dict):
-    hist_fixtures = []
+def get_historical_fixtures(season, team_dict):
     with open(
-        "../historical/_fixtures/fixtures_{}.csv".format(season), newline=""
+        f"../historical/_fixtures/fixtures_{season}.csv", newline=""
     ) as csvfile:
         reader = csv.DictReader(csvfile)
-        for row in reader:
-            hist_fixtures.append(row)
-        return [Fixture(fixture, team_dict=team_dict) for fixture in hist_fixtures]
+        return [Fixture(row, team_dict=team_dict) for row in reader]
 
 
-def getFormDict(season=None, fixtures=None):
+def get_form_dict(season=None, fixtures=None):
     if season:
-        team_dict = getHistoricalTeamDict(season)
-        fixtures = getHistoricalFixtures(season, team_dict)
+        team_dict = get_historical_team_dict(season)
+        fixtures = get_historical_fixtures(season, team_dict)
 
     else:
         team_dict = utils.get_teams()
@@ -61,8 +55,8 @@ def getFormDict(season=None, fixtures=None):
 
 def get_FDR(form_dict, fixtures=None, season=None):
     if season:
-        team_dict = getHistoricalTeamDict(season)
-        fixtures = getHistoricalFixtures(season, team_dict)
+        team_dict = get_historical_team_dict(season)
+        fixtures = get_historical_fixtures(season, team_dict)
     else:
         fixtures = fixtures
     fdr_dict = {}
@@ -70,12 +64,12 @@ def get_FDR(form_dict, fixtures=None, season=None):
         fdr_dict[i] = 0
         for j in fixtures:
             if i == j.get_away_team():
-                fdr_dict[i] += utils.convertTeamForm(
+                fdr_dict[i] += utils.convert_team_form(
                     form_dict[i]
-                ) - utils.convertTeamForm(form_dict[j.get_home_team()])
+                ) - utils.convert_team_form(form_dict[j.get_home_team()])
             if i == j.get_home_team():
-                fdr_dict[i] += utils.convertTeamForm(
+                fdr_dict[i] += utils.convert_team_form(
                     form_dict[i]
-                ) - utils.convertTeamForm(form_dict[j.get_away_team()])
+                ) - utils.convert_team_form(form_dict[j.get_away_team()])
 
     return fdr_dict

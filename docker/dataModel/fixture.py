@@ -24,23 +24,16 @@ class Fixture:
         return getattr(self, "team_a")
 
     def is_draw(self):
-        try:
-            assert getattr(self, "team_a_score") == getattr(self, "team_h_score")
-            return True
-        except AssertionError:
-            return False
+        return getattr(self, "team_a_score") == getattr(self, "team_h_score")
 
     def get_winner(self):
-        try:
-            assert not self.is_draw()
-            return (
-                self.get_away_team()
-                if getattr(self, "team_a_score") > getattr(self, "team_h_score")
-                else self.get_home_team()
-            )
-
-        except AssertionError:
+        if self.is_draw():
             return False
+        return (
+            self.get_away_team()
+            if getattr(self, "team_a_score") > getattr(self, "team_h_score")
+            else self.get_home_team()
+        )
 
     def __str__(self):
         return f"{self.team_h} vs. " f"{self.team_a} - " f"{self.kickoff_time}"

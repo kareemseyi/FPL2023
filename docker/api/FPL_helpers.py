@@ -6,20 +6,22 @@ import pandas as pd
 import logging
 import utils
 import os
-from constants import endpoints, PLAYER_DATA_SCHEMA
+from constants import (
+    endpoints,
+    PLAYER_DATA_SCHEMA,
+    MAX_DEF,
+    MAX_GK,
+    MAX_MID,
+    MAX_FWD,
+    MAX_BUDGET,
+    MAX_PLAYER_FROM_TEAM,
+)
 from dataModel.player import Player
 from dataModel.team import Team
 from dataModel.fixture import Fixture
 
 # Get logger (configuration done in main entry point)
 logger = logging.getLogger(__name__)
-
-MAX_DEF = 5
-MAX_GK = 2
-MAX_MID = 5
-MAX_FWD = 3
-MAX_BUDGET = 100
-MAX_PLAYER_FROM_TEAM = 3
 
 STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
 API_GW_FIXTURES = endpoints["API"]["GW_FIXTURES"]
@@ -59,7 +61,7 @@ class FPLHelpers:
             players = data["elements"]
         except Exception as e:
             logger.error("Error fetching players data: %s", e)
-            raise Exception
+            raise
         if player_ids:
             players = [player for player in players if player["id"] in player_ids]
             if not return_json:
@@ -127,7 +129,7 @@ class FPLHelpers:
             team = (team for team in teams if team["name"] in team_names)
         return [Team(team, self.session) for team in team]
 
-    async def prepareData(self, historical=False):
+    async def prepare_data(self, historical=False):
         data_dict = []
         try:
             response = await utils.fetch(self.session, STATIC_BASE_URL)
@@ -211,30 +213,30 @@ class FPLHelpers:
             if player["element"] == captain:
                 player[captain_type] = True
 
-    async def getData(self, gameweek):
+    async def get_data(self, gameweek):
         file_name = f"datastore/current/FPL_data_{gameweek}.csv"
         if not utils.check_file_exists_google_cloud(
             bucket_name=fpl_bucket, file_name=file_name
         ):
             fixtures = await self.get_all_fixtures(*range(1, gameweek))
-            f, s = self.getFormDict(fixtures=fixtures)
+            f, s = self.get_form_dict(fixtures=fixtures)
             logger.info("form_dict: %s", f)
             logger.info("score_strength(not used): %s", s)
             g = self.get_FDR(form_dict=f, fixtures=fixtures)
             logger.info("FDR dictionary: %s", g)
-            dict = await self.prepareData()
-            for _ in dict:
+            player_data = await self.prepare_data()
+            for entry in player_data:
                 if gameweek == 1:
-                    _["starts"] = 0
-                    _["minutes"] = 0
-                if _["team_name"] in g.keys():
-                    _["FDR_Average"] = round(g[_["team_name"]], 3)
-            keys = dict[0].keys()
+                    entry["starts"] = 0
+                    entry["minutes"] = 0
+                if entry["team_name"] in g:
+                    entry["FDR_Average"] = round(g[entry["team_name"]], 3)
+            keys = player_data[0].keys()
             with open(file_name, "w", newline="") as output_file:
                 logger.info("Writing to CSV...")
                 dict_writer = csv.DictWriter(output_file, keys)
                 dict_writer.writeheader()
-                dict_writer.writerows(dict)
+                dict_writer.writerows(player_data)
             utils.write_file_to_google_storage(
                 bucket_name=fpl_bucket,
                 source_file_name=file_name,
@@ -275,7 +277,7 @@ class FPLHelpers:
             gw = max([x["event"] for x in response if x["finished"] is True])
             # This is the previous gameweek
         except Exception:
-            Warning("Start of the season, gameweek 1")
+            warnings.warn("Start of the season, gameweek 1")
             return 1
         if len(response) == 0:
             raise Exception("No Active Events yet.... TODO")
@@ -292,7 +294,7 @@ class FPLHelpers:
             gw_stats = next(x for x in gw_stats if x["id"] == gw)
             gw_stats = {key: value for key, value in gw_stats.items() if key in stats}
         except Exception:
-            Warning("Start of the season, gameweek 1")
+            warnings.warn("Start of the season, gameweek 1")
             return 1
         return gw_stats
 
@@ -306,30 +308,24 @@ class FPLHelpers:
     #     except Exception as e:
     #         print(e)
 
-    def getHistoricalTeamDict(self, season):
-        teamdict = {}
+    def get_historical_team_dict(self, season):
         with open(
-            "../historical/_teams/teams_{}.csv".format(season), newline=""
+            f"../historical/_teams/teams_{season}.csv", newline=""
         ) as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader:
-                teamdict[row["id"]] = row["name"]
-        return teamdict
+            return {row["id"]: row["name"] for row in reader}
 
-    def getHistoricalFixtures(self, season, team_dict):
-        hist_fixtures = []
+    def get_historical_fixtures(self, season, team_dict):
         with open(
-            "../historical/_fixtures/fixtures_{}.csv".format(season), newline=""
+            f"../historical/_fixtures/fixtures_{season}.csv", newline=""
         ) as csvfile:
             reader = csv.DictReader(csvfile)
-            for row in reader:
-                hist_fixtures.append(row)
-            return [Fixture(fixture, team_dict=team_dict) for fixture in hist_fixtures]
+            return [Fixture(row, team_dict=team_dict) for row in reader]
 
-    def getFormDict(self, season=None, fixtures=None):
+    def get_form_dict(self, season=None, fixtures=None):
         if season:
-            team_dict = self.getHistoricalTeamDict(season)
-            fixtures = self.getHistoricalFixtures(season, team_dict)
+            team_dict = self.get_historical_team_dict(season)
+            fixtures = self.get_historical_fixtures(season, team_dict)
 
         else:
             team_dict = utils.get_teams()
@@ -360,8 +356,8 @@ class FPLHelpers:
 
     def get_FDR(self, form_dict, fixtures=None, season=None):
         if season:
-            team_dict = self.getHistoricalTeamDict(season)
-            fixtures = self.getHistoricalFixtures(season, team_dict)
+            team_dict = self.get_historical_team_dict(season)
+            fixtures = self.get_historical_fixtures(season, team_dict)
         else:
             fixtures = fixtures
         fdr_dict = {}
@@ -369,13 +365,13 @@ class FPLHelpers:
             fdr_dict[i] = 0
             for j in fixtures:
                 if i == j.get_away_team():
-                    fdr_dict[i] += utils.convertTeamForm(
+                    fdr_dict[i] += utils.convert_team_form(
                         form_dict[i]
-                    ) - utils.convertTeamForm(form_dict[j.get_home_team()])
+                    ) - utils.convert_team_form(form_dict[j.get_home_team()])
                 if i == j.get_home_team():
-                    fdr_dict[i] += utils.convertTeamForm(
+                    fdr_dict[i] += utils.convert_team_form(
                         form_dict[i]
-                    ) - utils.convertTeamForm(form_dict[j.get_away_team()])
+                    ) - utils.convert_team_form(form_dict[j.get_away_team()])
 
         return fdr_dict
 
@@ -743,7 +739,7 @@ class FPLHelpers:
     #     """
     #     # Get current form and FDR data
     #     try:
-    #         form_dict, score_strength_dict = getFormDict(fixtures=fixtures)
+    #         form_dict, score_strength_dict = get_form_dict(fixtures=fixtures)
     #         fdr_dict = get_FDR(form_dict=form_dict, fixtures=fixtures)
     #     except Exception:
     #         # Fallback if FDR calculation fails
