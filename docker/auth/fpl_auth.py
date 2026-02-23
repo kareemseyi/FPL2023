@@ -2,8 +2,6 @@ import logging
 import os
 import uuid
 import re
-import json
-
 import utils
 from constants import endpoints
 from dataModel.user import User

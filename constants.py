@@ -49,7 +49,7 @@ PLAYER_DATA_SCHEMA = {
     "total_points": 0,  # int: Total FPL points
     "points_per_game": 0.0,  # float: Points per game average
     "roi": 0.0,  # float: Return on investment (points/price)
-    "roi_per_gw": 0.0,  # float: ROI per gameweek started
+    "roi_per_gw": 0.0,  # float: ROI per game week started
     "element_type": "",  # str: Element_type 1:GK, 2:DEF, 3:MID, 4:FWD)
     "team_name": "",  # str: Team name
     "minutes": 0,  # int: Total minutes played
@@ -57,6 +57,9 @@ PLAYER_DATA_SCHEMA = {
     "team": 0,  # int: team code
     "id": 0,
 }
+
+# Google Cloud Storage
+FPL_BUCKET = "fpl_2025"
 
 # Position mapping
 POSITION_MAP = {1: "GK", 2: "DEF", 3: "MID", 4: "FWD"}

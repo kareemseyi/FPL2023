@@ -68,7 +68,7 @@ class User:
     #             )
 
     async def get_manager_info_for_gw(self, gw):
-        """Returns info on the managers team per gameweek. Requires the user to have
+        """Returns info on the managers team per game week. Requires the user to have
         logged in using ``fpl.login()``.
 
         :rtype: list
@@ -89,7 +89,7 @@ class User:
                 if key in info
             }
         except Exception as e:
-            raise Exception("Client has not set a team for gameweek " + str(gw))
+            raise Exception("Client has not set a team for game week " + str(gw))
         return manager_info
 
     async def get_manager_info(self):
@@ -105,7 +105,7 @@ class User:
                 API_MANAGER_INFO.format(f=await self.get_current_user_entry()),
             )
         except Exception as e:
-            raise Exception("Client has not set a team for gameweek ")
+            raise Exception("Client has not set a team for game week ")
         return response
 
     async def get_users_team_info(self):
@@ -122,7 +122,7 @@ class User:
                 headers=utils.headers_access(self.access_token),
             )
         except Exception as e:
-            raise Exception("Client has not set a team for gameweek ")
+            raise Exception("Client has not set a team for game week ")
         return response
 
     async def get_transfers_status(self):

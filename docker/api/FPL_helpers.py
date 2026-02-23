@@ -15,6 +15,7 @@ from constants import (
     MAX_FWD,
     MAX_BUDGET,
     MAX_PLAYER_FROM_TEAM,
+    FPL_BUCKET,
 )
 from dataModel.player import Player
 from dataModel.team import Team
@@ -29,8 +30,6 @@ API_ALL_FIXTURES = endpoints["API"]["ALL_FIXTURES"]
 
 is_c = "is_captain"
 is_vc = "is_vice_captain"
-
-fpl_bucket = "fpl_2025"
 
 
 class FPLHelpers:
@@ -213,12 +212,12 @@ class FPLHelpers:
             if player["element"] == captain:
                 player[captain_type] = True
 
-    async def get_data(self, gameweek):
-        file_name = f"datastore/current/FPL_data_{gameweek}.csv"
+    async def get_data(self, game_week):
+        file_name = f"datastore/current/FPL_data_{game_week}.csv"
         if not utils.check_file_exists_google_cloud(
-            bucket_name=fpl_bucket, file_name=file_name
+            bucket_name=FPL_BUCKET, file_name=file_name
         ):
-            fixtures = await self.get_all_fixtures(*range(1, gameweek))
+            fixtures = await self.get_all_fixtures(*range(1, game_week))
             f, s = self.get_form_dict(fixtures=fixtures)
             logger.info("form_dict: %s", f)
             logger.info("score_strength(not used): %s", s)
@@ -226,7 +225,7 @@ class FPLHelpers:
             logger.info("FDR dictionary: %s", g)
             player_data = await self.prepare_data()
             for entry in player_data:
-                if gameweek == 1:
+                if game_week == 1:
                     entry["starts"] = 0
                     entry["minutes"] = 0
                 if entry["team_name"] in g:
@@ -238,21 +237,21 @@ class FPLHelpers:
                 dict_writer.writeheader()
                 dict_writer.writerows(player_data)
             utils.write_file_to_google_storage(
-                bucket_name=fpl_bucket,
+                bucket_name=FPL_BUCKET,
                 source_file_name=file_name,
                 destination_blob_name=file_name,
             )
         else:
             utils.read_file_from_google_storage(
-                bucket_name=fpl_bucket,
+                bucket_name=FPL_BUCKET,
                 source_blob_name=file_name,
                 destination_file_name=file_name,
             )
 
-    async def get_all_fixtures(self, *gameweek):
-        """Returns all fixtures for the specified gameweeks.
+    async def get_all_fixtures(self, *game_week):
+        """Returns all fixtures for the specified game weeks.
 
-        :param gameweek: Gameweek numbers to fetch fixtures for
+        :param game_week: Game week numbers to fetch fixtures for
         :rtype: list
         """
         task = asyncio.ensure_future(utils.fetch(self.session, API_ALL_FIXTURES))
@@ -264,27 +263,27 @@ class FPLHelpers:
         return [
             Fixture(fixture, team_dict)
             for fixture in fixtures
-            if fixture["event"] in gameweek
+            if fixture["event"] in game_week
         ]
 
     async def get_upcoming_gameweek(self):
-        """Returns the upcoming gameweek number.
+        """Returns the upcoming game week number.
 
         :rtype: int
         """
         try:
             response = await utils.fetch(self.session, API_GW_FIXTURES)
             gw = max([x["event"] for x in response if x["finished"] is True])
-            # This is the previous gameweek
+            # This is the previous game week
         except Exception:
-            warnings.warn("Start of the season, gameweek 1")
+            warnings.warn("Start of the season, game week 1")
             return 1
         if len(response) == 0:
             raise Exception("No Active Events yet.... TODO")
-        return int(gw) + 1  # Adds one to previous gameweek
+        return int(gw) + 1  # Adds one to previous game week
 
-    async def get_gameweek_stats(self, gw):
-        """Returns the stats for gameweek.
+    async def get_game_week_stats(self, gw):
+        """Returns the stats for game week.
         :rtype: dictionary
         """
         stats = ["id", "average_entry_score", "highest_score"]
@@ -294,19 +293,9 @@ class FPLHelpers:
             gw_stats = next(x for x in gw_stats if x["id"] == gw)
             gw_stats = {key: value for key, value in gw_stats.items() if key in stats}
         except Exception:
-            warnings.warn("Start of the season, gameweek 1")
+            warnings.warn("Start of the season, game week 1")
             return 1
         return gw_stats
-
-    # def get_model(self):
-    #     try:
-    #         utils.read_file_from_google_storage(
-    #             bucket_name=fpl_bucket,
-    #             source_blob_name=fpl_bucket + "/model",
-    #             destination_file_name=fpl_bucket + "/model"
-    #         )
-    #     except Exception as e:
-    #         print(e)
 
     def get_historical_team_dict(self, season):
         with open(f"../historical/_teams/teams_{season}.csv", newline="") as csvfile:
@@ -373,22 +362,22 @@ class FPLHelpers:
 
         return fdr_dict
 
-    async def get_fixtures_for_gameweek(self, gameweek: int):
-        """Returns the fixtures for the current gameweek.
+    async def get_fixtures_for_gameweek(self, game_week: int):
+        """Returns the fixtures for the current game week.
 
-        :param gameweek: The gameweek number
-        :type gameweek: int
+        :param game_week: The game week number
+        :type game_week: int
         :rtype: list
         """
         try:
             response = await utils.fetch(
-                self.session, API_GW_FIXTURES.format(f=gameweek)
+                self.session, API_GW_FIXTURES.format(f=game_week)
             )
         except Exception:
-            raise Exception("Failed to fetch fixtures for gameweek")
+            raise Exception("Failed to fetch fixtures for game week")
 
         team_dict = utils.get_teams()
-        fixtures = [x for x in response if x["event"] == gameweek]
+        fixtures = [x for x in response if x["event"] == game_week]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
     # def get_optimal_transfers(self, current_team, player_pool, max_transfers=3, metric="total_points", min_improvement=0.1):

@@ -24,7 +24,7 @@ class Player:
         return getattr(self, "starts", 0)
 
     def points_per_game(self):
-        """Points per Gameweek
+        """Points per game week.
         :rtype: float
         """
         try:
@@ -33,7 +33,7 @@ class Player:
             return 0
 
     def points_per_min(self):
-        """Points per Gameweek
+        """Points per game week.
         :rtype: float
         """
         mins = getattr(self, "minutes", 0)

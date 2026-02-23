@@ -5,6 +5,7 @@ import aiohttp
 import utils
 from constants import endpoints
 import json
+from datetime import datetime, timezone
 from utils import fetch, post_transfer, post
 from dataModel.fixture import Fixture
 from auth.fpl_auth import FPLAuth
@@ -58,8 +59,8 @@ class FPL:
     async def get_transfers_status(self):
         return await self.auth.user.get_transfers_status()
 
-    async def get_gameweek_stats(self, gw):
-        return await self.helpers.get_gameweek_stats(gw)
+    async def get_game_week_stats(self, gw):
+        return await self.helpers.get_game_week_stats(gw)
 
     async def get_all_current_players(self, player_ids=None, return_json=False):
         return await self.helpers.get_all_current_players(player_ids, return_json)
@@ -71,29 +72,66 @@ class FPL:
             player_id, player, return_json, convert_hist
         )
 
-    async def get_fixtures_for_next_GW(self, gameweek):
-        assert gameweek > 0
+    async def get_performance_for_game_week(self, game_week):
+        """Track weekly performance vs average/highest and persist to GCS."""
+
+        if game_week < 1:
+            logger.info("No previous game week to track performance for.")
+            return
+        try:
+            info = await self.get_manager_info_for_gw(gw=game_week)
+            gw_stats = await self.get_game_week_stats(gw=game_week)
+
+            my_points = info["points"]
+            avg_points = gw_stats["average_entry_score"]
+            highest_points = gw_stats["highest_score"]
+            total_points = info["total_points"]
+            logger.info(
+                "GW%d — My: %d | Avg: %d | Highest: %d | Delta avg: %+d | Delta highest: %+d",
+                game_week,
+                my_points,
+                avg_points,
+                highest_points,
+                my_points - avg_points,
+                my_points - highest_points,
+            )
+            row = {
+                        "game_week": game_week,
+                        "my_points": my_points,
+                        "average_points": avg_points,
+                        "highest_points": highest_points,
+                        "total_points": total_points,
+                        "delta_vs_avg": my_points - avg_points,
+                        "delta_vs_highest": my_points - highest_points,
+                        "timestamp": datetime.now(timezone.utc).isoformat(),
+                    }
+            return row
+        except aiohttp.client_exceptions.ClientResponseError:
+            raise Exception("Could now get performance data for GW%d" % game_week)
+
+    async def get_fixtures_for_next_GW(self, game_week):
+        assert game_week > 0
         try:
             response = await fetch(
                 self.session,
-                API_GW_FIXTURES.format(f=gameweek),
+                API_GW_FIXTURES.format(f=game_week),
                 headers=utils.headers_access(self.auth.access_token),
             )
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("User ID does not match provided email address!")
 
         team_dict = utils.get_teams()
-        fixtures = [x for x in response if x["event"] == gameweek]
+        fixtures = [x for x in response if x["event"] == game_week]
         return [Fixture(fixture, team_dict=team_dict) for fixture in fixtures]
 
-    async def get_all_fixtures(self, *gameweek):
-        return await self.helpers.get_all_fixtures(*gameweek)
+    async def get_all_fixtures(self, *game_week):
+        return await self.helpers.get_all_fixtures(*game_week)
 
-    async def get_upcoming_gameweek(self):
-        return await self.helpers.get_upcoming_gameweek()
+    async def get_upcoming_game_week(self):
+        return await self.helpers.get_upcoming_game_week()
 
-    async def get_fixtures_for_gameweek(self, gameweek: int):
-        return await self.helpers.get_fixtures_for_gameweek(gameweek)
+    async def get_fixtures_for_game_week(self, game_week: int):
+        return await self.helpers.get_fixtures_for_game_week(game_week)
 
     async def get_team(self, *team_ids, team_names=None):
         return await self.helpers.get_team(*team_ids, team_names=team_names)
@@ -123,7 +161,7 @@ class FPL:
         self,
         current_team,
         player_pool,
-        upcoming_gameweeks=5,
+        upcoming_game_weeks=5,
         max_transfers=3,
         metric="projected_points",
         min_improvement=0.1,
@@ -132,7 +170,7 @@ class FPL:
 
         :param current_team: List of current Player objects
         :param player_pool: List of available Player objects
-        :param upcoming_gameweeks: Number of gameweeks to consider for projections
+        :param upcoming_game_weeks: Number of game weeks to consider for projections
         :param max_transfers: Maximum number of transfers to suggest
         :param metric: Optimization metric ('projected_points', 'form_adjusted', 'fixture_adjusted')
         :param min_improvement: Minimum improvement required to suggest transfer
@@ -141,7 +179,7 @@ class FPL:
         return await self.helpers.get_optimal_transfers_with_fixtures(
             current_team,
             player_pool,
-            upcoming_gameweeks,
+            upcoming_game_weeks,
             max_transfers,
             metric,
             min_improvement,
