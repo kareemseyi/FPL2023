@@ -187,9 +187,6 @@ async def execute_or_log_transfers(fpl, recommendations):
     return transfer_log
 
 
-
-
-
 async def track_performance(fpl, game_week):
     """Fetch and persist performance for all game weeks up to game_week.
 

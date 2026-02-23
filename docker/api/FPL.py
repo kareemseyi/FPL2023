@@ -96,15 +96,15 @@ class FPL:
                 my_points - highest_points,
             )
             row = {
-                        "game_week": game_week,
-                        "my_points": my_points,
-                        "average_points": avg_points,
-                        "highest_points": highest_points,
-                        "total_points": total_points,
-                        "delta_vs_avg": my_points - avg_points,
-                        "delta_vs_highest": my_points - highest_points,
-                        "timestamp": datetime.now(timezone.utc).isoformat(),
-                    }
+                "game_week": game_week,
+                "my_points": my_points,
+                "average_points": avg_points,
+                "highest_points": highest_points,
+                "total_points": total_points,
+                "delta_vs_avg": my_points - avg_points,
+                "delta_vs_highest": my_points - highest_points,
+                "timestamp": datetime.now(timezone.utc).isoformat(),
+            }
             return row
         except aiohttp.client_exceptions.ClientResponseError:
             raise Exception("Could now get performance data for GW%d" % game_week)
