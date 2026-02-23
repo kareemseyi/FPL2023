@@ -121,7 +121,6 @@ TODO
 - Get the
 --SMOTE
 --
-
 ---Current Workflow
 - Run GetCurrentData to get a CSV of current Data for the season and current GW
 - Run notebook to create model with histo
@@ -132,6 +131,49 @@ TODO
         YES?
           -- Use gameweek 1 or (1-5) and Last Seasons data to pick team
         NO?
-          -- Use currentSeasons Data + next Gamewee to pick team
+          -- Use currentSeasons Data + next Gameweek to pick team
 
-    --
+
+Simple bot flow
+-- identify underperforming players in my team (max Three)
+    -- Player Pool
+    -- Your team
+-- Transfer the underperforming players for high ROI players that are affordable/within budget/within restrictions
+   -- Who EXACTLY would I transfer
+-- Sort and Set Team
+
+-----------------------------------------------------------------
+
+At End of season
+ - Model setup (Preprocessing)
+ - Run prepareHistoricalData.py to generate summary TODO Move to helpers (when historical == true)
+ - Run trainingData.py to update summary with: TODO (Move to optimize training Data)
+    - FDR values for existing teams
+    - Updating FDR for new promoted teams
+ - Train Model
+
+ Workflow (Processing)
+ - RunGetData to generate unseenData
+ SCHEMAAAAA  -- DONE
+
+ -TODO
+   - still need to standardize player model things like roi, roi_per_gw should not be calculated in prepareData,
+    only in the playe model
+   - WHEN do we make transfers?
+   - Complete transfer workflow
+   - setting lineup
+   - retrain data every 5 gameweeks
+   - start thinking of where to host that bot
+
+ Current workflow
+ - Load extra trees model
+ - Get upcoming gameweek
+ - Get The dataset for predictions (all players returned)
+ - 1st filter for prediction pool -> (top 200 by ROI)
+ - 2nd filter -> (greater than mean roi, ppg and predicted roi)
+ - LOGIN TO FPL
+ - Get Users Team
+ - Do some analysis to determine weakest players in team (currently by position)
+ - Suggest Players to replace weakest players in each position
+
+
