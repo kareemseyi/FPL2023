@@ -1,4 +1,5 @@
 from asyncio import exceptions
+import collections
 from constants import endpoints, POSITION_MAP
 from json import JSONDecodeError
 import logging
@@ -29,6 +30,7 @@ ssl_context = ssl.create_default_context(cafile=certifi.where())
 
 
 STATIC_BASE_URL = endpoints["STATIC"]["BASE_URL"]
+FORM_WINDOW = 6
 
 
 def headers_access(access_token):
@@ -64,6 +66,66 @@ def convert_team_form(form: str):
     score_map = {"W": 3, "D": 1, "L": 0}
     res = sum(score_map.get(c, 0) for c in form)
     return float(res / (len(form) * 3))
+
+
+def fixture_results(fixtures) -> list[tuple[str, str, int, int]]:
+    """Returns (home, away, home_score, away_score) per finished Fixture, by kickoff."""
+    finished = sorted(
+        (fixture for fixture in fixtures if fixture.finished),
+        key=lambda fixture: fixture.kickoff_time,
+    )
+    return [
+        (
+            fixture.team_h,
+            fixture.team_a,
+            int(fixture.team_h_score),
+            int(fixture.team_a_score),
+        )
+        for fixture in finished
+    ]
+
+
+def match_letters(home_score: int, away_score: int) -> tuple[str, str]:
+    """Returns the (home, away) result letters for a score."""
+    if home_score == away_score:
+        return "D", "D"
+    if home_score > away_score:
+        return "W", "L"
+    return "L", "W"
+
+
+def season_form(results: list[tuple[str, str, int, int]]) -> dict[str, str]:
+    """Each team's results in kickoff order, e.g. "WDLW..."."""
+    form = collections.defaultdict(list)
+    for home, away, home_score, away_score in results:
+        home_letter, away_letter = match_letters(home_score, away_score)
+        form[home].append(home_letter)
+        form[away].append(away_letter)
+    return {team: "".join(letters) for team, letters in form.items()}
+
+
+def fixture_difficulty(results: list[tuple[str, str, int, int]]) -> dict[str, float]:
+    """Averages each team's form advantage over its opponents, using pre-match form.
+
+    Form is each side's last FORM_WINDOW results before kickoff. Fixtures where
+    either side has no previous result are skipped, so teams with none counted
+    are absent from the result.
+    """
+    history = collections.defaultdict(list)
+    totals = collections.defaultdict(float)
+    counted = collections.Counter()
+    for home, away, home_score, away_score in results:
+        home_recent = history[home][-FORM_WINDOW:]
+        away_recent = history[away][-FORM_WINDOW:]
+        if home_recent and away_recent:
+            advantage = convert_team_form(home_recent) - convert_team_form(away_recent)
+            totals[home] += advantage
+            totals[away] -= advantage
+            counted.update((home, away))
+        home_letter, away_letter = match_letters(home_score, away_score)
+        history[home].append(home_letter)
+        history[away].append(away_letter)
+    return {team: totals[team] / counted[team] for team in counted}
 
 
 def get_teams():
