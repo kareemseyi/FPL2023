@@ -28,7 +28,7 @@ is_vc = "is_vice_captain"
 
 
 class FPL:
-    """The FPL class."""
+    """class for FPL operations that DO require authentication. Auth module attached here"""
 
     def __init__(self, session, auth=None, helpers=None):
         self.session = session
